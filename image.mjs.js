@@ -1,4 +1,4 @@
-const DEFAULT_FIT = "cover";
+const DEFAULT_FIT = "none";
 
 const SVG_DEFAULT_WIDTH = 300;
 const SVG_DEFAULT_HEIGHT = 150;

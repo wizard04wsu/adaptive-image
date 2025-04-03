@@ -49,9 +49,6 @@
 	container-type: size;
 	height: var(--intrinsic-height-px);
 }
-/*#backing:has(img.svg){
-	height: calc(100cqw / var(--intrinsic-aspectratio)) !important;
-}*/
 #frame.error #backing {
 	height: var(--intrinsic-height-px);
 }

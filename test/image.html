@@ -9,21 +9,28 @@
 	
 	<script type="module" src="../image.mjs.js"></script>
 	<link type="stylesheet" href="../image.css">
+	<template id="adaptive-image">
+		<link rel="stylesheet" href="../image.css">
+		<div id="frame" part="frame">
+			<div id="backing">
+				<img src="" alt="">
+			</div>
+		</div>
+	</template>
+	
 	<style>
+		form {
+			margin: 0 0 1.5em;
+		}
+		
 		adaptive-image {
+			vertical-align: top;
 			width: 100%;
 		}
 		adaptive-image::part(frame) {
 			border: 5px solid black;
 			border-radius: 20px;
 			background-color: cyan;
-		}
-		
-		#images > div {
-			display: none;
-		}
-		#images > div.active {
-			display: block;
 		}
 		
 		footer {
@@ -34,74 +41,77 @@
 			margin: 0;
 		}
 	</style>
+	<script>
+		document.addEventListener('DOMContentLoaded', ()=>{
+			const images = Array.prototype.slice.call(document.querySelectorAll('#images adaptive-image'), 0);
+			console.dir(images);
+			document.querySelector('#select-fit').addEventListener('change', function (){
+				for(image of images){
+					image.setAttribute('fit', this.value);
+				}
+			});
+		});
+	</script>
 	
 </head>
 <body>
 	
-	<main id="images">
+	<main>
 		
-		<div id="auto-auto-center-middle" class="">
-			<div id="none-auto-auto-center-middle">
-				<adaptive-image fit="none" width="" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
-				<adaptive-image fit="none" width="" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
-				<adaptive-image fit="none" width="" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
-				<adaptive-image fit="none" width="" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
-			</div>
-			<div id="cover-auto-auto-center-middle">
-				<adaptive-image fit="cover" width="" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
-				<adaptive-image fit="cover" width="" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
-				<adaptive-image fit="cover" width="" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
-				<adaptive-image fit="cover" width="" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
-			</div>
-			<div id="fill-auto-auto-center-middle">
-				<adaptive-image fit="fill" width="" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
-				<adaptive-image fit="fill" width="" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
-				<adaptive-image fit="fill" width="" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
-				<adaptive-image fit="fill" width="" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
-			</div>
-			<div id="contain-auto-auto-center-middle">
-				<adaptive-image fit="contain" width="" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
-				<adaptive-image fit="contain" width="" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
-				<adaptive-image fit="contain" width="" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
-				<adaptive-image fit="contain" width="" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
-			</div>
-			<div id="scaledown-auto-auto-center-middle">
-				<adaptive-image fit="scale-down" width="" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
-				<adaptive-image fit="scale-down" width="" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
-				<adaptive-image fit="scale-down" width="" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
-				<adaptive-image fit="scale-down" width="" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
-			</div>
+		<div id="form">
+			<form>
+				<label>Fit: <select id="select-fit">
+					<option value="none">none (default)</option>
+					<option value="cover">cover</option>
+					<option value="fill">fill</option>
+					<option value="contain">contain</option>
+					<option value="scale-down">scale-down</option>
+				</select></label>
+			</form>
 		</div>
-		<div id="200-auto" class="active">
-			<div id="none-auto-auto-center-middle">
-				<adaptive-image fit="none" width="200" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
-				<adaptive-image fit="none" width="200" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
-				<adaptive-image fit="none" width="200" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
-				<adaptive-image fit="none" width="200" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
+		
+		<div id="images">
+			<div>
+				<adaptive-image fit="" width="" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
+				<adaptive-image fit="" width="" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
+				<adaptive-image fit="" width="" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
+				<adaptive-image fit="" width="" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
 			</div>
-			<div id="cover-auto-auto-center-middle">
-				<adaptive-image fit="cover" width="200" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
-				<adaptive-image fit="cover" width="200" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
-				<adaptive-image fit="cover" width="200" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
-				<adaptive-image fit="cover" width="200" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
+			<div>
+				<adaptive-image fit="" width="250" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
+				<adaptive-image fit="" width="250" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
+				<adaptive-image fit="" width="250" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
+				<adaptive-image fit="" width="250" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
 			</div>
-			<div id="fill-auto-auto-center-middle">
-				<adaptive-image fit="fill" width="200" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
-				<adaptive-image fit="fill" width="200" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
-				<adaptive-image fit="fill" width="200" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
-				<adaptive-image fit="fill" width="200" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
+			<div>
+				<adaptive-image fit="" width="175" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
+				<adaptive-image fit="" width="175" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
+				<adaptive-image fit="" width="175" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
+				<adaptive-image fit="" width="175" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
 			</div>
-			<div id="contain-auto-auto-center-middle">
-				<adaptive-image fit="contain" width="200" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
-				<adaptive-image fit="contain" width="200" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
-				<adaptive-image fit="contain" width="200" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
-				<adaptive-image fit="contain" width="200" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
+			<div>
+				<adaptive-image fit="" width="" height="250" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
+				<adaptive-image fit="" width="" height="250" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
+				<adaptive-image fit="" width="" height="250" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
+				<adaptive-image fit="" width="" height="250" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
 			</div>
-			<div id="scaledown-auto-auto-center-middle">
-				<adaptive-image fit="scale-down" width="200" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
-				<adaptive-image fit="scale-down" width="200" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
-				<adaptive-image fit="scale-down" width="200" height="" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
-				<adaptive-image fit="scale-down" width="200" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
+			<div>
+				<adaptive-image fit="" width="" height="175" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
+				<adaptive-image fit="" width="" height="175" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
+				<adaptive-image fit="" width="" height="175" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
+				<adaptive-image fit="" width="" height="175" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
+			</div>
+			<div>
+				<adaptive-image fit="" width="250" height="250" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
+				<adaptive-image fit="" width="250" height="250" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
+				<adaptive-image fit="" width="250" height="250" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
+				<adaptive-image fit="" width="250" height="250" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
+			</div>
+			<div>
+				<adaptive-image fit="" width="250" height="250" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
+				<adaptive-image fit="" width="250" height="250" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
+				<adaptive-image fit="" width="250" height="250" align="center middle" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt="SVG image"></adaptive-image>
+				<adaptive-image fit="" width="250" height="250" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
 			</div>
 		</div>
 		
@@ -112,15 +122,6 @@
 		<p>The large JPG image used is by dimitrisvetsikas1969 from  <a href="https://pixabay.com/photos/african-daisy-osteospermum-garden-2110065/">pixabay.com</a>.</p>
 		<p>The SVG image used is by flatart from <a href="https://www.freepik.com/free-vector/blue-white-striped-dahlia-flower_342443975.htm">freepik.com</a>.</p>
 	</footer>
-
-	<template id="adaptive-image">
-		<link rel="stylesheet" href="../image.css">
-		<div id="frame" part="frame">
-			<div id="backing">
-				<img src="" alt="">
-			</div>
-		</div>
-	</template>
 	
 </body>
 </html>
