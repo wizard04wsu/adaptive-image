@@ -10,7 +10,10 @@
 	<script type="module" src="../image.mjs.js"></script>
 	<link type="stylesheet" href="../image.css">
 	<style>
-		adaptive-image::part(style) {
+		adaptive-image {
+			width: 100%;
+		}
+		adaptive-image::part(frame) {
 			border: 5px solid black;
 			border-radius: 20px;
 			background-color: cyan;
@@ -113,8 +116,10 @@
 	<template id="adaptive-image">
 		<link rel="stylesheet" href="../image.css">
 		<div id="wrapper">
-			<div id="frame" part="style">
-				<img src="" alt="">
+			<div id="frame" part="frame">
+				<div id="backing">
+					<img src="" alt="">
+				</div>
 			</div>
 		</div>
 	</template>

@@ -20,6 +20,7 @@ class AdaptiveImage extends HTMLElement {
 	
 	#wrapper;
 	#frame;
+	#backing;
 	#img;
 	
 	constructor(){
@@ -35,6 +36,7 @@ class AdaptiveImage extends HTMLElement {
 		
 		this.#wrapper = shadowRoot.querySelector('#wrapper');
 		this.#frame = shadowRoot.querySelector('#frame');
+		this.#backing = shadowRoot.querySelector('#backing');
 		this.#img = shadowRoot.querySelector('img');
 		
 		this.#img.addEventListener('load', ()=>{

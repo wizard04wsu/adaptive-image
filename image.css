@@ -1,6 +1,10 @@
+/********************************/
+/*** Adaptive Image Component ***/
+/********************************/
+
 :host {
 	display: inline-block;
-	width: 100%;
+	max-width: 100%;
 }
 
 /***************/
@@ -8,10 +12,9 @@
 /***************/
 
 #wrapper {
-	container-type: size;
-	
-	/*max-width: calc(var(--intrinsic-width) * 1px);*/
-	max-width: calc(var(--specified-width) * 1px);
+	/*box-sizing: content-box;*/
+	width: calc((var(--intrinsic-width) * 1px) + (var(--border-width-total) * 1px));
+	max-width: 100%;
 }
 .hasWidth {
 	max-width: calc(var(--specified-width) * 1px);
@@ -28,60 +31,66 @@
 /*************/
 
 #frame {
-	container-type: size;
-	position: relative;
-	box-sizing: content-box;
+	box-sizing: border-box;
+	container-type: inline-size;
 	overflow: hidden;
+}
+
+/***************/
+/*** Backing ***/
+/***************/
+
+#backing {
+	container-type: size;
 	
-	width: min(100%, var(--intrinsic-width) * 1px);
 	height: calc(var(--intrinsic-height) * 1px);
 }
-#frame:has(img.svg){
+#backing:has(img.svg){
 	height: calc((100cqw - var(--border-width-total) * 1px) / var(--intrinsic-aspectratio)) !important;
 }
 
-:host([fit=none]) #frame {
+:host([fit=none]) #backing {
 	
 }
-:host([fit=cover]) #frame {
+:host([fit=cover]) #backing {
 	
 }
-:host([fit=fill]) #frame {
+:host([fit=fill]) #backing {
 	
 }
-:host([fit=contain]) #frame {
+:host([fit=contain]) #backing {
 	
 }
-:host([fit=scale-down]) #frame {
+:host([fit=scale-down]) #backing {
 	
 }
 
-:host([fit=none]) .hasWidth #frame {
+:host([fit=none]) .hasWidth #backing {
 	max-width: calc(var(--specified-width) * 1px);
 	height: calc(var(--intrinsic-height) * 1px);
 }
-:host([fit=cover]) .hasWidth #frame {
+:host([fit=cover]) .hasWidth #backing {
 	max-width: calc(var(--specified-width) * 1px);
 	height: min(max(var(--intrinsic-height) * 1px, var(--specified-width) * 1px * var(--intrinsic-aspectratio)), var(--specified-height) * 1px);
 }
-:host([fit=fill]) .hasWidth #frame {
+:host([fit=fill]) .hasWidth #backing {
 	max-width: calc(var(--specified-width) * 1px);
 	height: calc(var(--specified-width) * 1px / var(--intrinsic-aspectratio));
 }
-:host([fit=contain]) .hasWidth #frame {
+:host([fit=contain]) .hasWidth #backing {
 	max-width: calc(var(--specified-width) * 1px);
 	height: calc((100cqw - var(--border-width-total) * 1px) / var(--specified-aspectratio));
 }
-:host([fit=scale-down]) .hasWidth #frame {
+:host([fit=scale-down]) .hasWidth #backing {
 	max-width: calc(var(--specified-width) * 1px);
 	height: min(var(--intrinsic-height) * 1px, var(--specified-width) * 1px / var(--intrinsic-aspectratio));
 }
 
-.hasWidthPercentage #frame {
+.hasWidthPercentage #backing {
 	/*max-width: calc((var(--specified-width) + var(--border-width-total)) * 1%);*/
 	max-width: calc(var(--specified-width) * 1%);
 }
-.hasHeight #frame {
+.hasHeight #backing {
 	/*height: calc((var(--specified-height) + var(--border-height-total)) * 1px);*/
 	height: calc(var(--specified-height) * 1px);
 	height: calc((100cqw - var(--border-width-total) * 1px) / var(--intrinsic-aspectratio));
