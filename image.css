@@ -1,117 +1,239 @@
-/********************************/
-/*** Adaptive Image Component ***/
-/********************************/
+/*====================/
+  Variables
+/====================*/
+
+#frame {
+	
+	/* These variables are set via JavaScript. */
+	/*--intrinsic-width: 0;
+	--intrinsic-height: 0;
+	--intrinsic-aspectratio: 0;
+	--specified-width: 0;
+	--specified-height: 0;
+	--specified-aspectratio: 0;*/
+	
+	--intrinsic-width-px: calc(var(--intrinsic-width) * 1px);
+	--intrinsic-height-px: calc(var(--intrinsic-height) * 1px);
+	--specified-width-px: calc(var(--specified-width) * 1px);
+	--specified-width-percent: calc(var(--specified-width) * 1%);
+	--specified-height-px: calc(var(--specified-height) * 1px);
+	
+	--border-width-any: 5px;
+	
+	--scaleX: calc(var(--specified-width) / var(--intrinsic-width));
+	--scaleY: calc(var(--specified-height) / var(--intrinsic-height));
+	--scale: 1;
+}
+
+/*====================/
+  Structure
+/====================*/
 
 :host {
 	display: inline-block;
 	max-width: 100%;
 }
 
-/***************/
-/*** Wrapper ***/
-/***************/
-
-#wrapper {
-	/*box-sizing: content-box;*/
-	width: calc((var(--intrinsic-width) * 1px) + (var(--border-width-total) * 1px));
-	max-width: 100%;
-}
-.hasWidth {
-	max-width: calc(var(--specified-width) * 1px);
-}
-.hasWidthPercentage {
-	max-width: calc(var(--specified-width) * 1%);
-}
-.hasHeight {
-	height: calc(var(--specified-height) * 1px);
-}
-
-/*************/
-/*** Frame ***/
-/*************/
-
 #frame {
-	box-sizing: border-box;
 	container-type: inline-size;
 	overflow: hidden;
+	box-sizing: content-box;
+	width: var(--intrinsic-width-px);
+	max-width: calc(100% - var(--border-width-any) - var(--border-width-any));
 }
+#frame.hasWidth {
+	width: var(--specified-width-px);
+}
+
+#backing {
+	container-type: size;
+	height: var(--intrinsic-height-px);
+}
+/*#backing:has(img.svg){
+	height: calc(100cqw / var(--intrinsic-aspectratio)) !important;
+}*/
+#frame.error #backing {
+	height: var(--intrinsic-height-px);
+}
+
+img {
+	box-sizing: content-box;
+	display: inline-block;
+	position: relative;
+	box-sizing: content-box;
+	
+	transform: translate(-50%, -50%) scale(var(--scale)) translate(50%, 50%) translateX(var(--translateX)) translateY(var(--translateY));
+	
+	/* For alt text of broken images. */
+	white-space: nowrap;
+}
+#frame.error img {
+	transform: none;
+	width: auto;
+	max-width: none;
+	height: auto;
+	max-height: none;
+	left: 0;
+	top: 0;
+}
+
+
+/*====================/
+  Fit: None
+/====================*/
+
+ :host([fit=none]) #backing {
+	
+ }
+ :host([fit=none]) .hasWidth #backing {
+	width: min(100cqw, var(--specified-width-px));
+	max-height: var(--intrinsic-height-px);
+ }
+ 
+ 
+ :host([fit=none]) img.svg {
+	width: var(--intrinsic-width-px);
+ }
+
+
+/*====================/
+  Fit: Cover
+/====================*/
+
+:host([fit=cover]) #backing {
+	
+}
+:host([fit=cover]) .hasWidth #backing {
+	max-width: var(--specified-width-px);
+	height: min(max(var(--intrinsic-height-px), var(--specified-width-px) * var(--intrinsic-aspectratio)), var(--specified-height-px));
+}
+
+
+:host([fit=cover]) img.raster {
+	--scale: max(var(--scaleX), var(--scaleY));
+}
+:host([fit=cover]) img.svg {
+	/*--scale: max(1, var(--intrinsic-aspectratio) / var(--specified-aspectratio));*/
+	min-width: 100cqw;
+	min-height: 100cqh;
+}
+
+
+/*====================/
+  Fit: Fill
+/====================*/
+
+:host([fit=fill]) #backing {
+	
+}
+:host([fit=fill]) .hasWidth #backing {
+	max-width: var(--specified-width-px);
+	height: var(--intrinsic-height-px);
+}
+
+
+:host([fit=fill]) img.raster {
+	width: 100%;
+	height: 100%;
+}
+:host([fit=fill]) img.svg {
+	/*--scaleX: 1;
+	--scaleY: calc(var(--intrinsic-aspectratio) / var(--specified-aspectratio));
+	transform: translate(-50%, -50%) scale(var(--scaleX), var(--scaleY)) translate(50%, 50%) translateX(var(--translateX)) translateY(var(--translateY));*/
+	/*--scaleX: calc(var(--intrinsic-width) * var(--specified-aspectratio));
+	--scaleY: calc(var(--intrinsic-height) * var(--specified-aspectratio));*/
+	width: 100%;
+	height: 100%;
+}
+
+
+/*====================/
+  Fit: Contain
+/====================*/
+
+:host([fit=contain]) #backing {
+	
+}
+:host([fit=contain]) .hasWidth #backing {
+	max-width: var(--specified-width-px);
+	height: calc(100cqw / var(--specified-aspectratio));
+}
+
+
+:host([fit=contain]) img.raster {
+	max-width: 100cqw;
+	max-height: 100cqh;
+	--scale: max(1, min(var(--scaleX), var(--scaleY)));
+}
+
+
+/*====================/
+  Fit: Scale Down
+/====================*/
+
+:host([fit=scale-down]) #backing {
+	
+}
+:host([fit=scale-down]) .hasWidth #backing {
+	max-width: var(--specified-width-px);
+	height: min(var(--intrinsic-height-px), var(--specified-width-px) / var(--intrinsic-aspectratio));
+}
+
+
+:host([fit=scale-down]) img.raster {
+	max-width: 100cqw;
+	max-height: 100cqh;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*.hasWidth {
+	max-width: var(--specified-width-px);
+}
+.hasWidthPercentage {
+	max-width: var(--specified-width-percent);
+}
+.hasHeight {
+	height: var(--specified-height-px);
+}*/
+
 
 /***************/
 /*** Backing ***/
 /***************/
 
-#backing {
-	container-type: size;
-	
-	height: calc(var(--intrinsic-height) * 1px);
-}
-#backing:has(img.svg){
-	height: calc((100cqw - var(--border-width-total) * 1px) / var(--intrinsic-aspectratio)) !important;
-}
-
-:host([fit=none]) #backing {
-	
-}
-:host([fit=cover]) #backing {
-	
-}
-:host([fit=fill]) #backing {
-	
-}
-:host([fit=contain]) #backing {
-	
-}
-:host([fit=scale-down]) #backing {
-	
-}
-
-:host([fit=none]) .hasWidth #backing {
-	max-width: calc(var(--specified-width) * 1px);
-	height: calc(var(--intrinsic-height) * 1px);
-}
-:host([fit=cover]) .hasWidth #backing {
-	max-width: calc(var(--specified-width) * 1px);
-	height: min(max(var(--intrinsic-height) * 1px, var(--specified-width) * 1px * var(--intrinsic-aspectratio)), var(--specified-height) * 1px);
-}
-:host([fit=fill]) .hasWidth #backing {
-	max-width: calc(var(--specified-width) * 1px);
-	height: calc(var(--specified-width) * 1px / var(--intrinsic-aspectratio));
-}
-:host([fit=contain]) .hasWidth #backing {
-	max-width: calc(var(--specified-width) * 1px);
-	height: calc((100cqw - var(--border-width-total) * 1px) / var(--specified-aspectratio));
-}
-:host([fit=scale-down]) .hasWidth #backing {
-	max-width: calc(var(--specified-width) * 1px);
-	height: min(var(--intrinsic-height) * 1px, var(--specified-width) * 1px / var(--intrinsic-aspectratio));
-}
 
 .hasWidthPercentage #backing {
-	/*max-width: calc((var(--specified-width) + var(--border-width-total)) * 1%);*/
-	max-width: calc(var(--specified-width) * 1%);
+	/*max-width: calc((var(--specified-width) + 2 * var(--border-width-any)) * 1%);*/
+	max-width: var(--specified-width-percent);
 }
 .hasHeight #backing {
 	/*height: calc((var(--specified-height) + var(--border-height-total)) * 1px);*/
-	height: calc(var(--specified-height) * 1px);
-	height: calc((100cqw - var(--border-width-total) * 1px) / var(--intrinsic-aspectratio));
+	height: var(--specified-height-px);
+	height: calc((100cqw - 2 * var(--border-width-any)) / var(--intrinsic-aspectratio));
 }
 
 /*************/
 /*** Image ***/
 /*************/
-
-img {
-	display: inline-block;
-	position: relative;
-	box-sizing: content-box;
-	white-space: nowrap;
-	
-	--scaleX: calc(var(--specified-width) / var(--intrinsic-width));
-	--scaleY: calc(var(--specified-height) / var(--intrinsic-height));
-	--scale: 1;
-	
-	transform: translate(-50%, -50%) scale(var(--scale)) translate(50%, 50%) translateX(var(--translateX)) translateY(var(--translateY));
-}
 
 .hasWidth img {
 	--scaleX: calc(var(--specified-width) / var(--intrinsic-width));
@@ -155,47 +277,6 @@ img,
 	--translateY: 0%;
 	top: 0cqh;
 }
-
-/***********/
-/*** Fit ***/
-/***********/
-
-/*** Fit: Cover ***/
-
-:host([fit=cover]) img.raster {
-	--scale: max(var(--scaleX), var(--scaleY));
-}
-:host([fit=cover]) img.svg {
-	--scale: max(1, var(--intrinsic-aspectratio) / var(--specified-aspectratio));
-}
-
-/*** Fit: Fill ***/
-
-:host([fit=fill]) img.raster {
-	width: min(100%, var(--specified-width) * 1px);
-	height: min(100%, var(--specified-height) * 1px);
-}
-:host([fit=fill]) img.svg {
-	--scaleX: 1;
-	--scaleY: calc(var(--intrinsic-aspectratio) / var(--specified-aspectratio));
-	transform: translate(-50%, -50%) scale(var(--scaleX), var(--scaleY)) translate(50%, 50%) translateX(var(--translateX)) translateY(var(--translateY));
-}
-
-/*** Fit: Contain ***/
-
-:host([fit=contain]) img.raster {
-	width: min(100cqw, var(--intrinsic-width) * 1px);
-	/*--scaleX: max(1, var(--specified-width) / var(--intrinsic-width));
-	--scaleY: max(1, var(--specified-height) / var(--intrinsic-height));
-	--scale: min(var(--scaleX), var(--scaleY));*/
-}
-
-/*** Fit: Scale Down ***/
-
-:host([fit=scale-down]) img.raster {
-	--scale: min(1, var(--scaleX), var(--scaleY));
-}
-
 
 
 /*******************/

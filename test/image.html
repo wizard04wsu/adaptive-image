@@ -40,7 +40,7 @@
 	
 	<main id="images">
 		
-		<div id="auto-auto-center-middle" class="active">
+		<div id="auto-auto-center-middle" class="">
 			<div id="none-auto-auto-center-middle">
 				<adaptive-image fit="none" width="" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
 				<adaptive-image fit="none" width="" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
@@ -72,7 +72,7 @@
 				<adaptive-image fit="scale-down" width="" height="" align="center middle" src="dne.jpg" alt="image does not exist"></adaptive-image>
 			</div>
 		</div>
-		<div id="200-auto" class="">
+		<div id="200-auto" class="active">
 			<div id="none-auto-auto-center-middle">
 				<adaptive-image fit="none" width="200" height="" align="center middle" src="dahlia with background.png" alt="small PNG"></adaptive-image>
 				<adaptive-image fit="none" width="200" height="" align="center middle" src="african-daisy.jpg" alt="large JPG"></adaptive-image>
@@ -115,11 +115,9 @@
 
 	<template id="adaptive-image">
 		<link rel="stylesheet" href="../image.css">
-		<div id="wrapper">
-			<div id="frame" part="frame">
-				<div id="backing">
-					<img src="" alt="">
-				</div>
+		<div id="frame" part="frame">
+			<div id="backing">
+				<img src="" alt="">
 			</div>
 		</div>
 	</template>

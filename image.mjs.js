@@ -1,6 +1,9 @@
+const DEFAULT_FIT = "cover";
+
 const SVG_DEFAULT_WIDTH = 300;
 const SVG_DEFAULT_HEIGHT = 150;
 const SVG_MIME_TYPE = 'image/svg+xml';
+const FITS = ['none', 'cover', 'fill', 'contain', 'scale-down'];
 
 /**
  * Custom element to display an image within a bounding box (like a photo in a picture frame),
@@ -18,7 +21,6 @@ class AdaptiveImage extends HTMLElement {
 		specified: {},
 	};
 	
-	#wrapper;
 	#frame;
 	#backing;
 	#img;
@@ -34,16 +36,18 @@ class AdaptiveImage extends HTMLElement {
 		const shadowRoot = this.attachShadow({mode: 'open'});
 		shadowRoot.appendChild(templateContent.cloneNode(true));
 		
-		this.#wrapper = shadowRoot.querySelector('#wrapper');
 		this.#frame = shadowRoot.querySelector('#frame');
 		this.#backing = shadowRoot.querySelector('#backing');
 		this.#img = shadowRoot.querySelector('img');
 		
+		if(!FITS.includes(this.getAttribute('fit'))){
+			this.setAttribute('fit', DEFAULT_FIT);
+		}
+		
 		this.#img.addEventListener('load', ()=>{
 			// The image has loaded.
 			
-			// Show the component if it was hidden.
-			this.style.display = '';
+			this.#frame.classList.remove('error');
 			
 			getImageProperties(this.#img)
 				.then((properties)=>{
@@ -66,19 +70,11 @@ class AdaptiveImage extends HTMLElement {
 		this.#img.addEventListener('error', ()=>{
 			// There was an error loading the image.
 			
-			if(!this.getAttribute('alt')){
-				// There is no alt text for the image.
-				
-				// Hide the component.
-				this.style.display = 'none';
-				return;
-			}
+			this.#frame.classList.add('error');
 			
 			this.#img.alt = this.getAttribute('alt') || '';
 			
-			this.#img.style.width = this.#img.style.height = 'auto';
 			const rect = this.#img.getBoundingClientRect();
-			this.#img.style.width = this.#img.style.height = '';
 			
 			this.#properties.intrinsic.width = rect.width;
 			this.#properties.intrinsic.height = rect.height;
@@ -89,8 +85,6 @@ class AdaptiveImage extends HTMLElement {
 			
 			if(!this.getAttribute('width')) this.#updateWidth(rect.width);
 			if(!this.getAttribute('height')) this.#updateHeight(rect.height);
-			
-			this.setAttribute('align', 'top left');
 			
 			this.#refreshImage();
 		});
@@ -164,13 +158,9 @@ class AdaptiveImage extends HTMLElement {
 		else if(!specifiedWidth){
 			calculatedWidth = this.#properties.intrinsic.width;
 		}
-		this.#wrapper.style.setProperty('--specified-width', calculatedWidth);
-		this.#wrapper.style.setProperty('--specified-aspectratio', calculatedAspectRatio);
+		this.#frame.style.setProperty('--specified-width', calculatedWidth);
+		this.#frame.style.setProperty('--specified-aspectratio', calculatedAspectRatio);
 		this.#properties.specified.aspectRatio = calculatedAspectRatio;
-		
-		const frameComputedStyle = window.getComputedStyle(this.#frame);
-		const borderWidthTotal = parseFloat(frameComputedStyle.borderLeftWidth) + parseFloat(frameComputedStyle.borderRightWidth);
-		this.#wrapper.style.setProperty('--border-width-total', borderWidthTotal);
 	}
 	
 	#updateHeight(specifiedHeight){
@@ -186,26 +176,22 @@ class AdaptiveImage extends HTMLElement {
 		else if(!specifiedHeight){
 			calculatedHeight = this.#properties.intrinsic.height;
 		}
-		this.#wrapper.style.setProperty('--specified-height', calculatedHeight);
-		this.#wrapper.style.setProperty('--specified-aspectratio', calculatedAspectRatio);
+		this.#frame.style.setProperty('--specified-height', calculatedHeight);
+		this.#frame.style.setProperty('--specified-aspectratio', calculatedAspectRatio);
 		this.#properties.specified.aspectRatio = calculatedAspectRatio;
-		
-		const frameComputedStyle = window.getComputedStyle(this.#frame);
-		const borderHeightTotal = parseFloat(frameComputedStyle.borderTopWidth) + parseFloat(frameComputedStyle.borderBottomWidth);
-		this.#wrapper.style.setProperty('--border-height-total', borderHeightTotal);
 	}
 	
 	#refreshImage(){
 		
 		// Toggle dimension classes.
-		this.#wrapper.classList.toggle('hasWidth', !!this.#properties.specified.width);
-		this.#wrapper.classList.toggle('hasWidthPercentage', !!this.#properties.specified.widthIsPercentage);
-		this.#wrapper.classList.toggle('hasHeight', !!this.#properties.specified.height);
+		this.#frame.classList.toggle('hasWidth', !!this.#properties.specified.width);
+		this.#frame.classList.toggle('hasWidthPercentage', !!this.#properties.specified.widthIsPercentage);
+		this.#frame.classList.toggle('hasHeight', !!this.#properties.specified.height);
 		
 		// Set CSS variables.
-		this.#wrapper.style.setProperty('--intrinsic-width', this.#properties.intrinsic.width);
-		this.#wrapper.style.setProperty('--intrinsic-height', this.#properties.intrinsic.height);
-		this.#wrapper.style.setProperty('--intrinsic-aspectratio', this.#properties.intrinsic.aspectRatio);
+		this.#frame.style.setProperty('--intrinsic-width', this.#properties.intrinsic.width);
+		this.#frame.style.setProperty('--intrinsic-height', this.#properties.intrinsic.height);
+		this.#frame.style.setProperty('--intrinsic-aspectratio', this.#properties.intrinsic.aspectRatio);
 		
 		// Update img element attributes.
 		this.#img.classList.toggle('svg', this.#properties.imageType === 'svg');
