@@ -14,7 +14,7 @@ body {
 
 #variables {
 	padding: 10px 10px 15px;
-	/*position: sticky;*/
+	position: sticky;
 	top: 0;
 	z-index: 5;
 	border-bottom: 2px ridge rgb(192, 192, 192);
@@ -39,11 +39,10 @@ fieldset > div:last-child {
 	margin-bottom: 0;
 }
 #fs-fit {
-	display: block;
+	display: inline-block;
 	margin-bottom: 10px;
 }
 #fs-fit label {
-	display: inline-block;
 	white-space: nowrap;
 	margin-right: 5px;
 }
@@ -68,9 +67,12 @@ fieldset > div:last-child {
 	justify-content: stretch;
 }
 #columns > div:first-child > div {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
 	padding: 10px;
 	font-weight: bold;
-	text-align: center;
 	font-size: 2em;
 	background: #0008 !important;
 }

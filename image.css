@@ -47,6 +47,7 @@
 
 #backing {
 	container-type: size;
+	position: relative; /*for the test page*/
 	width: min(100cqw, var(--intrinsic-width-px));
 	height: min(100cqh, var(--intrinsic-height-px));
 }
@@ -59,14 +60,15 @@
 .hasHeight #backing {
 	height: min(100cqh, var(--specified-height-px));
 }
-#frame.error #backing {
+/*#frame.error #backing {
 	height: var(--intrinsic-height-px);
-}
+}*/
 
 img {
 	box-sizing: content-box;
 	display: inline-block;
 	position: relative;
+	position: absolute; /*for the test page*/
 	box-sizing: content-box;
 	
 	transform: translate(-50%, -50%) scale(var(--scale)) translate(50%, 50%) translateX(var(--translateX)) translateY(var(--translateY));
@@ -170,24 +172,24 @@ img {
 
 .hasWidthPercentage #backing {
 	/*max-width: calc((var(--specified-width) + 2 * var(--border-width-any)) * 1%);*/
-	max-width: var(--specified-width-percent);
+/*	max-width: var(--specified-width-percent);*/
 }
 .hasHeight #backing {
 	/*height: calc((var(--specified-height) + var(--border-height-total)) * 1px);*/
-	height: var(--specified-height-px);
-	height: calc((100cqw - 2 * var(--border-width-any)) / var(--intrinsic-aspectratio));
+/*	height: var(--specified-height-px);
+	height: calc((100cqw - 2 * var(--border-width-any)) / var(--intrinsic-aspectratio));*/
 }
 
 /*************/
 /*** Image ***/
 /*************/
 
-.hasWidth img {
+/*.hasWidth img {
 	--scaleX: calc(var(--specified-width) / var(--intrinsic-width));
 }
 .hasHeight img {
 	--scaleY: calc(var(--specified-height) / var(--intrinsic-height));
-}
+}*/
 
 /*****************/
 /*** Alignment ***/
