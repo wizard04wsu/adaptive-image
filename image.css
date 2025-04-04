@@ -47,7 +47,17 @@
 
 #backing {
 	container-type: size;
-	height: var(--intrinsic-height-px);
+	width: min(100cqw, var(--intrinsic-width-px));
+	height: min(100cqh, var(--intrinsic-height-px));
+}
+.hasWidth #backing {
+	width: min(100cqw, var(--specified-width-px));
+}
+.hasWidthPercentage #backing {
+	width: min(100cqw, var(--specified-width-percent));
+}
+.hasHeight #backing {
+	height: min(100cqh, var(--specified-height-px));
 }
 #frame.error #backing {
 	height: var(--intrinsic-height-px);
@@ -79,38 +89,16 @@ img {
   Fit: None
 /====================*/
 
- :host([fit=none]) #backing {
-	
- }
- :host([fit=none]) .hasWidth #backing {
-	width: min(100cqw, var(--specified-width-px));
-	max-height: var(--intrinsic-height-px);
- }
- 
- 
- :host([fit=none]) img.svg {
+:host([fit=none]) img {
 	width: var(--intrinsic-width-px);
- }
+}
 
 
 /*====================/
   Fit: Cover
 /====================*/
 
-:host([fit=cover]) #backing {
-	
-}
-:host([fit=cover]) .hasWidth #backing {
-	max-width: var(--specified-width-px);
-	height: min(max(var(--intrinsic-height-px), var(--specified-width-px) * var(--intrinsic-aspectratio)), var(--specified-height-px));
-}
-
-
-:host([fit=cover]) img.raster {
-	--scale: max(var(--scaleX), var(--scaleY));
-}
-:host([fit=cover]) img.svg {
-	/*--scale: max(1, var(--intrinsic-aspectratio) / var(--specified-aspectratio));*/
+:host([fit=cover]) img {
 	min-width: 100cqw;
 	min-height: 100cqh;
 }
@@ -120,25 +108,7 @@ img {
   Fit: Fill
 /====================*/
 
-:host([fit=fill]) #backing {
-	
-}
-:host([fit=fill]) .hasWidth #backing {
-	max-width: var(--specified-width-px);
-	height: var(--intrinsic-height-px);
-}
-
-
-:host([fit=fill]) img.raster {
-	width: 100%;
-	height: 100%;
-}
-:host([fit=fill]) img.svg {
-	/*--scaleX: 1;
-	--scaleY: calc(var(--intrinsic-aspectratio) / var(--specified-aspectratio));
-	transform: translate(-50%, -50%) scale(var(--scaleX), var(--scaleY)) translate(50%, 50%) translateX(var(--translateX)) translateY(var(--translateY));*/
-	/*--scaleX: calc(var(--intrinsic-width) * var(--specified-aspectratio));
-	--scaleY: calc(var(--intrinsic-height) * var(--specified-aspectratio));*/
+:host([fit=fill]) img {
 	width: 100%;
 	height: 100%;
 }
@@ -148,19 +118,8 @@ img {
   Fit: Contain
 /====================*/
 
-:host([fit=contain]) #backing {
-	
-}
-:host([fit=contain]) .hasWidth #backing {
-	max-width: var(--specified-width-px);
-	height: calc(100cqw / var(--specified-aspectratio));
-}
-
-
-:host([fit=contain]) img.raster {
-	max-width: 100cqw;
-	max-height: 100cqh;
-	--scale: max(1, min(var(--scaleX), var(--scaleY)));
+:host([fit=contain]) img {
+	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio));
 }
 
 
@@ -168,18 +127,9 @@ img {
   Fit: Scale Down
 /====================*/
 
-:host([fit=scale-down]) #backing {
-	
-}
-:host([fit=scale-down]) .hasWidth #backing {
-	max-width: var(--specified-width-px);
-	height: min(var(--intrinsic-height-px), var(--specified-width-px) / var(--intrinsic-aspectratio));
-}
-
-
-:host([fit=scale-down]) img.raster {
-	max-width: 100cqw;
-	max-height: 100cqh;
+:host([fit=scale-down]) img {
+	max-width: min(100cqw, var(--intrinsic-width-px));
+	max-height: min(100cqh, var(--intrinsic-height-px));
 }
 
 

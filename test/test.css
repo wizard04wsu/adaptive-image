@@ -1,0 +1,165 @@
+body {
+	--borderRadius: 45px;
+	--overflowPadding: 30px;
+	
+	margin: 0;
+	padding: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	background-image: 
+		linear-gradient(0deg, #0004 0%, #0004 100%),
+		linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
+	background-size: 28.28px 28.28px;
+	background-attachment: fixed;
+}
+
+#variables {
+	padding: 10px 10px 15px;
+	/*position: sticky;*/
+	top: 0;
+	z-index: 5;
+	border-bottom: 2px ridge rgb(192, 192, 192);
+	background: #E6DDFF;
+}
+input[type="number"] {
+	width: 3rem;
+}
+.fieldset-grid {
+	display: grid;
+	grid-template-columns: auto auto auto 1fr;
+	gap: 10px;
+}
+fieldset {
+	padding: 0.75em 1.5em 1em 1em;
+	display: inline-block;
+}
+fieldset > div {
+	margin-bottom: 0.5em;
+}
+fieldset > div:last-child {
+	margin-bottom: 0;
+}
+#fs-fit {
+	display: block;
+	margin-bottom: 10px;
+}
+#fs-fit label {
+	display: inline-block;
+	white-space: nowrap;
+	margin-right: 5px;
+}
+#fs-fit label:last-child {
+	margin-right: 0;
+}
+
+
+
+
+#columns {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 10px;
+	margin: 20px 10px 10px;
+	color: white;
+}
+#columns > div {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+	gap: 10px;
+	justify-content: stretch;
+}
+#columns > div:first-child > div {
+	padding: 10px;
+	font-weight: bold;
+	text-align: center;
+	font-size: 2em;
+	background: #0008 !important;
+}
+#columns > div:nth-child(n+2) > div {
+	container-type: inline-size;
+	position: relative;
+	overflow: hidden;
+	
+	background-image: 
+		linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
+	background-size: 28.28px 28.28px;
+	background-attachment: fixed;
+}
+
+adaptive-image {
+	max-width: 100cqw;
+}
+adaptive-image:first-child {
+	position: relative;
+	margin: var(--overflowPadding);
+	width: calc(100cqw - 2 * var(--overflowPadding));
+}
+#columns > div:last-child adaptive-image:first-child {
+	visibility: hidden;
+}
+#columns > div:nth-child(n+2) > div::after {
+	content: '';
+	position: absolute;
+	z-index: 1;
+	inset: 0;
+	background: #0006;
+	pointer-events: none;
+}
+adaptive-image:last-child {
+	position: absolute;
+	z-index: 2;
+	inset: var(--overflowPadding);
+}
+
+adaptive-image::part(frame) {
+	border: 5px solid greenyellow;
+	border-radius: 20px;
+	background-image: linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
+	background-size: 28.28px 28.28px;
+	background-attachment: fixed;
+	color: black;
+	margin: auto;
+}
+#columns > div:last-child adaptive-image:last-child::part(frame) {
+	color: white;
+}
+
+body:has(#showClipped:checked) adaptive-image:first-child::part(frame) {
+	overflow: visible;
+}
+
+body:has(#fit-none:not(:checked)) #columns > div > div:nth-child(1) {
+	display: none;
+}
+body:has(#fit-cover:not(:checked)) #columns > div > div:nth-child(2) {
+	display: none;
+}
+body:has(#fit-fill:not(:checked)) #columns > div > div:nth-child(3) {
+	display: none;
+}
+body:has(#fit-contain:not(:checked)) #columns > div > div:nth-child(4) {
+	display: none;
+}
+body:has(#fit-scale-down:not(:checked)) #columns > div > div:nth-child(5) {
+	display: none;
+}
+
+body:has(#square:checked) adaptive-image::part(frame) {
+	border-radius: 0;
+}
+body:has(#curved:checked) adaptive-image::part(frame) {
+	border-radius: var(--borderRadius);
+}
+body:has(#ellipse:checked) adaptive-image::part(frame) {
+	border-radius: 50%;
+}
+
+footer {
+	margin-top: 20px;
+	font-size: 80%;
+	background: #E6DDFF;
+	color: black;
+	padding: 10px;
+}
+footer p {
+	margin: 0;
+}

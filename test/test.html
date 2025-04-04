@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	
+	<meta charset="UTF-8">
+	
+	<title>Adaptive Image</title>
+	
+	<script type="module" src="../image.mjs.js"></script>
+	<template id="adaptive-image">
+		<link rel="stylesheet" href="../image.css">
+		<div id="frame" part="frame"><div id="backing"><img src="" alt=""></div></div>
+	</template>
+	
+	<link rel="stylesheet" href="test.css">
+	<script src="test.js"></script>
+	
+</head>
+<body>
+	
+	<section id="variables">
+		<div class="fieldset-grid">
+			<fieldset><legend>Corners</legend>
+				<div><label><input type="radio" name="shape" value="square" id="square"> Square</label></div>
+				<div><label><input type="radio" name="shape" value="curved" id="curved" checked> Curved</label></div>
+				<div><label><input type="radio" name="shape" value="ellipse" id="ellipse"> Ellipse</label></div>
+			</fieldset>
+			<fieldset><legend>Dimensions</legend>
+				<div><label><input type="checkbox" id="width"> Width: </label><input type="range" min="1" max="400" step="1" value="200" id="widthSlider"></div>
+				<div><label><input type="checkbox" id="height"> Height: </label><input type="range" min="1" max="400" step="1" value="200" id="heightSlider"></div>
+			</fieldset>
+			<fieldset id="alignments"><legend>Alignment</legend>
+				<table>
+					<tr>
+						<td><input type="radio" name="alignment" value="top left" checked></td>
+						<td><input type="radio" name="alignment" value="top center"></td>
+						<td><input type="radio" name="alignment" value="top right"></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="alignment" value="middle left"></td>
+						<td><input type="radio" name="alignment" value="middle center"></td>
+						<td><input type="radio" name="alignment" value="middle right"></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="alignment" value="bottom left"></td>
+						<td><input type="radio" name="alignment" value="bottom center"></td>
+						<td><input type="radio" name="alignment" value="bottom right"></td>
+					</tr>
+				</table>
+			</fieldset>
+			<div>
+				<fieldset id="fs-fit"><legend>Fit</legend>
+					<label><input type="checkbox" id="fit-none" checked> None</label>
+					<label><input type="checkbox" id="fit-cover" checked> Cover</label>
+					<label><input type="checkbox" id="fit-fill" checked> Fill</label>
+					<label><input type="checkbox" id="fit-contain" checked> Contain</label>
+					<label><input type="checkbox" id="fit-scale-down" checked> Scale-Down</label>
+				</fieldset>
+				<label><input type="checkbox" id="showClipped"> Show Overflows</label>
+			</div>
+		</div>
+	</section>
+	
+	<section>
+		
+		<div id="columns">
+			<div>
+				<div>None</div><div>Cover</div><div>Fill</div><div>Contain</div><div>Scale-Down</div>
+			</div>
+			<div>
+				<div>
+					<adaptive-image fit="none" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="cover" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="fill" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="contain" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="scale-down" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+				</div>
+			</div>
+			<div>
+				<div>
+					<adaptive-image fit="none" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="cover" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="fill" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="contain" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="scale-down" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+				</div>
+			</div>
+			<div>
+				<div>
+					<adaptive-image fit="none" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="cover" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="fill" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="contain" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="scale-down" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+				</div>
+			</div>
+			<div>
+				<div>
+					<adaptive-image fit="none" width="" height="" align="" src="dne.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="cover" width="" height="" align="" src="dne.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="fill" width="" height="" align="" src="dne.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="contain" width="" height="" align="" src="dne.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="scale-down" width="" height="" align="" src="dne.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+				</div>
+			</div>
+		</div>
+		
+	</section>
+	
+	<footer>
+		<p>The small PNG image used is by gungyoga04 from <a href="https://www.flaticon.com/free-icon/dahlia_9825093">flaticon.com</a>.</p>
+		<p>The large JPG image used is by dimitrisvetsikas1969 from  <a href="https://pixabay.com/photos/african-daisy-osteospermum-garden-2110065/">pixabay.com</a>.</p>
+		<p>The SVG image used is by flatart from <a href="https://www.freepik.com/free-vector/blue-white-striped-dahlia-flower_342443975.htm">freepik.com</a>.</p>
+	</footer>
+	
+</body>
+</html>
