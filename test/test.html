@@ -27,8 +27,15 @@
 				<div><label><input type="checkbox" id="showBorder" checked> Show border</label></div>
 			</fieldset>
 			<fieldset><legend>Dimensions</legend>
-				<div><label><input type="checkbox" id="width"> Width: </label><input type="range" min="1" max="400" step="1" value="200" id="widthSlider"></div>
-				<div><label><input type="checkbox" id="height"> Height: </label><input type="range" min="1" max="400" step="1" value="200" id="heightSlider"></div>
+				<div>
+					<label><input type="checkbox" id="width"> Width: </label>
+					<input type="range" min="1" max="400" step="1" value="200" id="widthSlider">
+					<label><input type="checkbox" id="widthPercent">%</label>
+				</div>
+				<div>
+					<label><input type="checkbox" id="height"> Height: </label>
+					<input type="range" min="1" max="400" step="1" value="200" id="heightSlider">
+				</div>
 				<label><input type="checkbox" id="showClipped"> Show overflows</label>
 			</fieldset>
 			<fieldset id="alignments"><legend>Alignment</legend>

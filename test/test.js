@@ -2,53 +2,28 @@ document.addEventListener('DOMContentLoaded', ()=>{
 	
 	'use strict';
 	
-	const useWidth = document.querySelector('#width');
-	const useHeight = document.querySelector('#height');
-	const widthSlider = document.querySelector('#widthSlider');
-	const heightSlider = document.querySelector('#heightSlider');
-	const alignments = document.querySelector('#alignments');
-	const showBorder = document.querySelector('#showBorder');
+	const $ = (id)=>document.getElementById(id);
 	
-	useWidth.addEventListener('change', ()=>{
-		const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
-		for(const image of images){
-			image.setAttribute('width', useWidth.checked ? widthSlider.value : '');
-		}
-	});
-	widthSlider.addEventListener('input', ()=>{
-		const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
-		for(const image of images){
-			image.setAttribute('width', useWidth.checked ? widthSlider.value : '');
-		}
-	});
+	$('options').addEventListener('change', updateImageAttributes);
+	$('options').addEventListener('input', updateImageAttributes);
 	
-	useHeight.addEventListener('change', ()=>{
+	function updateImageAttributes(event){
+		
 		const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
 		for(const image of images){
-			image.setAttribute('height', useHeight.checked ? heightSlider.value : '');
-		}
-	});
-	heightSlider.addEventListener('input', ()=>{
-		const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
-		for(const image of images){
-			image.setAttribute('height', useHeight.checked ? heightSlider.value : '');
-		}
-	});
-	
-	alignments.addEventListener('change', (event)=>{
-		if(event.target.name === 'alignment'){
-			const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
-			for(const image of images){
+			
+			let width = $('widthSlider').value;
+			if($('widthPercent').checked) width = (width / 4) + '%';
+			image.setAttribute('width', $('width').checked ? width : '');
+			
+			let height = $('heightSlider').value;
+			image.setAttribute('height', $('height').checked ? height : '');
+			
+			if(event?.target.name === 'alignment'){
 				image.setAttribute('align', event.target.value);
 			}
+			
+			image.setAttribute('border-width', $('showBorder').checked ? '5' : '');
 		}
-	});
-	
-	showBorder.addEventListener('input', ()=>{
-		const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
-		for(const image of images){
-			image.setAttribute('border-width', showBorder.checked ? '5' : '');
-		}
-	});
-	
+	}
 });
