@@ -12,7 +12,7 @@ body {
 	background-attachment: fixed;
 }
 
-#variables {
+#options {
 	padding: 10px 10px 15px;
 	position: sticky;
 	top: 0;
@@ -20,16 +20,16 @@ body {
 	border-bottom: 2px ridge rgb(192, 192, 192);
 	background: #E6DDFF;
 }
-input[type="number"] {
-	width: 3rem;
-}
-.fieldset-grid {
+#options > div {
 	display: grid;
 	grid-template-columns: auto auto auto 1fr;
 	gap: 10px;
 }
+input[type="number"] {
+	width: 3rem;
+}
 fieldset {
-	padding: 0.75em 1.5em 1em 1em;
+	padding: 5px 10px 5px 5px;
 	display: inline-block;
 }
 fieldset > div {
@@ -113,7 +113,7 @@ adaptive-image:last-child {
 }
 
 adaptive-image::part(frame) {
-	border: 5px solid greenyellow;
+	border: 0 solid greenyellow;
 	border-radius: 20px;
 	background-image: linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
 	background-size: 28.28px 28.28px;
@@ -164,4 +164,14 @@ footer {
 }
 footer p {
 	margin: 0;
+}
+
+
+/*******************/
+/*** Test Images ***/
+/*******************/
+
+adaptive-image.svg-img::part(img) {
+	filter: hue-rotate(65deg);
+	background: conic-gradient(hwb(70 15% 30% / 1), hwb(150 15% 45% / 1));
 }

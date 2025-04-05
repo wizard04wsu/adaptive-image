@@ -18,11 +18,8 @@
 	--specified-width-percent: calc(var(--specified-width) * 1%);
 	--specified-height-px: calc(var(--specified-height) * 1px);
 	
-	--border-width-any: 5px;
-	
-	--scaleX: calc(var(--specified-width) / var(--intrinsic-width));
-	--scaleY: calc(var(--specified-height) / var(--intrinsic-height));
-	--scale: 1;
+	--border-width: 0;
+	--border-width-px: calc(var(--border-width) * 1px);
 }
 
 /*====================/
@@ -39,7 +36,9 @@
 	overflow: hidden;
 	box-sizing: content-box;
 	width: var(--intrinsic-width-px);
-	max-width: calc(100% - var(--border-width-any) - var(--border-width-any));
+	max-width: 100%;
+	max-width: calc(100% - 2 * var(--border-width-px));
+	border-width: var(--border-width-px) !important;
 }
 #frame.hasWidth {
 	width: var(--specified-width-px);
@@ -71,19 +70,21 @@ img {
 	position: absolute; /*for the test page*/
 	box-sizing: content-box;
 	
-	transform: translate(-50%, -50%) scale(var(--scale)) translate(50%, 50%) translateX(var(--translateX)) translateY(var(--translateY));
+	transform: translateX(var(--translateX)) translateY(var(--translateY));
 	
 	/* For alt text of broken images. */
 	white-space: nowrap;
 }
 #frame.error img {
-	transform: none;
 	width: auto;
+	min-width: auto;
 	max-width: none;
 	height: auto;
+	min-height: auto;
 	max-height: none;
 	left: 0;
 	top: 0;
+	transform: translateY(50cqh) translateY(-50%);
 }
 
 
@@ -130,72 +131,15 @@ img {
 /====================*/
 
 :host([fit=scale-down]) img {
-	max-width: min(100cqw, var(--intrinsic-width-px));
-	max-height: min(100cqh, var(--intrinsic-height-px));
+	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio), var(--intrinsic-width-px));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*.hasWidth {
-	max-width: var(--specified-width-px);
-}
-.hasWidthPercentage {
-	max-width: var(--specified-width-percent);
-}
-.hasHeight {
-	height: var(--specified-height-px);
-}*/
-
-
-/***************/
-/*** Backing ***/
-/***************/
-
-
-.hasWidthPercentage #backing {
-	/*max-width: calc((var(--specified-width) + 2 * var(--border-width-any)) * 1%);*/
-/*	max-width: var(--specified-width-percent);*/
-}
-.hasHeight #backing {
-	/*height: calc((var(--specified-height) + var(--border-height-total)) * 1px);*/
-/*	height: var(--specified-height-px);
-	height: calc((100cqw - 2 * var(--border-width-any)) / var(--intrinsic-aspectratio));*/
-}
-
-/*************/
-/*** Image ***/
-/*************/
-
-/*.hasWidth img {
-	--scaleX: calc(var(--specified-width) / var(--intrinsic-width));
-}
-.hasHeight img {
-	--scaleY: calc(var(--specified-height) / var(--intrinsic-height));
-}*/
 
 /*****************/
 /*** Alignment ***/
 /*****************/
 
-/*** Alignment: Horizontal ***/
+/*** Horizontal ***/
 
 :host([align~=right]) img {
 	--translateX: -100%;
@@ -211,7 +155,7 @@ img,
 	left: 0cqw;
 }
 
-/*** Alignment: Vertical ***/
+/*** Vertical ***/
 
 :host([align~=bottom]) img {
 	--translateY: -100%;
@@ -225,14 +169,4 @@ img,
 :host([align~=top]) img {
 	--translateY: 0%;
 	top: 0cqh;
-}
-
-
-/*******************/
-/*** Test Images ***/
-/*******************/
-
-:host(.svg-img) img {
-	filter: hue-rotate(65deg);
-	background: conic-gradient(hwb(70 15% 30% / 1), hwb(150 15% 45% / 1));
 }

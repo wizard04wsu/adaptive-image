@@ -14,7 +14,7 @@ const FITS = ['none', 'cover', 'fill', 'contain', 'scale-down'];
 class AdaptiveImage extends HTMLElement {
 	
 	// Observe changes to these custom attributes.
-	static observedAttributes = ['src', 'alt', 'width', 'height', 'fit', 'align'];
+	static observedAttributes = ['src', 'alt', 'width', 'height', 'fit', 'align', 'border-width'];
 	
 	#properties = {
 		intrinsic: {},
@@ -60,8 +60,7 @@ class AdaptiveImage extends HTMLElement {
 					this.#properties.imageType = properties.imageType || 'raster';
 					
 					const dims = this.#parseDimensions();
-					this.#updateWidth(dims.width, dims.widthIsPercentage);
-					this.#updateHeight(dims.height);
+					this.#updateWidth(dims.width, dims.widthIsPercentage, dims.borderWidth);
 					
 					this.#refreshImage();
 				});
@@ -93,7 +92,7 @@ class AdaptiveImage extends HTMLElement {
 			// The component has been resized.
 			
 			const dims = this.#parseDimensions();
-			this.#updateWidth(dims.width, dims.widthIsPercentage);
+			this.#updateWidth(dims.width, dims.widthIsPercentage, dims.borderWidth);
 			this.#updateHeight(dims.height);
 			
 			this.#refreshImage();
@@ -109,10 +108,10 @@ class AdaptiveImage extends HTMLElement {
 				
 				this.#img.src = newValue;
 			}
-			else if(name === 'width' || name === 'height'){
+			else if(name === 'width' || name === 'height' || name === 'border-width'){
 				
 				const dims = this.#parseDimensions();
-				this.#updateWidth(dims.width, dims.widthIsPercentage);
+				this.#updateWidth(dims.width, dims.widthIsPercentage, dims.borderWidth);
 				this.#updateHeight(dims.height);
 			
 				this.#refreshImage();
@@ -141,10 +140,12 @@ class AdaptiveImage extends HTMLElement {
 		const specifiedHeight = (heightStr || this.getAttribute('height') || '').trim();
 		ret.height = Number(specifiedHeight) || 0;
 		
+		ret.borderWidth = Number(this.getAttribute('border-width')) || 0;
+		
 		return ret;
 	}
 	
-	#updateWidth(specifiedWidth, isPercentage = false){
+	#updateWidth(specifiedWidth, isPercentage = false, borderWidth){
 		
 		this.#properties.specified.width = specifiedWidth;
 		this.#properties.specified.widthIsPercentage = specifiedWidth && isPercentage;
@@ -161,6 +162,10 @@ class AdaptiveImage extends HTMLElement {
 		this.#frame.style.setProperty('--specified-width', calculatedWidth);
 		this.#frame.style.setProperty('--specified-aspectratio', calculatedAspectRatio);
 		this.#properties.specified.aspectRatio = calculatedAspectRatio;
+		
+		if(borderWidth !== void 0){
+			this.#frame.style.setProperty('--border-width', borderWidth);
+		}
 	}
 	
 	#updateHeight(specifiedHeight){

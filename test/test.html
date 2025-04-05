@@ -10,7 +10,7 @@
 	<script type="module" src="../image.mjs.js"></script>
 	<template id="adaptive-image">
 		<link rel="stylesheet" href="../image.css">
-		<div id="frame" part="frame"><div id="backing"><img src="" alt=""></div></div>
+		<div id="frame" part="frame"><div id="backing"><img src="" alt="" part="img"></div></div>
 	</template>
 	
 	<link rel="stylesheet" href="test.css">
@@ -19,17 +19,17 @@
 </head>
 <body>
 	
-	<section id="variables">
-		<div class="fieldset-grid">
-			<fieldset><legend>Corners</legend>
+	<section id="options"><div>
+			<fieldset><legend>Outline</legend>
 				<div><label><input type="radio" name="shape" value="square" id="square"> Square</label></div>
 				<div><label><input type="radio" name="shape" value="curved" id="curved" checked> Curved</label></div>
 				<div><label><input type="radio" name="shape" value="ellipse" id="ellipse"> Ellipse</label></div>
+				<div><label><input type="checkbox" id="showBorder" checked> Show border</label></div>
 			</fieldset>
 			<fieldset><legend>Dimensions</legend>
 				<div><label><input type="checkbox" id="width"> Width: </label><input type="range" min="1" max="400" step="1" value="200" id="widthSlider"></div>
 				<div><label><input type="checkbox" id="height"> Height: </label><input type="range" min="1" max="400" step="1" value="200" id="heightSlider"></div>
-				<label><input type="checkbox" id="showClipped"> Show Overflows</label>
+				<label><input type="checkbox" id="showClipped"> Show overflows</label>
 			</fieldset>
 			<fieldset id="alignments"><legend>Alignment</legend>
 				<table>
@@ -56,11 +56,10 @@
 					<label><input type="checkbox" id="fit-cover" checked> Cover</label>
 					<label><input type="checkbox" id="fit-fill" checked> Fill</label>
 					<label><input type="checkbox" id="fit-contain" checked> Contain</label>
-					<label><input type="checkbox" id="fit-scale-down" checked> Scale-Down</label>
+					<label><input type="checkbox" id="fit-scale-down" checked> Scale-down</label>
 				</fieldset>
 			</div>
-		</div>
-	</section>
+	</div></section>
 	
 	<section>
 		
@@ -70,90 +69,90 @@
 			</div>
 			<div>
 				<div>
-					<adaptive-image fit="none" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
-					<adaptive-image fit="none" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" border-width="5" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" border-width="5" src="dahlia with background.png" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="cover" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
-					<adaptive-image fit="cover" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" border-width="5" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" border-width="5" src="dahlia with background.png" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="fill" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
-					<adaptive-image fit="fill" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" border-width="5" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" border-width="5" src="dahlia with background.png" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="contain" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
-					<adaptive-image fit="contain" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" border-width="5" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" border-width="5" src="dahlia with background.png" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="scale-down" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
-					<adaptive-image fit="scale-down" width="" height="" align="" src="dahlia with background.png" alt=""></adaptive-image>
-				</div>
-			</div>
-			<div>
-				<div>
-					<adaptive-image fit="none" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
-					<adaptive-image fit="none" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
-				</div>
-				<div>
-					<adaptive-image fit="cover" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
-					<adaptive-image fit="cover" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
-				</div>
-				<div>
-					<adaptive-image fit="fill" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
-					<adaptive-image fit="fill" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
-				</div>
-				<div>
-					<adaptive-image fit="contain" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
-					<adaptive-image fit="contain" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
-				</div>
-				<div>
-					<adaptive-image fit="scale-down" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
-					<adaptive-image fit="scale-down" width="" height="" align="" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" border-width="5" src="dahlia with background.png" alt=""></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" border-width="5" src="dahlia with background.png" alt=""></adaptive-image>
 				</div>
 			</div>
 			<div>
 				<div>
-					<adaptive-image fit="none" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
-					<adaptive-image fit="none" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" border-width="5" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" border-width="5" src="african-daisy.jpg" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="cover" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
-					<adaptive-image fit="cover" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" border-width="5" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" border-width="5" src="african-daisy.jpg" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="fill" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
-					<adaptive-image fit="fill" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" border-width="5" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" border-width="5" src="african-daisy.jpg" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="contain" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
-					<adaptive-image fit="contain" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" border-width="5" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" border-width="5" src="african-daisy.jpg" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="scale-down" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
-					<adaptive-image fit="scale-down" width="" height="" align="" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" border-width="5" src="african-daisy.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" border-width="5" src="african-daisy.jpg" alt=""></adaptive-image>
 				</div>
 			</div>
 			<div>
 				<div>
-					<adaptive-image fit="none" width="" height="" align="" src="dne.jpg" alt=""></adaptive-image>
-					<adaptive-image fit="none" width="" height="" align="" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" border-width="5" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" border-width="5" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="cover" width="" height="" align="" src="dne.jpg" alt=""></adaptive-image>
-					<adaptive-image fit="cover" width="" height="" align="" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" border-width="5" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" border-width="5" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="fill" width="" height="" align="" src="dne.jpg" alt=""></adaptive-image>
-					<adaptive-image fit="fill" width="" height="" align="" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" border-width="5" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" border-width="5" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="contain" width="" height="" align="" src="dne.jpg" alt=""></adaptive-image>
-					<adaptive-image fit="contain" width="" height="" align="" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" border-width="5" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" border-width="5" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
 				</div>
 				<div>
-					<adaptive-image fit="scale-down" width="" height="" align="" src="dne.jpg" alt=""></adaptive-image>
-					<adaptive-image fit="scale-down" width="" height="" align="" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" border-width="5" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" border-width="5" src="Blue and White Striped Dahlia Flower.svg" class="svg-img" alt=""></adaptive-image>
+				</div>
+			</div>
+			<div>
+				<div>
+					<adaptive-image fit="none" width="" height="" align="" border-width="5" src="dne.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="none" width="" height="" align="" border-width="5" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="cover" width="" height="" align="" border-width="5" src="dne.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="cover" width="" height="" align="" border-width="5" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="fill" width="" height="" align="" border-width="5" src="dne.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="fill" width="" height="" align="" border-width="5" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="contain" width="" height="" align="" border-width="5" src="dne.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="contain" width="" height="" align="" border-width="5" src="dne.jpg" alt="this image does not exist"></adaptive-image>
+				</div>
+				<div>
+					<adaptive-image fit="scale-down" width="" height="" align="" border-width="5" src="dne.jpg" alt=""></adaptive-image>
+					<adaptive-image fit="scale-down" width="" height="" align="" border-width="5" src="dne.jpg" alt="this image does not exist"></adaptive-image>
 				</div>
 			</div>
 		</div>

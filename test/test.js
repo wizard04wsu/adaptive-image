@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 	const widthSlider = document.querySelector('#widthSlider');
 	const heightSlider = document.querySelector('#heightSlider');
 	const alignments = document.querySelector('#alignments');
+	const showBorder = document.querySelector('#showBorder');
 	
 	useWidth.addEventListener('change', ()=>{
 		const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
@@ -40,6 +41,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
 			for(const image of images){
 				image.setAttribute('align', event.target.value);
 			}
+		}
+	});
+	
+	showBorder.addEventListener('input', ()=>{
+		const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
+		for(const image of images){
+			image.setAttribute('border-width', showBorder.checked ? '5' : '');
 		}
 	});
 	
