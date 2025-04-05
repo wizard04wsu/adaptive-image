@@ -18,12 +18,11 @@ The `<adaptive-image>` element supports these attributes:
 | src			| Path to the image file.	|
 | alt			| Alternate text for the image.	|
 | fit			| The method used to scale the image to fit inside the frame. Accepted values are the same as for the [CSS `object-fit` property](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit#values): `none`, `cover`, `fill`, `contain`, `scale-down`. Default is `cover`.	|
-| width			| Width of the image container. Can be a number of pixels (e.g., `50`) or a percentage (e.g., `50%`). Default is the image's intrinsic width.	|
-| height		| Height of the image container in pixels (e.g., `50`). Default is the image's intrinsic height.	|
+| width			| Inner width of the frame. Can be a number of pixels (e.g., `50`) or a percentage (e.g., `50%`). Default is the image's intrinsic width.	|
+| height		| Inner height of the frame in pixels (e.g., `50`). Default is the image's intrinsic height.	|
 | border-width	| Width of the frame in pixels. Default is `0`.	|
 | align			| Two space-separated values for how the image should be aligned inside the frame. `top`/`center`/`bottom` and `left`/`center`/`right`. Default is `center center` (or just `center`). 	|
 
 The `::part()` CSS pseudo-element can be used to style parts of the component.
-- `frame` - border and background (excluding the border width)
-- `mount` - just in case (e.g., to resolve issues with layout in the containing document)
+- `frame` - style the border and background (excluding the border width)
 - `img` - apply filters to the image

@@ -6,7 +6,7 @@ var S = (s, h, e) => h in s ? L(s, h, { enumerable: !0, configurable: !0, writab
 var R = (s, h, e) => S(s, typeof h != "symbol" ? h + "" : h, e), T = (s, h, e) => h.has(s) || A("Cannot " + e);
 var i = (s, h, e) => (T(s, h, "read from private field"), e ? e.call(s) : h.get(s)), u = (s, h, e) => h.has(s) ? A("Cannot add the same private member more than once") : h instanceof WeakSet ? h.add(s) : h.set(s, e), x = (s, h, e, a) => (T(s, h, "write to private field"), a ? a.call(s, e) : h.set(s, e), e), p = (s, h, e) => (T(s, h, "access private method"), e);
 const D = `<div id="frame" part="frame">\r
-	<div id="mount" part="mount">\r
+	<div id="mount">\r
 		<img src="" alt="" part="img">\r
 	</div>\r
 </div>\r
