@@ -46,20 +46,20 @@ class AdaptiveImage extends HTMLElement {
 		this.#img.addEventListener('load', ()=>{
 			// The image has loaded.
 			
+			// Remove the error class if it was added previously.
 			this.#frame.classList.remove('error');
 			
+			// Get the properties of the image file.
 			getImageProperties(this.#img)
 				.then((properties)=>{
 					
+					// Set the intrinsic dimensions, aspect ratio, and MIME type.
 					this.#properties.intrinsic.width = properties.width;
 					this.#properties.intrinsic.height = properties.height;
 					this.#properties.intrinsic.aspectRatio = properties.aspectRatio;
-					
 					this.#properties.mimeType = properties.mimeType || '';
 					
-					const dims = this.#parseDimensions();
-					this.#updateWidth(dims.width, dims.widthIsPercentage, dims.borderWidth);
-					
+					// Update the image component's attributes.
 					this.#refreshImage();
 				});
 		});
@@ -67,33 +67,27 @@ class AdaptiveImage extends HTMLElement {
 		this.#img.addEventListener('error', ()=>{
 			// There was an error loading the image.
 			
+			// Add the error class to the frame element.
 			this.#frame.classList.add('error');
 			
+			// Remove the MIME type if it was set previously.
+			this.#properties.mimeType = '';
+			
+			// Update the alt attribute of the image element.
 			this.#img.alt = this.getAttribute('alt') || '';
 			
+			// Set the dimensions for the broken image (icon and alt text).
 			const rect = this.#img.getBoundingClientRect();
-			
 			this.#properties.intrinsic.width = rect.width;
 			this.#properties.intrinsic.height = rect.height;
 			this.#properties.intrinsic.aspectRatio = (rect.width && rect.height) ? rect.width / rect.height : 1;
 			
-			this.#properties.mimeType = '';
-			
-			if(!this.getAttribute('width')) this.#updateWidth(rect.width);
-			if(!this.getAttribute('height')) this.#updateHeight(rect.height);
-			
-			this.#refreshImage();
+			// Update the image component's attributes, manually setting the width and height if necessary.
+			this.#refreshImage(!this.getAttribute('width') && rect.width, !this.getAttribute('height') && rect.height);
 		});
 		
-		this.addEventListener('resize', ()=>{
-			// The component has been resized.
-			
-			const dims = this.#parseDimensions();
-			this.#updateWidth(dims.width, dims.widthIsPercentage, dims.borderWidth);
-			this.#updateHeight(dims.height);
-			
-			this.#refreshImage();
-		});
+		// When the component is resized, update its attributes.
+		this.addEventListener('resize', this.#refreshImage);
 	}
 	
 	attributeChangedCallback(name, oldValue, newValue){
@@ -107,10 +101,7 @@ class AdaptiveImage extends HTMLElement {
 			}
 			else if(name === 'width' || name === 'height' || name === 'border-width'){
 				
-				const dims = this.#parseDimensions();
-				this.#updateWidth(dims.width, dims.widthIsPercentage, dims.borderWidth);
-				this.#updateHeight(dims.height);
-			
+				// Parse the dimensions and update the image properties.
 				this.#refreshImage();
 			}
 			else if(name === 'alt'){
@@ -183,7 +174,11 @@ class AdaptiveImage extends HTMLElement {
 		this.#properties.specified.aspectRatio = calculatedAspectRatio;
 	}
 	
-	#refreshImage(){
+	#refreshImage(width, height){
+		
+		const dims = this.#parseDimensions();
+		this.#updateWidth(width || dims.width, dims.widthIsPercentage, dims.borderWidth);
+		this.#updateHeight(height || dims.height);
 		
 		// Toggle dimension classes.
 		this.#frame.classList.toggle('hasWidth', !!this.#properties.specified.width);
