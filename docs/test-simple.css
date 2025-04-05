@@ -1,0 +1,129 @@
+body {
+	--borderRadius: 45px;
+	
+	margin: 0;
+	padding: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	background-image: 
+		linear-gradient(0deg, #0004 0%, #0004 100%),
+		linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
+	background-size: 28.28px 28.28px;
+	background-attachment: fixed;
+}
+
+#options {
+	padding: 10px 10px 15px;
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	border-bottom: 2px ridge rgb(192, 192, 192);
+	background: #E6DDFF;
+}
+#options > div {
+	display: grid;
+	grid-template-columns: auto auto auto auto 1fr;
+	gap: 10px;
+}
+input[type="number"] {
+	width: 3rem;
+}
+fieldset {
+	padding: 5px 10px 5px 5px;
+}
+fieldset > :not(legend) {
+	display: block;
+	margin-bottom: 0.5em;
+}
+fieldset > :last-child {
+	margin-bottom: 0;
+}
+fieldset div > :is(label, input) {
+	display: block;
+}
+
+
+
+
+#columns {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 10px;
+	margin: 20px 10px 10px;
+	color: white;
+}
+#columns > div {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+	gap: 10px;
+	justify-content: stretch;
+}
+#columns > div:first-child > div {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 10px;
+	font-weight: bold;
+	font-size: 2em;
+}
+adaptive-image {
+	display: block;
+	width: 100%;
+}
+
+adaptive-image::part(frame) {
+	border: 0 solid greenyellow;
+	margin: auto;
+}
+
+body:has(#fit-none:not(:checked)) #columns > div > div:nth-child(1) {
+	display: none;
+}
+body:has(#fit-cover:not(:checked)) #columns > div > div:nth-child(2) {
+	display: none;
+}
+body:has(#fit-fill:not(:checked)) #columns > div > div:nth-child(3) {
+	display: none;
+}
+body:has(#fit-contain:not(:checked)) #columns > div > div:nth-child(4) {
+	display: none;
+}
+body:has(#fit-scale-down:not(:checked)) #columns > div > div:nth-child(5) {
+	display: none;
+}
+
+body:has(#square:checked) adaptive-image::part(frame) {
+	border-radius: 0;
+}
+body:has(#curved:checked) adaptive-image::part(frame) {
+	border-radius: var(--borderRadius);
+}
+body:has(#ellipse:checked) adaptive-image::part(frame) {
+	border-radius: 50%;
+}
+
+
+
+
+footer {
+	margin-top: 20px;
+	font-size: 80%;
+	background: #E6DDFF;
+	color: black;
+	padding: 10px;
+}
+footer p {
+	margin: 0;
+}
+
+
+
+
+/*******************/
+/*** Test Images ***/
+/*******************/
+
+adaptive-image[src$="Blue and White Striped Dahlia Flower.svg"]::part(img) {
+	filter: hue-rotate(65deg);
+	background: conic-gradient(hwb(70 15% 30% / 1), hwb(150 15% 45% / 1));
+}

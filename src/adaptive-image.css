@@ -1,0 +1,168 @@
+/*====================/
+  Variables
+/====================*/
+
+#frame {
+	
+	/* These variables are set via JavaScript. */
+	--intrinsic-width: 0;
+	--intrinsic-height: 0;
+	--intrinsic-aspectratio: 1;
+	--specified-width: 0;
+	--specified-height: 0;
+	--specified-aspectratio: 1;
+	--border-width: 0;
+	
+	
+	--intrinsic-width-px: calc(var(--intrinsic-width) * 1px);
+	--intrinsic-height-px: calc(var(--intrinsic-height) * 1px);
+	--specified-width-px: calc(var(--specified-width) * 1px);
+	--specified-width-percent: calc(var(--specified-width) * 1%);
+	--specified-height-px: calc(var(--specified-height) * 1px);
+	--border-width-px: calc(var(--border-width) * 1px);
+}
+
+/*====================/
+  Structure
+/====================*/
+
+:host {
+	display: inline-block;
+	max-width: 100%;
+}
+
+/*=== The Frame ===*/
+
+#frame {
+	container-type: inline-size;
+	overflow: hidden;
+	box-sizing: content-box;
+	width: var(--intrinsic-width-px);
+	max-width: 100%;
+	max-width: calc(100% - 2 * var(--border-width-px));
+	border-width: var(--border-width-px) !important;
+}
+#frame.hasWidth {
+	width: var(--specified-width-px);
+}
+#frame.hasWidthPercentage {
+	width: var(--specified-width-percent);
+}
+
+/*=== The Mounting Board ===*/
+
+#mount {
+	container-type: size;
+	position: relative;
+	width: min(100cqw, var(--intrinsic-width-px));
+	height: var(--intrinsic-height-px);
+}
+.hasWidth #mount,
+.hasWidthPercentage #mount {
+	width: 100cqw;
+}
+.hasHeight #mount {
+	height: var(--specified-height-px);
+}
+
+/*=== The Artwork ===*/
+
+img {
+	box-sizing: content-box;
+	display: inline-block;
+	position: relative;
+	position: absolute;
+	box-sizing: content-box;
+	white-space: nowrap; /* For alt text of broken images. */
+	transform: translateX(var(--translateX)) translateY(var(--translateY));
+}
+#frame.error img {
+	width: auto;
+	min-width: auto;
+	max-width: none;
+	height: auto;
+	min-height: auto;
+	max-height: none;
+	left: 0;
+	top: 0;
+	transform: translateY(50cqh) translateY(-50%);
+}
+:host([align~=top]) #frame.error img {
+	transform: translateY(0cqh) translateY(0%);
+}
+:host([align~=bottom]) #frame.error img {
+	transform: translateY(100cqh) translateY(-100%);
+}
+
+/*====================/
+  Fit
+/====================*/
+
+/*=== None ===*/
+
+:host([fit=none]) img {
+	width: var(--intrinsic-width-px);
+}
+
+/*=== Cover ===*/
+
+:host([fit=cover]) img {
+	width: max(100cqw, 100cqh * var(--intrinsic-aspectratio));
+	min-width: 100cqw;
+	min-height: 100cqh;
+}
+
+/*=== Fill ===*/
+
+:host([fit=fill]) img {
+	width: 100%;
+	height: 100%;
+}
+
+/*=== Contain ===*/
+
+:host([fit=contain]) img {
+	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio));
+}
+
+/*=== Scale-down ===*/
+
+:host([fit=scale-down]) img {
+	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio), var(--intrinsic-width-px));
+}
+
+/*====================/
+  Alignment
+/====================*/
+
+/*=== Horizontal ===*/
+
+img,
+:host([align~=center]) img {
+	--translateX: -50%;
+	left: 50cqw;
+}
+:host([align~=left]) img {
+	--translateX: 0%;
+	left: 0cqw;
+}
+:host([align~=right]) img {
+	--translateX: -100%;
+	left: 100cqw;
+}
+
+/*=== Vertical ===*/
+
+img,
+:host([align~=center]) img {
+	--translateY: -50%;
+	top: 50cqh;
+}
+:host([align~=top]) img {
+	--translateY: 0%;
+	top: 0;
+}
+:host([align~=bottom]) img {
+	--translateY: -100%;
+	top: 100cqh;
+}
