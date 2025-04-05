@@ -22,7 +22,7 @@ body {
 }
 #options > div {
 	display: grid;
-	grid-template-columns: auto auto auto 1fr;
+	grid-template-columns: auto auto auto auto 1fr;
 	gap: 10px;
 }
 input[type="number"] {
@@ -30,24 +30,16 @@ input[type="number"] {
 }
 fieldset {
 	padding: 5px 10px 5px 5px;
-	display: inline-block;
 }
-fieldset > div {
+fieldset > :not(legend) {
+	display: block;
 	margin-bottom: 0.5em;
 }
-fieldset > div:last-child {
+fieldset > :last-child {
 	margin-bottom: 0;
 }
-#fs-fit {
-	display: inline-block;
-	margin-bottom: 10px;
-}
-#fs-fit label {
-	white-space: nowrap;
-	margin-right: 5px;
-}
-#fs-fit label:last-child {
-	margin-right: 0;
+fieldset div > :is(label, input) {
+	display: block;
 }
 
 
@@ -92,6 +84,7 @@ adaptive-image {
 }
 adaptive-image:first-child {
 	position: relative;
+	display: block;
 	margin: var(--overflowPadding);
 	width: calc(100cqw - 2 * var(--overflowPadding));
 }
@@ -114,7 +107,6 @@ adaptive-image:last-child {
 
 adaptive-image::part(frame) {
 	border: 0 solid greenyellow;
-	border-radius: 20px;
 	background-image: linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
 	background-size: 28.28px 28.28px;
 	background-attachment: fixed;

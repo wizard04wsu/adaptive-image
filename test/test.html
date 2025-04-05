@@ -19,26 +19,29 @@
 </head>
 <body>
 	
-	<section id="options"><div>
-			<fieldset><legend>Outline</legend>
-				<div><label><input type="radio" name="shape" value="square" id="square"> Square</label></div>
-				<div><label><input type="radio" name="shape" value="curved" id="curved" checked> Curved</label></div>
-				<div><label><input type="radio" name="shape" value="ellipse" id="ellipse"> Ellipse</label></div>
-				<div><label><input type="checkbox" id="showBorder" checked> Show border</label></div>
-			</fieldset>
-			<fieldset><legend>Dimensions</legend>
+	<section id="options">
+		<div>
+			<fieldset id="fs-outline"><legend>Outline</legend>
 				<div>
+					<label><input type="radio" name="shape" value="square" id="square"> Square</label>
+					<label><input type="radio" name="shape" value="curved" id="curved" checked> Curved</label>
+					<label><input type="radio" name="shape" value="ellipse" id="ellipse"> Ellipse</label>
+				</div>
+				<label><input type="checkbox" id="showBorder" checked> Show border</label>
+			</fieldset>
+			<fieldset id="fs-dimensions"><legend>Dimensions</legend>
+				<span>
 					<label><input type="checkbox" id="width"> Width: </label>
 					<input type="range" min="1" max="400" step="1" value="200" id="widthSlider">
 					<label><input type="checkbox" id="widthPercent">%</label>
-				</div>
-				<div>
+				</span>
+				<span>
 					<label><input type="checkbox" id="height"> Height: </label>
 					<input type="range" min="1" max="400" step="1" value="200" id="heightSlider">
-				</div>
+				</span>
 				<label><input type="checkbox" id="showClipped"> Show overflows</label>
 			</fieldset>
-			<fieldset id="alignments"><legend>Alignment</legend>
+			<fieldset id="fs-alignment"><legend>Alignment</legend>
 				<table>
 					<tr>
 						<td><input type="radio" name="alignment" value="top left" checked></td>
@@ -57,19 +60,19 @@
 					</tr>
 				</table>
 			</fieldset>
-			<div>
-				<fieldset id="fs-fit"><legend>Fit</legend>
+			<fieldset id="fs-fit"><legend>Fit</legend>
+				<div>
 					<label><input type="checkbox" id="fit-none" checked> None</label>
 					<label><input type="checkbox" id="fit-cover" checked> Cover</label>
 					<label><input type="checkbox" id="fit-fill" checked> Fill</label>
 					<label><input type="checkbox" id="fit-contain" checked> Contain</label>
 					<label><input type="checkbox" id="fit-scale-down" checked> Scale-down</label>
-				</fieldset>
-			</div>
-	</div></section>
+				</div>
+			</fieldset>
+		</div>
+	</section>
 	
 	<section>
-		
 		<div id="columns">
 			<div>
 				<div>None</div><div>Cover</div><div>Fill</div><div>Contain</div><div>Scale-Down</div>
@@ -163,7 +166,6 @@
 				</div>
 			</div>
 		</div>
-		
 	</section>
 	
 	<footer>
