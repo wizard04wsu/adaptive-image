@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
 	
 	'use strict';
 	
+	const BORDER_WIDTH = 5;
+	
 	const $ = (selector)=>document.querySelector(selector);
 	
 	const FITS = ['none', 'cover', 'fill', 'contain', 'scale-down'];
@@ -10,30 +12,47 @@ document.addEventListener('DOMContentLoaded', ()=>{
 	template.innerHTML = `<adaptive-image></adaptive-image>`;
 	
 	let table = $('#columns');
+	let resizeObserverMap = new Map;
 	
 	for(const src of imageSrc){
 		const row = document.createElement('div');
 		for(const fit of FITS){
 			const cell = document.createElement('div');
-			const img = template.content.cloneNode(true).firstElementChild;
-			img.setAttribute('src', src);
-			img.setAttribute('fit', fit);
-			img.setAttribute('width', '');
-			img.setAttribute('height', '');
-			img.setAttribute('align', '');
-			img.setAttribute('border-width', '');
-			img.setAttribute('alt', /dne\.jpg$/.test(src) ? 'Image not found' : '');
-			cell.appendChild(img);
-			cell.appendChild(img.cloneNode());
+			
+			const imgMasked = template.content.cloneNode(true).firstElementChild;
+			imgMasked.setAttribute('src', src);
+			imgMasked.setAttribute('fit', fit);
+			imgMasked.setAttribute('width', '');
+			imgMasked.setAttribute('height', '');
+			imgMasked.setAttribute('align', '');
+			imgMasked.setAttribute('border-width', '');
+			imgMasked.setAttribute('alt', /dne\.jpg$/.test(src) ? 'Image not found' : '');
+			cell.appendChild(imgMasked);
+			
+			const imgVisible = imgMasked.cloneNode(true);
+			const resizeObserver = new ResizeObserver((entries)=>{
+				let borderWidth = $('#showBorder').checked ? 2 * BORDER_WIDTH : 0;
+				for(const entry of entries){
+					if(entry.contentRect.height - borderWidth != Number(imgMasked.getAttribute('height'))){
+						imgMasked.setAttribute('height', Math.max(0, entry.contentRect.height - borderWidth));
+					}
+				}
+			});
+			resizeObserverMap.set(imgVisible, resizeObserver);
+			cell.appendChild(imgVisible);
+			
 			row.appendChild(cell);
 		}
 		table.appendChild(row);
 	}
-	
 	updateImageAttributes();
 	
 	$('#options').addEventListener('change', updateImageAttributes);
 	$('#options').addEventListener('input', updateImageAttributes);
+	for(const [img, observer] of resizeObserverMap){
+		observer.observe(img);
+	}
+	resizeObserverMap.clear();
 	
 	function updateImageAttributes(event){
 		
@@ -49,7 +68,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 			
 			image.setAttribute('align', $('input[name="alignment"]:checked').value);
 			
-			image.setAttribute('border-width', $('#showBorder').checked ? '5' : '');
+			image.setAttribute('border-width', $('#showBorder').checked ? BORDER_WIDTH : '');
 		}
 	}
 });

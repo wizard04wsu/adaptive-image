@@ -26,8 +26,6 @@
   Structure
 /====================*/
 
-/*=== The Wall ===*/
-
 :host {
 	display: inline-block;
 	max-width: 100%;
@@ -51,29 +49,29 @@
 	width: var(--specified-width-percent);
 }
 
-/*=== The Backing ===*/
+/*=== The Mounting Board ===*/
 
-#backing {
+#mount {
 	container-type: size;
-	position: relative; /*for the test page*/
+	position: relative;
 	width: min(100cqw, var(--intrinsic-width-px));
-	height: min(100cqh, var(--intrinsic-height-px));
+	height: var(--intrinsic-height-px);
 }
-.hasWidth #backing,
-.hasWidthPercentage #backing {
+.hasWidth #mount,
+.hasWidthPercentage #mount {
 	width: 100cqw;
 }
-.hasHeight #backing {
-	height: min(100cqh, var(--specified-height-px));
+.hasHeight #mount {
+	height: var(--specified-height-px);
 }
 
-/*=== The Picture ===*/
+/*=== The Artwork ===*/
 
 img {
 	box-sizing: content-box;
 	display: inline-block;
 	position: relative;
-	position: absolute; /*for the test page*/
+	position: absolute;
 	box-sizing: content-box;
 	white-space: nowrap; /* For alt text of broken images. */
 	transform: translateX(var(--translateX)) translateY(var(--translateY));
@@ -88,6 +86,12 @@ img {
 	left: 0;
 	top: 0;
 	transform: translateY(50cqh) translateY(-50%);
+}
+:host([align~=top]) #frame.error img {
+	transform: translateY(0cqh) translateY(0%);
+}
+:host([align~=bottom]) #frame.error img {
+	transform: translateY(100cqh) translateY(-100%);
 }
 
 /*====================/
@@ -133,32 +137,32 @@ img {
 
 /*=== Horizontal ===*/
 
-:host([align~=right]) img {
-	--translateX: -100%;
-	left: 100cqw;
-}
+img,
 :host([align~=center]) img {
 	--translateX: -50%;
 	left: 50cqw;
 }
-img,
 :host([align~=left]) img {
 	--translateX: 0%;
 	left: 0cqw;
 }
+:host([align~=right]) img {
+	--translateX: -100%;
+	left: 100cqw;
+}
 
 /*=== Vertical ===*/
 
-:host([align~=bottom]) img {
-	--translateY: -100%;
-	top: 100cqh;
-}
-:host([align~=middle]) img {
+img,
+:host([align~=center]) img {
 	--translateY: -50%;
 	top: 50cqh;
 }
-img,
 :host([align~=top]) img {
 	--translateY: 0%;
-	top: 0cqh;
+	top: 0;
+}
+:host([align~=bottom]) img {
+	--translateY: -100%;
+	top: 100cqh;
 }

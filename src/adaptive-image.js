@@ -1,7 +1,8 @@
 import html from './adaptive-image.html?raw';
 import css from './adaptive-image.css?raw';
 
-const DEFAULT_FIT = "none";
+const DEFAULT_FIT = "cover";
+const DEFAULT_ALIGN = "center";
 const FITS = ['none', 'cover', 'fill', 'contain', 'scale-down'];
 
 /**
@@ -21,7 +22,7 @@ class AdaptiveImage extends HTMLElement {
 	};
 	
 	#frame;
-	#backing;
+	#mount;
 	#img;
 	
 	constructor(){
@@ -36,7 +37,7 @@ class AdaptiveImage extends HTMLElement {
 		
 		
 		this.#frame = shadowRoot.querySelector('#frame');
-		this.#backing = shadowRoot.querySelector('#backing');
+		this.#mount = shadowRoot.querySelector('#mount');
 		this.#img = shadowRoot.querySelector('img');
 		
 		if(!FITS.includes(this.getAttribute('fit'))){

@@ -1,6 +1,5 @@
 body {
 	--borderRadius: 45px;
-	--overflowPadding: 30px;
 	
 	margin: 0;
 	padding: 0;
@@ -66,64 +65,15 @@ fieldset div > :is(label, input) {
 	padding: 10px;
 	font-weight: bold;
 	font-size: 2em;
-	background: #0008 !important;
 }
-#columns > div:nth-child(n+2) > div {
-	container-type: inline-size;
-	position: relative;
-	overflow: hidden;
-	
-	background-image: 
-		linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
-	background-size: 28.28px 28.28px;
-	background-attachment: fixed;
-}
-
 adaptive-image {
-	max-width: 100cqw;
-}
-adaptive-image:first-child {
-	position: relative;
 	display: block;
-	margin: var(--overflowPadding);
-	width: calc(100cqw - 2 * var(--overflowPadding));
-}
-#columns > div:last-child adaptive-image:first-child {
-	visibility: hidden;
-}
-#columns > div:nth-child(n+2) > div::after {
-	content: '';
-	position: absolute;
-	z-index: 1;
-	inset: 0;
-	background: #0006;
-	pointer-events: none;
-}
-adaptive-image:last-child {
-	position: absolute;
-	z-index: 2;
-	inset: var(--overflowPadding);
-	container-type: size;
+	width: 100%;
 }
 
 adaptive-image::part(frame) {
 	border: 0 solid greenyellow;
-	background-image: linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
-	background-size: 28.28px 28.28px;
-	background-attachment: fixed;
-	color: black;
 	margin: auto;
-}
-#columns > div:last-child adaptive-image:last-child::part(frame) {
-	color: white;
-}
-
-body:has(#showClipped:checked) adaptive-image:first-child::part(frame) {
-	overflow: visible;
-}
-
-adaptive-image:first-child::part(mount) {
-	container-type: size;;
 }
 
 body:has(#fit-none:not(:checked)) #columns > div > div:nth-child(1) {
@@ -152,6 +102,9 @@ body:has(#ellipse:checked) adaptive-image::part(frame) {
 	border-radius: 50%;
 }
 
+
+
+
 footer {
 	margin-top: 20px;
 	font-size: 80%;
@@ -162,6 +115,8 @@ footer {
 footer p {
 	margin: 0;
 }
+
+
 
 
 /*******************/
