@@ -1,8 +1,7 @@
-const DEFAULT_FIT = "none";
+import html from './adaptive-image.html?raw';
+import css from './adaptive-image.css?raw';
 
-const SVG_DEFAULT_WIDTH = 300;
-const SVG_DEFAULT_HEIGHT = 150;
-const SVG_MIME_TYPE = 'image/svg+xml';
+const DEFAULT_FIT = "none";
 const FITS = ['none', 'cover', 'fill', 'contain', 'scale-down'];
 
 /**
@@ -30,11 +29,11 @@ class AdaptiveImage extends HTMLElement {
 		
 		super();
 		
-		const template = document.querySelector('template#adaptive-image');
-		const templateContent = template.content;
-		
 		const shadowRoot = this.attachShadow({mode: 'open'});
-		shadowRoot.appendChild(templateContent.cloneNode(true));
+		const template = document.createElement('template');
+		template.innerHTML = `<style>${css}</style>${html}`;
+		shadowRoot.appendChild(template.content.cloneNode(true));
+		
 		
 		this.#frame = shadowRoot.querySelector('#frame');
 		this.#backing = shadowRoot.querySelector('#backing');
@@ -57,7 +56,6 @@ class AdaptiveImage extends HTMLElement {
 					this.#properties.intrinsic.aspectRatio = properties.aspectRatio;
 					
 					this.#properties.mimeType = properties.mimeType || '';
-					this.#properties.imageType = properties.imageType || 'raster';
 					
 					const dims = this.#parseDimensions();
 					this.#updateWidth(dims.width, dims.widthIsPercentage, dims.borderWidth);
@@ -80,7 +78,6 @@ class AdaptiveImage extends HTMLElement {
 			this.#properties.intrinsic.aspectRatio = (rect.width && rect.height) ? rect.width / rect.height : 1;
 			
 			this.#properties.mimeType = '';
-			this.#properties.imageType = 'raster';
 			
 			if(!this.getAttribute('width')) this.#updateWidth(rect.width);
 			if(!this.getAttribute('height')) this.#updateHeight(rect.height);
@@ -197,10 +194,6 @@ class AdaptiveImage extends HTMLElement {
 		this.#frame.style.setProperty('--intrinsic-width', this.#properties.intrinsic.width);
 		this.#frame.style.setProperty('--intrinsic-height', this.#properties.intrinsic.height);
 		this.#frame.style.setProperty('--intrinsic-aspectratio', this.#properties.intrinsic.aspectRatio);
-		
-		// Update img element attributes.
-		this.#img.classList.toggle('svg', this.#properties.imageType === 'svg');
-		this.#img.classList.toggle('raster', this.#properties.imageType !== 'svg');
 	}
 }
 
@@ -211,7 +204,6 @@ class AdaptiveImage extends HTMLElement {
  * @property {number} height
  * @property {number} aspectRatio
  * @property {String} [mimeType]
- * @property {String} [imageType] - 'raster' or 'svg'
  */
 
 /**
@@ -221,6 +213,10 @@ class AdaptiveImage extends HTMLElement {
  * @return {ImageProps}
  */
 function getImageProperties(imgElem){
+	
+	const SVG_MIME_TYPE = 'image/svg+xml';
+	const SVG_DEFAULT_WIDTH = 300;
+	const SVG_DEFAULT_HEIGHT = 150;
 	
 	return new Promise(async (resolve, reject)=>{
 		
@@ -264,8 +260,6 @@ function getImageProperties(imgElem){
 			}
 			
 			// The image is an SVG.
-			
-			ret.imageType = 'svg';
 			
 			// Get the width and height attributes.
 			let svgWidth = parseFloat(svgElem.getAttribute('width'));
@@ -321,8 +315,6 @@ function getImageProperties(imgElem){
 		}
 		else{
 			// The image is a raster image (JPEG, PNG, et al.).
-			
-			ret.imageType = 'raster';
 			
 			// Get the natural dimensions.
 			ret.width = imgElem.naturalWidth;

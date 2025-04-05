@@ -103,6 +103,7 @@ img {
 /*=== Cover ===*/
 
 :host([fit=cover]) img {
+	width: max(100cqw, 100cqh * var(--intrinsic-aspectratio));
 	min-width: 100cqw;
 	min-height: 100cqh;
 }

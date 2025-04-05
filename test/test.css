@@ -163,7 +163,7 @@ footer p {
 /*** Test Images ***/
 /*******************/
 
-adaptive-image.svg-img::part(img) {
+adaptive-image[src$="Blue and White Striped Dahlia Flower.svg"]::part(img) {
 	filter: hue-rotate(65deg);
 	background: conic-gradient(hwb(70 15% 30% / 1), hwb(150 15% 45% / 1));
 }

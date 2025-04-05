@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	
+	<meta charset="UTF-8">
+	
+	<title>Adaptive Image Test</title>
+	
+	<script type="module" src="src/adaptive-image.js"></script>
+	
+	<link rel="stylesheet" href="test/test.css">
+	<script src="test/test.js"></script>
+	<script>
+		const imageSrc = [
+			'test/dahlia with background.png',
+			'test/african-daisy.jpg',
+			'test/Blue and White Striped Dahlia Flower.svg',
+			'test/dne.jpg',
+		];
+	</script>
+	
+</head>
+<body>
+	
+	<section id="options">
+		<div>
+			<fieldset id="fs-outline"><legend>Outline</legend>
+				<div>
+					<label><input type="radio" name="shape" value="square" id="square"> Square</label>
+					<label><input type="radio" name="shape" value="curved" id="curved" checked> Curved</label>
+					<label><input type="radio" name="shape" value="ellipse" id="ellipse"> Ellipse</label>
+				</div>
+				<label><input type="checkbox" id="showBorder" checked> Show border</label>
+			</fieldset>
+			<fieldset id="fs-dimensions"><legend>Dimensions</legend>
+				<span>
+					<label><input type="checkbox" id="width" checked> Width: </label>
+					<input type="range" min="1" max="400" step="1" value="158" id="widthSlider">
+					<label><input type="checkbox" id="widthPercent">%</label>
+				</span>
+				<span>
+					<label><input type="checkbox" id="height" checked> Height: </label>
+					<input type="range" min="1" max="400" step="1" value="224" id="heightSlider">
+				</span>
+				<label><input type="checkbox" id="showClipped"> Show overflows</label>
+			</fieldset>
+			<fieldset id="fs-alignment"><legend>Alignment</legend>
+				<table>
+					<tr>
+						<td><input type="radio" name="alignment" value="top left"></td>
+						<td><input type="radio" name="alignment" value="top center"></td>
+						<td><input type="radio" name="alignment" value="top right"></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="alignment" value="middle left"></td>
+						<td><input type="radio" name="alignment" value="middle center" checked></td>
+						<td><input type="radio" name="alignment" value="middle right"></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="alignment" value="bottom left"></td>
+						<td><input type="radio" name="alignment" value="bottom center"></td>
+						<td><input type="radio" name="alignment" value="bottom right"></td>
+					</tr>
+				</table>
+			</fieldset>
+			<fieldset id="fs-fit"><legend>Fit</legend>
+				<div>
+					<label><input type="checkbox" id="fit-none" checked> None</label>
+					<label><input type="checkbox" id="fit-cover" checked> Cover</label>
+					<label><input type="checkbox" id="fit-fill" checked> Fill</label>
+					<label><input type="checkbox" id="fit-contain" checked> Contain</label>
+					<label><input type="checkbox" id="fit-scale-down" checked> Scale-down</label>
+				</div>
+			</fieldset>
+		</div>
+	</section>
+	
+	<section>
+		<div id="columns">
+			<div>
+				<div>None</div><div>Cover</div><div>Fill</div><div>Contain</div><div>Scale-Down</div>
+			</div>
+		</div>
+	</section>
+	
+	<footer>
+		<p>The small PNG image used is by gungyoga04 from <a href="https://www.flaticon.com/free-icon/dahlia_9825093">flaticon.com</a>.</p>
+		<p>The large JPG image used is by dimitrisvetsikas1969 from  <a href="https://pixabay.com/photos/african-daisy-osteospermum-garden-2110065/">pixabay.com</a>.</p>
+		<p>The SVG image used is by flatart from <a href="https://www.freepik.com/free-vector/blue-white-striped-dahlia-flower_342443975.htm">freepik.com</a>.</p>
+	</footer>
+	
+</body>
+</html>
