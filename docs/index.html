@@ -9,8 +9,8 @@
 	
 	<script type="module" src="../dist/adaptive-image.js"></script>
 	
-	<link rel="stylesheet" href="test-simple.css">
-	<script src="test-simple.js"></script>
+	<link rel="stylesheet" href="test.css">
+	<script src="test.js"></script>
 	<script>
 		const imageSrc = [
 			'dahlia with background.png',
@@ -45,6 +45,7 @@
 					<label><input type="checkbox" id="height" checked> Height: </label>
 					<input type="range" min="1" max="400" step="1" value="224" id="heightSlider">
 				</span>
+				<label><input type="checkbox" id="showClipped"> Show overflows</label>
 			</fieldset>
 			<fieldset id="fs-alignment"><legend>Alignment</legend>
 				<table>
@@ -74,6 +75,7 @@
 					<label><input type="checkbox" id="fit-scale-down" checked> Scale-down</label>
 				</div>
 			</fieldset>
+			<p>See the more <a href="test-simple.html">basic version</a> of this page.</p>
 		</div>
 	</section>
 	

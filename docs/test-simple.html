@@ -7,18 +7,18 @@
 	
 	<title>Adaptive Image Test</title>
 	
-	<script type="module" src="dist/adaptive-image.js"></script>
+	<script type="module" src="../dist/adaptive-image.js"></script>
 	
-	<link rel="stylesheet" href="test/test.css">
-	<script src="test/test.js"></script>
+	<link rel="stylesheet" href="test-simple.css">
+	<script src="test-simple.js"></script>
 	<script>
 		const imageSrc = [
-			'test/dahlia with background.png',
-			'test/african-daisy.jpg',
-			'test/Blue and White Striped Dahlia Flower.svg',
-			'test/flowers-746083_640.jpg',
-			'test/lilacs-1451676_1280 cropped.jpg',
-			'test/dne.jpg',
+			'dahlia with background.png',
+			'african-daisy.jpg',
+			'Blue and White Striped Dahlia Flower.svg',
+			'flowers-746083_640.jpg',
+			'lilacs-1451676_1280 cropped.jpg',
+			'dne.jpg',
 		];
 	</script>
 	
@@ -45,7 +45,6 @@
 					<label><input type="checkbox" id="height" checked> Height: </label>
 					<input type="range" min="1" max="400" step="1" value="224" id="heightSlider">
 				</span>
-				<label><input type="checkbox" id="showClipped"> Show overflows</label>
 			</fieldset>
 			<fieldset id="fs-alignment"><legend>Alignment</legend>
 				<table>
@@ -75,6 +74,7 @@
 					<label><input type="checkbox" id="fit-scale-down" checked> Scale-down</label>
 				</div>
 			</fieldset>
+			<p>See the more <a href="index.html">advanced version</a> of this page.</p>
 		</div>
 	</section>
 	
