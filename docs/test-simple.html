@@ -67,11 +67,11 @@
 			</fieldset>
 			<fieldset id="fs-fit"><legend>Fit</legend>
 				<div>
-					<label><input type="checkbox" id="fit-none" checked> None</label>
-					<label><input type="checkbox" id="fit-cover" checked> Cover</label>
-					<label><input type="checkbox" id="fit-fill" checked> Fill</label>
-					<label><input type="checkbox" id="fit-contain" checked> Contain</label>
-					<label><input type="checkbox" id="fit-scale-down" checked> Scale-down</label>
+					<label><input type="radio" name="fit" value="none"> None</label>
+					<label><input type="radio" name="fit" value="cover" checked> Cover</label>
+					<label><input type="radio" name="fit" value="fill"> Fill</label>
+					<label><input type="radio" name="fit" value="contain"> Contain</label>
+					<label><input type="radio" name="fit" value="scale-down"> Scale-down</label>
 				</div>
 			</fieldset>
 			<p style="line-height: 1.75;">
@@ -82,11 +82,7 @@
 	</section>
 	
 	<section>
-		<div id="columns">
-			<div>
-				<div>None</div><div>Cover</div><div>Fill</div><div>Contain</div><div>Scale-Down</div>
-			</div>
-		</div>
+		<div id="columns"></div>
 	</section>
 	
 	<footer>
