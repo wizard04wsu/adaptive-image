@@ -1,5 +1,5 @@
 node_modules/
 package-lock.json
 .vite/
-/dist
+dist/
 index.html
