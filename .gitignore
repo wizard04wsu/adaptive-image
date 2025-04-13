@@ -1,3 +1,5 @@
 node_modules/
-index.html
+package-lock.json
 .vite/
+dist/
+index.html
