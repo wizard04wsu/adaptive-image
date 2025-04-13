@@ -11,16 +11,6 @@
 	
 	<link rel="stylesheet" href="test-simple.css">
 	<script src="test-simple.js"></script>
-	<script>
-		const imageSrc = [
-			'dahlia with background.png',
-			'african-daisy.jpg',
-			'Blue and White Striped Dahlia Flower.svg',
-			'flowers-746083_640.jpg',
-			'lilacs-1451676_1280 cropped.jpg',
-			'dne.jpg',
-		];
-	</script>
 	
 </head>
 <body>
@@ -29,23 +19,33 @@
 		<div>
 			<fieldset id="fs-outline"><legend>Outline</legend>
 				<div>
-					<label><input type="radio" name="shape" value="square" id="square"> Square</label>
-					<label><input type="radio" name="shape" value="curved" id="curved" checked> Curved</label>
+					<label><input type="radio" name="shape" value="square" id="square" checked> Square</label>
+					<label><input type="radio" name="shape" value="curved" id="curved"> Curved</label>
 					<label><input type="radio" name="shape" value="ellipse" id="ellipse"> Ellipse</label>
 				</div>
 				<label><input type="checkbox" id="showBorder" checked> Show border</label>
 			</fieldset>
-			<fieldset id="fs-dimensions"><legend>Dimensions</legend>
-				<span>
-					<label><input type="checkbox" id="width" checked> Width: </label>
-					<input type="range" min="1" max="400" step="1" value="158" id="widthSlider">
-					<label><input type="checkbox" id="widthPercent">%</label>
-				</span>
-				<span>
-					<label><input type="checkbox" id="height" checked> Height: </label>
-					<input type="range" min="1" max="400" step="1" value="224" id="heightSlider">
-				</span>
-			</fieldset>
+			<div>
+				<fieldset id="fs-dimensions"><legend>Dimensions</legend>
+					<span>
+						<label><input type="checkbox" id="width"> Width: </label>
+						<input type="range" min="1" max="400" step="1" value="200" id="widthSlider">
+						<label><input type="checkbox" id="widthPercent">%</label>
+					</span>
+					<span>
+						<label><input type="checkbox" id="height"> Height: </label>
+						<input type="range" min="1" max="400" step="1" value="200" id="heightSlider">
+					</span>
+				</fieldset>
+				<label>Image: <select id="imageSrc">
+					<option value="dahlia with background.png" selected>small square</option>
+					<option value="african-daisy.jpg">large square</option>
+					<option value="flowers-746083_640.jpg">wide</option>
+					<option value="lilacs-1451676_1280 cropped.jpg">tall</option>
+					<option value="Blue and White Striped Dahlia Flower.svg">SVG</option>
+					<option value="dne.jpg">broken</option>
+				</select></label>
+			</div>
 			<fieldset id="fs-alignment"><legend>Alignment</legend>
 				<table>
 					<tr>
@@ -67,8 +67,8 @@
 			</fieldset>
 			<fieldset id="fs-fit"><legend>Fit</legend>
 				<div>
-					<label><input type="radio" name="fit" value="none"> None</label>
-					<label><input type="radio" name="fit" value="cover" checked> Cover</label>
+					<label><input type="radio" name="fit" value="none" checked> None</label>
+					<label><input type="radio" name="fit" value="cover"> Cover</label>
 					<label><input type="radio" name="fit" value="fill"> Fill</label>
 					<label><input type="radio" name="fit" value="contain"> Contain</label>
 					<label><input type="radio" name="fit" value="scale-down"> Scale-down</label>
@@ -76,13 +76,13 @@
 			</fieldset>
 			<p style="line-height: 1.75;">
 				<a href="https://github.com/wizard04wsu/adaptive-image"><img src="github-mark.svg" style="height:1em"> Adaptive Image repo</a><br>
-				See the <a href="index.html">advanced version</a> of this page.
+				See the <a href="index.html">demo page</a>.
 			</p>
 		</div>
 	</section>
 	
-	<section>
-		<div id="columns"></div>
+	<section id="demo">
+		<adaptive-image src="" alt=""></adaptive-image>
 	</section>
 	
 	<footer>

@@ -40,58 +40,26 @@ fieldset > :last-child {
 fieldset div > :is(label, input) {
 	display: block;
 }
-
-
-
-
-#columns {
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: 10px;
-	margin: 20px 10px 10px;
-	color: white;
+label:has(#imageSrc) {
+	display: block;
+	margin-top: 10px;
 }
-#columns > div {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-	gap: 10px;
-	justify-content: stretch;
-}
-#columns > div:first-child > div {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+
+
+
+
+#demo {
+	padding: 20px;
 	text-align: center;
-	padding: 10px;
-	font-weight: bold;
-	font-size: 2em;
+	line-height: 0;
 }
 adaptive-image {
 	display: block;
-	width: 100%;
 }
-
 adaptive-image::part(frame) {
 	border: 0 solid greenyellow;
 	margin: auto;
 }
-
-body:has(#fit-none:not(:checked)) #columns > div > div:nth-child(1) {
-	display: none;
-}
-body:has(#fit-cover:not(:checked)) #columns > div > div:nth-child(2) {
-	display: none;
-}
-body:has(#fit-fill:not(:checked)) #columns > div > div:nth-child(3) {
-	display: none;
-}
-body:has(#fit-contain:not(:checked)) #columns > div > div:nth-child(4) {
-	display: none;
-}
-body:has(#fit-scale-down:not(:checked)) #columns > div > div:nth-child(5) {
-	display: none;
-}
-
 body:has(#square:checked) adaptive-image::part(frame) {
 	border-radius: 0;
 }
@@ -101,12 +69,14 @@ body:has(#curved:checked) adaptive-image::part(frame) {
 body:has(#ellipse:checked) adaptive-image::part(frame) {
 	border-radius: 50%;
 }
+adaptive-image::part(img) {
+	line-height: 1;
+}
 
 
 
 
 footer {
-	margin-top: 20px;
 	font-size: 80%;
 	background: #E6DDFF;
 	color: black;

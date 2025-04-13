@@ -4,7 +4,7 @@ var A = (s) => {
 };
 var S = (s, h, e) => h in s ? L(s, h, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[h] = e;
 var R = (s, h, e) => S(s, typeof h != "symbol" ? h + "" : h, e), T = (s, h, e) => h.has(s) || A("Cannot " + e);
-var i = (s, h, e) => (T(s, h, "read from private field"), e ? e.call(s) : h.get(s)), u = (s, h, e) => h.has(s) ? A("Cannot add the same private member more than once") : h instanceof WeakSet ? h.add(s) : h.set(s, e), x = (s, h, e, a) => (T(s, h, "write to private field"), a ? a.call(s, e) : h.set(s, e), e), p = (s, h, e) => (T(s, h, "access private method"), e);
+var i = (s, h, e) => (T(s, h, "read from private field"), e ? e.call(s) : h.get(s)), u = (s, h, e) => h.has(s) ? A("Cannot add the same private member more than once") : h instanceof WeakSet ? h.add(s) : h.set(s, e), y = (s, h, e, a) => (T(s, h, "write to private field"), a ? a.call(s, e) : h.set(s, e), e), p = (s, h, e) => (T(s, h, "access private method"), e);
 const D = `<div id="frame" part="frame">\r
 	<div id="mount">\r
 		<img src="" alt="" part="img">\r
@@ -40,7 +40,6 @@ const D = `<div id="frame" part="frame">\r
 \r
 :host {\r
 	display: inline-block;\r
-	max-width: 100%;\r
 }\r
 \r
 /*=== The Frame ===*/\r
@@ -85,8 +84,11 @@ img {\r
 	position: relative;\r
 	position: absolute;\r
 	box-sizing: content-box;\r
-	white-space: nowrap; /* For alt text of broken images. */\r
 	transform: translateX(var(--translateX)) translateY(var(--translateY));\r
+	\r
+	/* For alt text of broken images. */\r
+	white-space: nowrap;\r
+	line-height: 1;\r
 }\r
 #frame.error img {\r
 	width: auto;\r
@@ -179,7 +181,7 @@ img,\r
 	top: 100cqh;\r
 }\r
 `, F = "cover", P = ["none", "cover", "fill", "contain", "scale-down"];
-var n, c, y, g, o, q, H, I, b;
+var n, c, x, g, o, q, H, I, b;
 class _ extends HTMLElement {
   constructor() {
     super();
@@ -189,10 +191,10 @@ class _ extends HTMLElement {
       specified: {}
     });
     u(this, c);
-    u(this, y);
+    u(this, x);
     u(this, g);
     const e = this.attachShadow({ mode: "open" }), a = document.createElement("template");
-    a.innerHTML = `<style>${E}</style>${D}`, e.appendChild(a.content.cloneNode(!0)), x(this, c, e.querySelector("#frame")), x(this, y, e.querySelector("#mount")), x(this, g, e.querySelector("img")), P.includes(this.getAttribute("fit")) || this.setAttribute("fit", F), i(this, g).addEventListener("load", () => {
+    a.innerHTML = `<style>${E}</style>${D}`, e.appendChild(a.content.cloneNode(!0)), y(this, c, e.querySelector("#frame")), y(this, x, e.querySelector("#mount")), y(this, g, e.querySelector("img")), P.includes(this.getAttribute("fit")) || this.setAttribute("fit", F), i(this, g).addEventListener("load", () => {
       i(this, c).classList.remove("error"), G(i(this, g)).then((r) => {
         i(this, n).intrinsic.width = r.width, i(this, n).intrinsic.height = r.height, i(this, n).intrinsic.aspectRatio = r.aspectRatio, i(this, n).mimeType = r.mimeType || "", p(this, o, b).call(this);
       });
@@ -206,7 +208,7 @@ class _ extends HTMLElement {
     a !== r && (e === "src" ? i(this, g).src = r : e === "width" || e === "height" || e === "border-width" ? p(this, o, b).call(this) : e === "alt" && (i(this, g).alt = r || ""));
   }
 }
-n = new WeakMap(), c = new WeakMap(), y = new WeakMap(), g = new WeakMap(), o = new WeakSet(), q = function(e, a) {
+n = new WeakMap(), c = new WeakMap(), x = new WeakMap(), g = new WeakMap(), o = new WeakSet(), q = function(e, a) {
   const r = {}, l = (e || this.getAttribute("width") || "").trim();
   l.endsWith("%") ? (r.width = Math.abs(Number(l.slice(0, -1)) || 0), r.widthIsPercentage = !0) : (r.width = Math.abs(Number(l) || 0), r.widthIsPercentage = !1);
   const t = (a || this.getAttribute("height") || "").trim();

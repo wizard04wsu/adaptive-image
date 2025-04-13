@@ -28,7 +28,6 @@
 
 :host {
 	display: inline-block;
-	max-width: 100%;
 }
 
 /*=== The Frame ===*/
@@ -73,8 +72,11 @@ img {
 	position: relative;
 	position: absolute;
 	box-sizing: content-box;
-	white-space: nowrap; /* For alt text of broken images. */
 	transform: translateX(var(--translateX)) translateY(var(--translateY));
+	
+	/* For alt text of broken images. */
+	white-space: nowrap;
+	line-height: 1;
 }
 #frame.error img {
 	width: auto;
