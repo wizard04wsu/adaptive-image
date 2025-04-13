@@ -3,7 +3,7 @@ A custom HTML component that simplifies the scaling, fit, and alignment of an im
 
 The intent is to display an image like a picture frame hanging on a wall: the border around the component as the _frame_, the background as the _mounting board_, and the image as the _artwork_.
 
-[Demo page](https://wizard04wsu.github.io/adaptive-image/docs/index.html)
+[Demo page](https://wizard04wsu.github.io/adaptive-image/index.html)
 
 ---
 
