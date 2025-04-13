@@ -1,3 +1,4 @@
+/* Copyright (c) 2025 Andy Harrison | github.com/wizard04wsu/adaptive-image */
 var L = Object.defineProperty;
 var A = (s) => {
   throw TypeError(s);
