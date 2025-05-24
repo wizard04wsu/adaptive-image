@@ -8,11 +8,6 @@
 	--intrinsic-aspectratio: 1;
 	--intrinsic-width: 0px;
 	--intrinsic-height: 0px;
-	
-	
-	--specified-width: var(--width, var(--attribute-width, var(--intrinsic-width)));
-	
-	--specified-height: var(--height, var(--attribute-height, var(--intrinsic-height)));
 }
 
 /*====================/
@@ -29,8 +24,8 @@
 	container-type: size;
 	position: relative;
 	overflow: hidden;
-	width: var(--specified-width);
-	height: var(--specified-height);
+	width: var(--width);
+	height: var(--height);
 }
 
 /*=== The Artwork ===*/

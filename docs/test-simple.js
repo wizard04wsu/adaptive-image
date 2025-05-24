@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
 		let alt = src === 'dne.jpg' ? 'Image not found' : '';
 		let fit = $('input[name="fit"]:checked').value;
 		let width = $('#widthSlider').value;
-		width = $('#width').checked ? ($('#widthPercent').checked ? (width / 4) + '%' : width) : '';
-		let height = $('#height').checked ? $('#heightSlider').value : '';
+		width = $('#width').checked ? ($('#widthPercent').checked ? (width / 4) + '%' : width+'px') : '';
+		let height = $('#height').checked ? $('#heightSlider').value+'px' : '';
 		let align = $('input[name="alignment"]:checked').value;
 		let borderWidth = $('#showBorder').checked ? BORDER_WIDTH : 0;
 		
@@ -28,10 +28,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
 			image.setAttribute('src', src);
 			image.setAttribute('alt', alt);
 			image.setAttribute('fit', fit);
-			image.setAttribute('width', width);
-			image.setAttribute('height', height);
+			image.style.width = width;
+			image.style.height = height;
 			image.setAttribute('align', align);
-			//image.setAttribute('border-width', borderWidth);
 			image.style.borderWidth = borderWidth+'px';
 		}
 	}

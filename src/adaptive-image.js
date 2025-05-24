@@ -1,4 +1,5 @@
 import CSS from './adaptive-image.css?raw';
+import getDimensions from './element-dimensions.js';
 
 const FIT_KEYWORDS = new Set(['none', 'cover', 'fill', 'contain', 'scale-down']);
 const DEFAULT_FIT = "cover";
@@ -21,7 +22,7 @@ const SVG_DEFAULT_HEIGHT = 150;
 class AdaptiveImage extends HTMLElement {
 	
 	// Observe changes to these custom attributes.
-	static observedAttributes = ['src', 'alt', 'width', 'height', 'fit', 'align'];
+	static observedAttributes = ['src', 'alt', 'fit', 'align', 'style'];
 	
 	#frame;
 	#img;
@@ -52,7 +53,10 @@ class AdaptiveImage extends HTMLElement {
 		this.#img.addEventListener('error', ()=>this.#imageErrorHandler());
 		
 		// Update the component when it is resized.
-		const resizeObserver = new ResizeObserver((entries)=>this.#refreshImage());
+		const resizeObserver = new ResizeObserver((entries)=>{
+			console.log('resizeObserver');
+			this.#refreshImage();
+		});
 		resizeObserver.observe(this);
 	}
 	
@@ -60,6 +64,7 @@ class AdaptiveImage extends HTMLElement {
 	attributeChangedCallback(name, oldValue, newValue){
 		// Sync attribute changes with this object's properties.
 		console.log('attributeChangedCallback()');
+		console.log(name, oldValue, newValue);
 		
 		if(oldValue !== newValue){
 			
@@ -121,28 +126,31 @@ class AdaptiveImage extends HTMLElement {
 		this.#refreshImage(rect.width, rect.height);
 	}
 	
-	#updateWidth(){
-		console.log('updateWidth()');
+	#updateDimensions(){
+		console.log('updateDimensions()');
 		
-		let attributeWidth = Number(this.getAttribute('width')?.trim());
-		if(attributeWidth && attributeWidth > 0){
-			this.#frame.style.setProperty('--attribute-width', `${attributeWidth}px`);
+		this.#frame.style.removeProperty('--width');
+		this.#frame.style.removeProperty('--height');
+		
+		const dims = getDimensions(this);
+		let width, height;
+		
+		if(this.style.width){
+			width = dims.scrollbarBox.width;
 		}
 		else{
-			this.#frame.style.removeProperty('--attribute-width');
+			width = Math.max(this.#intrinsicWidth, dims.scrollbarBox.width);
 		}
-	}
-	
-	#updateHeight(){
-		console.log('updateHeight()');
 		
-		let attributeHeight = Number(this.getAttribute('height')?.trim());
-		if(attributeHeight && attributeHeight > 0){
-			this.#frame.style.setProperty('--attribute-height', `${attributeHeight}px`);
+		if(this.style.height){
+			height = dims.scrollbarBox.height;
 		}
 		else{
-			this.#frame.style.removeProperty('--attribute-height');
+			height = Math.max(this.#intrinsicHeight, dims.scrollbarBox.height);
 		}
+		
+		this.#frame.style.setProperty('--width', `${width}px`);
+		this.#frame.style.setProperty('--height', `${height}px`);
 	}
 	
 	#updateFit(){
@@ -233,8 +241,7 @@ class AdaptiveImage extends HTMLElement {
 		this.#frame.style.setProperty('--intrinsic-height', `${this.#intrinsicHeight}px`);
 		this.#frame.style.setProperty('--intrinsic-aspectratio', this.#intrinsicAspectRatio);
 		
-		this.#updateWidth();
-		this.#updateHeight();
+		this.#updateDimensions();
 		
 		this.#updateFit();
 		this.#updateAlignment();

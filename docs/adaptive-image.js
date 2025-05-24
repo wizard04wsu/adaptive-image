@@ -1,12 +1,12 @@
 /* Copyright (c) 2025 Andy Harrison | github.com/wizard04wsu/adaptive-image */
-var W = Object.defineProperty;
-var S = (e) => {
-  throw TypeError(e);
+var H = Object.defineProperty;
+var q = (o) => {
+  throw TypeError(o);
 };
-var z = (e, n, i) => n in e ? W(e, n, { enumerable: !0, configurable: !0, writable: !0, value: i }) : e[n] = i;
-var T = (e, n, i) => z(e, typeof n != "symbol" ? n + "" : n, i), A = (e, n, i) => n.has(e) || S("Cannot " + i);
-var s = (e, n, i) => (A(e, n, "read from private field"), i ? i.call(e) : n.get(e)), g = (e, n, i) => n.has(e) ? S("Cannot add the same private member more than once") : n instanceof WeakSet ? n.add(e) : n.set(e, i), o = (e, n, i, t) => (A(e, n, "write to private field"), t ? t.call(e, i) : n.set(e, i), i), c = (e, n, i) => (A(e, n, "access private method"), i);
-const G = `/*====================/\r
+var P = (o, n, r) => n in o ? H(o, n, { enumerable: !0, configurable: !0, writable: !0, value: r }) : o[n] = r;
+var F = (o, n, r) => P(o, typeof n != "symbol" ? n + "" : n, r), y = (o, n, r) => n.has(o) || q("Cannot " + r);
+var h = (o, n, r) => (y(o, n, "read from private field"), r ? r.call(o) : n.get(o)), m = (o, n, r) => n.has(o) ? q("Cannot add the same private member more than once") : n instanceof WeakSet ? n.add(o) : n.set(o, r), l = (o, n, r, i) => (y(o, n, "write to private field"), i ? i.call(o, r) : n.set(o, r), r), c = (o, n, r) => (y(o, n, "access private method"), r);
+const I = `/*====================/\r
   Variables\r
 /====================*/\r
 \r
@@ -16,11 +16,6 @@ const G = `/*====================/\r
 	--intrinsic-aspectratio: 1;\r
 	--intrinsic-width: 0px;\r
 	--intrinsic-height: 0px;\r
-	\r
-	\r
-	--specified-width: var(--width, var(--attribute-width, var(--intrinsic-width)));\r
-	\r
-	--specified-height: var(--height, var(--attribute-height, var(--intrinsic-height)));\r
 }\r
 \r
 /*====================/\r
@@ -37,8 +32,8 @@ const G = `/*====================/\r
 	container-type: size;\r
 	position: relative;\r
 	overflow: hidden;\r
-	width: max(100%, var(--specified-width));\r
-	height: var(--specified-height);\r
+	width: var(--width);\r
+	height: var(--height);\r
 }\r
 \r
 /*=== The Artwork ===*/\r
@@ -154,93 +149,133 @@ img,\r
 	--translateY: -100%;\r
 	top: 100cqh;\r
 }\r
-`, R = /* @__PURE__ */ new Set(["none", "cover", "fill", "contain", "scale-down"]), M = "cover", L = /* @__PURE__ */ new Set(["top", "middle", "center", "bottom"]), N = "middle", Y = /* @__PURE__ */ new Set(["left", "center", "right"]), U = "center", H = "image/svg+xml", q = 300, x = 150;
-var a, l, p, f, u, b, h, E, F, P, C, I, D, v;
-class _ extends HTMLElement {
+`;
+function M(o, n = [0, 0]) {
+  let r, i;
+  if (n instanceof HTMLElement) {
+    const p = n.getBoundingClientRect();
+    r = p.left, i = p.top;
+  } else
+    [r, i] = n;
+  const e = o.getBoundingClientRect(), a = window.getComputedStyle(o), t = {
+    // Outer edge of margins.
+    marginBox: {},
+    // Outer edge of borders.
+    borderBox: {
+      top: e.top - i,
+      right: e.right - r,
+      bottom: e.bottom - i,
+      left: e.left - r,
+      height: e.height,
+      // === element.offsetHeight
+      width: e.width
+      // === element.offsetWidth
+    },
+    // Inner edge of borders, including scrollbar gutters, padding, and content.
+    scrollbarBox: {},
+    // Padding and content, excluding scrollbar gutters.
+    paddingBox: {
+      height: o.clientHeight,
+      width: o.clientWidth
+    },
+    // Content without the surrounding padding.
+    contentBox: {},
+    // The width of each margin (pulled from computed style; can be negative).
+    marginWidth: {},
+    // The width of each border (pulled from computed style).
+    borderWidth: {},
+    // The width of each scrollbar gutter.
+    // A scrollbar isn't necessarily displayed, but space can be reserved for it regardless.
+    scrollbarWidth: {},
+    // The width of the padding on each side (pulled from computed style).
+    paddingWidth: {}
+  };
+  return t.marginWidth.top = parseFloat(a.marginTopWidth), t.marginWidth.right = parseFloat(a.marginRightWidth), t.marginWidth.bottom = parseFloat(a.marginBottomWidth), t.marginWidth.left = parseFloat(a.marginLeftWidth), t.borderWidth.top = parseFloat(a.borderTopWidth), t.borderWidth.right = parseFloat(a.borderRightWidth), t.borderWidth.bottom = parseFloat(a.borderBottomWidth), t.borderWidth.left = parseFloat(a.borderLeftWidth), t.scrollbarWidth.top = 0, t.scrollbarWidth.right = t.borderBox.width - t.borderWidth.left - t.borderWidth.right - t.paddingBox.width, t.scrollbarWidth.bottom = t.borderBox.height - t.borderWidth.top - t.borderWidth.bottom - t.paddingBox.height, t.scrollbarWidth.left = 0, a.scrollbarGutter === "stable both-edges" && (t.scrollbarWidth.right /= 2, t.scrollbarWidth.bottom /= 2, t.scrollbarWidth.top = t.scrollbarWidth.bottom, t.scrollbarWidth.left = t.scrollbarWidth.right), t.paddingWidth.top = parseFloat(a.paddingTop), t.paddingWidth.right = parseFloat(a.paddingRight), t.paddingWidth.bottom = parseFloat(a.paddingBottom), t.paddingWidth.left = parseFloat(a.paddingLeft), t.marginBox.top = t.borderBox.top - t.marginWidth.top, t.marginBox.right = t.borderBox.right + t.marginWidth.right, t.marginBox.bottom = t.borderBox.bottom + t.marginWidth.bottom, t.marginBox.left = t.borderBox.left - t.marginWidth.left, t.marginBox.x = t.marginBox.left, t.marginBox.y = t.marginBox.top, t.marginBox.height = t.marginBox.bottom - t.marginBox.top, t.marginBox.width = t.marginBox.right - t.marginBox.left, t.borderBox.x = t.borderBox.left, t.borderBox.y = t.borderBox.top, t.scrollbarBox.top = t.borderBox.top + t.borderWidth.top, t.scrollbarBox.right = t.borderBox.right - t.borderWidth.right, t.scrollbarBox.bottom = t.borderBox.bottom - t.borderWidth.bottom, t.scrollbarBox.left = t.borderBox.left + t.borderWidth.left, t.scrollbarBox.x = t.scrollbarBox.left, t.scrollbarBox.y = t.scrollbarBox.top, t.scrollbarBox.height = t.scrollbarBox.bottom - t.scrollbarBox.top, t.scrollbarBox.width = t.scrollbarBox.right - t.scrollbarBox.left, t.paddingBox.top = t.scrollbarBox.top + t.scrollbarWidth.top, t.paddingBox.right = t.scrollbarBox.right - t.scrollbarWidth.right, t.paddingBox.bottom = t.scrollbarBox.bottom - t.scrollbarWidth.bottom, t.paddingBox.left = t.scrollbarBox.left + t.scrollbarWidth.left, t.paddingBox.x = t.paddingBox.left, t.paddingBox.y = t.paddingBox.top, t.contentBox.top = t.paddingBox.top + t.paddingWidth.top, t.contentBox.right = t.paddingBox.right - t.paddingWidth.right, t.contentBox.bottom = t.paddingBox.bottom - t.paddingWidth.bottom, t.contentBox.left = t.paddingBox.left + t.paddingWidth.left, t.contentBox.x = t.contentBox.left, t.contentBox.y = t.contentBox.top, t.contentBox.height = t.contentBox.bottom - t.contentBox.top, t.contentBox.width = t.contentBox.right - t.contentBox.left, t;
+}
+const R = /* @__PURE__ */ new Set(["none", "cover", "fill", "contain", "scale-down"]), z = "cover", S = /* @__PURE__ */ new Set(["top", "middle", "center", "bottom"]), G = "middle", T = /* @__PURE__ */ new Set(["left", "center", "right"]), O = "center", A = "image/svg+xml", u = 300, v = 150;
+var s, g, b, x, f, W, d, Y, C, _, D, E, B;
+class L extends HTMLElement {
   constructor() {
     console.log("constructor()");
     super();
-    g(this, h);
-    g(this, a);
-    g(this, l);
-    g(this, p);
-    g(this, f);
-    g(this, u);
-    g(this, b);
-    const i = this.attachShadow({ mode: "open" }), t = document.createElement("template");
-    t.innerHTML = `<style>${G}</style><div id="frame"><div id="mount"><img src="" alt="" part="img"></div></div>`, i.appendChild(t.content.cloneNode(!0)), o(this, a, i.querySelector("#frame")), o(this, l, i.querySelector("img")), s(this, l).addEventListener("load", () => c(this, h, E).call(this)), s(this, l).addEventListener("error", () => c(this, h, F).call(this)), new ResizeObserver((d) => c(this, h, v).call(this)).observe(this);
+    m(this, d);
+    m(this, s);
+    m(this, g);
+    m(this, b);
+    m(this, x);
+    m(this, f);
+    m(this, W);
+    const r = this.attachShadow({ mode: "open" }), i = document.createElement("template");
+    i.innerHTML = `<style>${I}</style><div id="frame"><div id="mount"><img src="" alt="" part="img"></div></div>`, r.appendChild(i.content.cloneNode(!0)), l(this, s, r.querySelector("#frame")), l(this, g, r.querySelector("img")), h(this, g).addEventListener("load", () => c(this, d, Y).call(this)), h(this, g).addEventListener("error", () => c(this, d, C).call(this)), new ResizeObserver((a) => {
+      console.log("resizeObserver"), c(this, d, B).call(this);
+    }).observe(this);
   }
   // Built-in method to handle changes to the observed custom attributes.
-  attributeChangedCallback(i, t, r) {
-    console.log("attributeChangedCallback()"), t !== r && (i === "src" ? s(this, l).src = r : i === "alt" ? s(this, l).alt = r || "" : c(this, h, v).call(this));
+  attributeChangedCallback(r, i, e) {
+    console.log("attributeChangedCallback()"), console.log(r, i, e), i !== e && (r === "src" ? h(this, g).src = e : r === "alt" ? h(this, g).alt = e || "" : c(this, d, B).call(this));
   }
 }
-a = new WeakMap(), l = new WeakMap(), p = new WeakMap(), f = new WeakMap(), u = new WeakMap(), b = new WeakMap(), h = new WeakSet(), E = function() {
-  console.log("imageLoadHandler()"), console.log(s(this, a)), s(this, a).classList.remove("error"), O(s(this, l)).then((i) => {
-    o(this, p, i.width), o(this, f, i.height), o(this, u, i.aspectRatio), o(this, b, i.mimeType || ""), c(this, h, v).call(this);
+s = new WeakMap(), g = new WeakMap(), b = new WeakMap(), x = new WeakMap(), f = new WeakMap(), W = new WeakMap(), d = new WeakSet(), Y = function() {
+  console.log("imageLoadHandler()"), console.log(h(this, s)), h(this, s).classList.remove("error"), U(h(this, g)).then((r) => {
+    l(this, b, r.width), l(this, x, r.height), l(this, f, r.aspectRatio), l(this, W, r.mimeType || ""), c(this, d, B).call(this);
   });
-}, F = function() {
-  console.log("imageErrorHandler()"), s(this, a).classList.add("error"), o(this, b, ""), s(this, l).alt = this.getAttribute("alt") || "";
-  const i = s(this, l).getBoundingClientRect();
-  o(this, p, i.width), o(this, f, i.height), o(this, u, i.width && i.height ? i.width / i.height : 1), c(this, h, v).call(this, i.width, i.height);
-}, P = function() {
-  var t;
-  console.log("updateWidth()");
-  let i = Number((t = this.getAttribute("width")) == null ? void 0 : t.trim());
-  i && i > 0 ? s(this, a).style.setProperty("--attribute-width", `${i}px`) : s(this, a).style.removeProperty("--attribute-width");
 }, C = function() {
-  var t;
-  console.log("updateHeight()");
-  let i = Number((t = this.getAttribute("height")) == null ? void 0 : t.trim());
-  i && i > 0 ? s(this, a).style.setProperty("--attribute-height", `${i}px`) : s(this, a).style.removeProperty("--attribute-height");
-}, I = function() {
-  console.log("updateFit()");
-  let i = window.getComputedStyle(this).getPropertyValue("--fit");
-  R.has(i) ? s(this, a).dataset.fit = i : (i = this.getAttribute("fit"), s(this, a).dataset.fit = R.has(i) ? i : M);
+  console.log("imageErrorHandler()"), h(this, s).classList.add("error"), l(this, W, ""), h(this, g).alt = this.getAttribute("alt") || "";
+  const r = h(this, g).getBoundingClientRect();
+  l(this, b, r.width), l(this, x, r.height), l(this, f, r.width && r.height ? r.width / r.height : 1), c(this, d, B).call(this, r.width, r.height);
+}, _ = function() {
+  console.log("updateDimensions()"), h(this, s).style.removeProperty("--width"), h(this, s).style.removeProperty("--height");
+  const r = M(this);
+  let i, e;
+  this.style.width ? i = r.scrollbarBox.width : i = Math.max(h(this, b), r.scrollbarBox.width), this.style.height ? e = r.scrollbarBox.height : e = Math.max(h(this, x), r.scrollbarBox.height), h(this, s).style.setProperty("--width", `${i}px`), h(this, s).style.setProperty("--height", `${e}px`);
 }, D = function() {
-  var d;
+  console.log("updateFit()");
+  let r = window.getComputedStyle(this).getPropertyValue("--fit");
+  R.has(r) ? h(this, s).dataset.fit = r : (r = this.getAttribute("fit"), h(this, s).dataset.fit = R.has(r) ? r : z);
+}, E = function() {
+  var a;
   console.log("updateAlignment()");
-  let i = new Set(((d = this.getAttribute("align")) == null ? void 0 : d.split(" ")) || []), t = window.getComputedStyle(this).getPropertyValue("--align-x");
-  Y.has(t) || (t = i && Y.intersection(i).values(), t != null && t.size ? (t = t.next().value, i.delete(t)) : t = U);
-  let r = window.getComputedStyle(this).getPropertyValue("--align-y");
-  L.has(r) || (r = i && L.intersection(i).values(), r != null && r.size ? r = r.next().value : r = N), s(this, a).dataset.alignX = t, r === "center" && (r = "middle"), s(this, a).dataset.alignY = r;
-}, v = function() {
-  console.log("refreshImage()"), s(this, a).style.setProperty("--intrinsic-width", `${s(this, p)}px`), s(this, a).style.setProperty("--intrinsic-height", `${s(this, f)}px`), s(this, a).style.setProperty("--intrinsic-aspectratio", s(this, u)), c(this, h, P).call(this), c(this, h, C).call(this), c(this, h, I).call(this), c(this, h, D).call(this);
+  let r = new Set(((a = this.getAttribute("align")) == null ? void 0 : a.split(" ")) || []), i = window.getComputedStyle(this).getPropertyValue("--align-x");
+  T.has(i) || (i = r && T.intersection(r).values(), i != null && i.size ? (i = i.next().value, r.delete(i)) : i = O);
+  let e = window.getComputedStyle(this).getPropertyValue("--align-y");
+  S.has(e) || (e = r && S.intersection(r).values(), e != null && e.size ? e = e.next().value : e = G), h(this, s).dataset.alignX = i, e === "center" && (e = "middle"), h(this, s).dataset.alignY = e;
+}, B = function() {
+  console.log("refreshImage()"), h(this, s).style.setProperty("--intrinsic-width", `${h(this, b)}px`), h(this, s).style.setProperty("--intrinsic-height", `${h(this, x)}px`), h(this, s).style.setProperty("--intrinsic-aspectratio", h(this, f)), c(this, d, _).call(this), c(this, d, D).call(this), c(this, d, E).call(this);
 }, // Observe changes to these custom attributes.
-T(_, "observedAttributes", ["src", "alt", "width", "height", "fit", "align"]);
-function O(e) {
-  return new Promise(async (n, i) => {
-    let t = {};
+F(L, "observedAttributes", ["src", "alt", "fit", "align", "style"]);
+function U(o) {
+  return new Promise(async (n, r) => {
+    let i = {};
     try {
-      const d = await (await fetch(e.src)).blob();
-      t.mimeType = d.type;
-    } catch (r) {
-      console.warn(`Unable to determine MIME type of ${e.src}`, r.message), t.mimeType ?? (t.mimeType = "");
+      const a = await (await fetch(o.src)).blob();
+      i.mimeType = a.type;
+    } catch (e) {
+      console.warn(`Unable to determine MIME type of ${o.src}`, e.message), i.mimeType ?? (i.mimeType = "");
     }
-    if (!t.mimeType || t.mimeType === H) {
-      let r;
+    if (!i.mimeType || i.mimeType === A) {
+      let e;
       try {
-        const w = await (await fetch(e.src)).text();
-        r = new DOMParser().parseFromString(w, H).querySelector("svg");
+        const w = await (await fetch(o.src)).text();
+        e = new DOMParser().parseFromString(w, A).querySelector("svg");
       } catch {
-        const w = e.getBoundingClientRect();
-        return t.width = w.width, t.height = w.height, t.width && t.height && (t.aspectRatio = t.width / t.height), n(t);
+        const w = o.getBoundingClientRect();
+        return i.width = w.width, i.height = w.height, i.width && i.height && (i.aspectRatio = i.width / i.height), n(i);
       }
-      let d = parseFloat(r.getAttribute("width")), y = parseFloat(r.getAttribute("height"));
-      if (d && y)
-        t.width = d, t.height = y, t.aspectRatio = t.width / t.height;
-      else if (r.hasAttribute("viewBox")) {
-        let m = r.getAttribute("viewBox").match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
-        m ? (m = m.map((w) => Math.abs(Number(w))), [, d, y] = m, t.width = d || q, t.height = y || x, t.aspectRatio = t.width / t.height) : (t.aspectRatio = q / x, t.width ?? (t.width = t.height * t.aspectRatio || q), t.height ?? (t.height = t.width * t.aspectRatio || x));
+      let a = parseFloat(e.getAttribute("width")), t = parseFloat(e.getAttribute("height"));
+      if (a && t)
+        i.width = a, i.height = t, i.aspectRatio = i.width / i.height;
+      else if (e.hasAttribute("viewBox")) {
+        let p = e.getAttribute("viewBox").match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
+        p ? (p = p.map((w) => Math.abs(Number(w))), [, a, t] = p, i.width = a || u, i.height = t || v, i.aspectRatio = i.width / i.height) : (i.aspectRatio = u / v, i.width ?? (i.width = i.height * i.aspectRatio || u), i.height ?? (i.height = i.width * i.aspectRatio || v));
       } else
-        t.width ?? (t.width = q), t.height ?? (t.height = x), t.aspectRatio = t.width / t.height;
-    } else if (t.width = e.naturalWidth, t.height = e.naturalHeight, t.width && t.height)
-      t.aspectRatio = t.width / t.height;
+        i.width ?? (i.width = u), i.height ?? (i.height = v), i.aspectRatio = i.width / i.height;
+    } else if (i.width = o.naturalWidth, i.height = o.naturalHeight, i.width && i.height)
+      i.aspectRatio = i.width / i.height;
     else {
-      const r = e.getBoundingClientRect();
-      return t.width = r.width, t.height = r.height, t.width && t.height && (t.aspectRatio = t.width / t.height), n(t);
+      const e = o.getBoundingClientRect();
+      return i.width = e.width, i.height = e.height, i.width && i.height && (i.aspectRatio = i.width / i.height), n(i);
     }
-    return n(t);
+    return n(i);
   });
 }
-window.customElements.define("adaptive-image", _);
+window.customElements.define("adaptive-image", L);
