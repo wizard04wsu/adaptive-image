@@ -1,9 +1,16 @@
-import html from './adaptive-image.html?raw';
-import css from './adaptive-image.css?raw';
+import CSS from './adaptive-image.css?raw';
 
+const FIT_KEYWORDS = new Set(['none', 'cover', 'fill', 'contain', 'scale-down']);
 const DEFAULT_FIT = "cover";
-const DEFAULT_ALIGN = "center";
-const FITS = ['none', 'cover', 'fill', 'contain', 'scale-down'];
+const ALIGN_Y_KEYWORDS = new Set(['top', 'middle', 'center', 'bottom']);
+const DEFAULT_ALIGN_Y = "middle";
+const ALIGN_X_KEYWORDS = new Set(['left', 'center', 'right']);
+const DEFAULT_ALIGN_X = "center";
+
+const SVG_MIME_TYPE = 'image/svg+xml';
+const SVG_DEFAULT_WIDTH = 300;
+const SVG_DEFAULT_HEIGHT = 150;
+
 
 /**
  * Custom element to display an image within a bounding box (like a photo in a picture frame),
@@ -14,182 +21,223 @@ const FITS = ['none', 'cover', 'fill', 'contain', 'scale-down'];
 class AdaptiveImage extends HTMLElement {
 	
 	// Observe changes to these custom attributes.
-	static observedAttributes = ['src', 'alt', 'width', 'height', 'fit', 'align', 'border-width'];
-	
-	#properties = {
-		intrinsic: {},
-		specified: {},
-	};
+	static observedAttributes = ['src', 'alt', 'width', 'height', 'fit', 'align'];
 	
 	#frame;
-	#mount;
 	#img;
+	
+	#intrinsicWidth;
+	#intrinsicHeight;
+	#intrinsicAspectRatio;
+	#mimeType;
 	
 	constructor(){
 		// Create an instance of AdaptiveImage.
+		console.log('constructor()');
 		
 		super();
 		
+		// Create the shadow DOM and clone the template.
 		const shadowRoot = this.attachShadow({mode: 'open'});
 		const template = document.createElement('template');
-		template.innerHTML = `<style>${css}</style>${html}`;
+		template.innerHTML = `<style>${CSS}</style><div id="frame"><div id="mount"><img src="" alt="" part="img"></div></div>`;
 		shadowRoot.appendChild(template.content.cloneNode(true));
 		
-		
+		// Save references to the internal elements.
 		this.#frame = shadowRoot.querySelector('#frame');
-		this.#mount = shadowRoot.querySelector('#mount');
 		this.#img = shadowRoot.querySelector('img');
 		
-		if(!FITS.includes(this.getAttribute('fit'))){
-			this.setAttribute('fit', DEFAULT_FIT);
-		}
+		// Handle success or failure loading a new src.
+		this.#img.addEventListener('load', ()=>this.#imageLoadHandler());
+		this.#img.addEventListener('error', ()=>this.#imageErrorHandler());
 		
-		this.#img.addEventListener('load', ()=>{
-			// The image has loaded.
-			
-			// Remove the error class if it was added previously.
-			this.#frame.classList.remove('error');
-			
-			// Get the properties of the image file.
-			getImageProperties(this.#img)
-				.then((properties)=>{
-					
-					// Set the intrinsic dimensions, aspect ratio, and MIME type.
-					this.#properties.intrinsic.width = properties.width;
-					this.#properties.intrinsic.height = properties.height;
-					this.#properties.intrinsic.aspectRatio = properties.aspectRatio;
-					this.#properties.mimeType = properties.mimeType || '';
-					
-					// Update the image component's attributes.
-					this.#refreshImage();
-				});
-		});
-		
-		this.#img.addEventListener('error', ()=>{
-			// There was an error loading the image.
-			
-			// Add the error class to the frame element.
-			this.#frame.classList.add('error');
-			
-			// Remove the MIME type if it was set previously.
-			this.#properties.mimeType = '';
-			
-			// Update the alt attribute of the image element.
-			this.#img.alt = this.getAttribute('alt') || '';
-			
-			// Set the dimensions for the broken image (icon and alt text).
-			const rect = this.#img.getBoundingClientRect();
-			this.#properties.intrinsic.width = rect.width;
-			this.#properties.intrinsic.height = rect.height;
-			this.#properties.intrinsic.aspectRatio = (rect.width && rect.height) ? rect.width / rect.height : 1;
-			
-			// Update the image component's attributes, manually setting the width and height if necessary.
-			this.#refreshImage(!this.getAttribute('width') && rect.width, !this.getAttribute('height') && rect.height);
-		});
-		
-		// When the component is resized, update its attributes.
-		this.addEventListener('resize', this.#refreshImage);
+		// Update the component when it is resized.
+		const resizeObserver = new ResizeObserver((entries)=>this.#refreshImage());
+		resizeObserver.observe(this);
 	}
 	
+	// Built-in method to handle changes to the observed custom attributes.
 	attributeChangedCallback(name, oldValue, newValue){
 		// Sync attribute changes with this object's properties.
+		console.log('attributeChangedCallback()');
 		
 		if(oldValue !== newValue){
 			
 			if(name === 'src'){
-				
 				this.#img.src = newValue;
 			}
-			else if(name === 'width' || name === 'height' || name === 'border-width'){
-				
-				// Parse the dimensions and update the image properties.
-				this.#refreshImage();
-			}
 			else if(name === 'alt'){
-				
 				this.#img.alt = newValue || '';
 			}
+			else{
+				this.#refreshImage();
+			}
 		}
 	}
 	
-	#parseDimensions(widthStr, heightStr){
+	#imageLoadHandler(){
+		// The image has loaded.
+		console.log('imageLoadHandler()');
 		
-		const ret = {};
+		console.log(this.#frame);
+		// Remove the error class if it was added previously.
+		this.#frame.classList.remove('error');
 		
-		const specifiedWidth = (widthStr || this.getAttribute('width') || '').trim();
-		if(specifiedWidth.endsWith('%')){
-			ret.width = Math.abs(Number(specifiedWidth.slice(0, -1)) || 0);
-			ret.widthIsPercentage = true;
+		// Get the properties of the image file.
+		getImageProperties(this.#img)
+			.then((properties)=>{
+				
+				// Set the intrinsic dimensions, aspect ratio, and MIME type.
+				this.#intrinsicWidth = properties.width;
+				this.#intrinsicHeight = properties.height;
+				this.#intrinsicAspectRatio = properties.aspectRatio;
+				this.#mimeType = properties.mimeType || '';
+				
+				// Update the image component's attributes.
+				this.#refreshImage();
+			});
+	}
+	
+	#imageErrorHandler(){
+		// There was an error loading the image.
+		console.log('imageErrorHandler()');
+		
+		// Add the error class to the frame element.
+		this.#frame.classList.add('error');
+		
+		// Clear the MIME type if it was set previously.
+		this.#mimeType = '';
+		
+		// Clear the alt attribute of the image element.
+		this.#img.alt = this.getAttribute('alt') || '';
+		
+		// Set the dimensions for the broken image (icon and alt text).
+		const rect = this.#img.getBoundingClientRect();
+		this.#intrinsicWidth = rect.width;
+		this.#intrinsicHeight = rect.height;
+		this.#intrinsicAspectRatio = (rect.width && rect.height) ? rect.width / rect.height : 1;
+		
+		// Update the image component's attributes, manually setting the width and height if necessary.
+		this.#refreshImage(rect.width, rect.height);
+	}
+	
+	#updateWidth(){
+		console.log('updateWidth()');
+		
+		let attributeWidth = Number(this.getAttribute('width')?.trim());
+		if(attributeWidth && attributeWidth > 0){
+			this.#frame.style.setProperty('--attribute-width', `${attributeWidth}px`);
 		}
 		else{
-			ret.width = Math.abs(Number(specifiedWidth) || 0);
-			ret.widthIsPercentage = false;
-		}
-		
-		const specifiedHeight = (heightStr || this.getAttribute('height') || '').trim();
-		ret.height = Number(specifiedHeight) || 0;
-		
-		ret.borderWidth = Number(this.getAttribute('border-width')) || 0;
-		
-		return ret;
-	}
-	
-	#updateWidth(specifiedWidth, isPercentage = false, borderWidth){
-		
-		this.#properties.specified.width = specifiedWidth;
-		this.#properties.specified.widthIsPercentage = specifiedWidth && isPercentage;
-		
-		let calculatedWidth = specifiedWidth;
-		let calculatedAspectRatio = this.#properties.intrinsic.aspectRatio;
-		if(this.#properties.specified.height){
-			if(!specifiedWidth) calculatedWidth = this.#properties.specified.height * this.#properties.intrinsic.aspectRatio;
-			calculatedAspectRatio = calculatedWidth / this.#properties.specified.height;
-		}
-		else if(!specifiedWidth){
-			calculatedWidth = this.#properties.intrinsic.width;
-		}
-		this.#frame.style.setProperty('--specified-width', calculatedWidth);
-		this.#frame.style.setProperty('--specified-aspectratio', calculatedAspectRatio);
-		this.#properties.specified.aspectRatio = calculatedAspectRatio;
-		
-		if(borderWidth !== void 0){
-			this.#frame.style.setProperty('--border-width', borderWidth);
+			this.#frame.style.removeProperty('--attribute-width');
 		}
 	}
 	
-	#updateHeight(specifiedHeight){
+	#updateHeight(){
+		console.log('updateHeight()');
 		
-		this.#properties.specified.height = specifiedHeight;
-		
-		let calculatedHeight = specifiedHeight;
-		let calculatedAspectRatio = this.#properties.intrinsic.aspectRatio;
-		if(this.#properties.specified.width){
-			if(!specifiedHeight) calculatedHeight = this.#properties.specified.width / this.#properties.intrinsic.aspectRatio;
-			calculatedAspectRatio = this.#properties.specified.width / calculatedHeight;
+		let attributeHeight = Number(this.getAttribute('height')?.trim());
+		if(attributeHeight && attributeHeight > 0){
+			this.#frame.style.setProperty('--attribute-height', `${attributeHeight}px`);
 		}
-		else if(!specifiedHeight){
-			calculatedHeight = this.#properties.intrinsic.height;
+		else{
+			this.#frame.style.removeProperty('--attribute-height');
 		}
-		this.#frame.style.setProperty('--specified-height', calculatedHeight);
-		this.#frame.style.setProperty('--specified-aspectratio', calculatedAspectRatio);
-		this.#properties.specified.aspectRatio = calculatedAspectRatio;
 	}
 	
-	#refreshImage(width, height){
+	#updateFit(){
+		console.log('updateFit()');
 		
-		const dims = this.#parseDimensions();
-		this.#updateWidth(width || dims.width, dims.widthIsPercentage, dims.borderWidth);
-		this.#updateHeight(height || dims.height);
+		// Get value of the `--fit` property.
+		let fit = window.getComputedStyle(this).getPropertyValue('--fit');
 		
-		// Toggle dimension classes.
-		this.#frame.classList.toggle('hasWidth', !!this.#properties.specified.width);
-		this.#frame.classList.toggle('hasWidthPercentage', !!this.#properties.specified.widthIsPercentage);
-		this.#frame.classList.toggle('hasHeight', !!this.#properties.specified.height);
+		if(FIT_KEYWORDS.has(fit)){
+			// Property value matches a fit keyword.
+			
+			// Set the `data-fit` attribute of #frame.
+			this.#frame.dataset.fit = fit;
+		}
+		else{
+			// Property value does not match a fit keyword.
+			
+			// Get value from the component's `fit` attribute. 
+			fit = this.getAttribute('fit');
+			
+			// Set the `data-fit` attribute of #frame.
+			this.#frame.dataset.fit = FIT_KEYWORDS.has(fit) ? fit : DEFAULT_FIT;
+		}
+	}
+	
+	#updateAlignment(){
+		console.log('updateAlignment()');
+		
+		// Get values from the component's `align` attribute.
+		let align = new Set(this.getAttribute('align')?.split(' ') || []);
+		
+		// Get value of the `--align-x` property.
+		let alignX = window.getComputedStyle(this).getPropertyValue('--align-x');
+		
+		if(!ALIGN_X_KEYWORDS.has(alignX)){
+			// Property value does not match a horizontal alignment keyword.
+			
+			// Get list of matching horizontal alignment keywords from the `align` attribute.
+			alignX = align && ALIGN_X_KEYWORDS.intersection(align).values();
+			if(alignX?.size){
+				// There is at least one match.
+				
+				// Use the first one.
+				alignX = alignX.next().value;
+				
+				// Remove the match in case it's 'center' so it won't match with both X and Y.
+				align.delete(alignX);
+			}
+			else{
+				// Use the default.
+				alignX = DEFAULT_ALIGN_X;
+			}
+		}
+		
+		// Value from `--align-y` property.
+		let alignY = window.getComputedStyle(this).getPropertyValue('--align-y');
+		
+		if(!ALIGN_Y_KEYWORDS.has(alignY)){
+			// Property value does not match a vertical alignment keyword.
+			
+			// Get list of matching vertical alignment keywords from the `align` attribute.
+			alignY = align && ALIGN_Y_KEYWORDS.intersection(align).values();
+			if(alignY?.size){
+				// There is at least one match.
+				
+				// Use the first one.
+				alignY = alignY.next().value;
+			}
+			else{
+				// Use the default.
+				alignY = DEFAULT_ALIGN_Y;
+			}
+		}
+		
+		// Set the `data-align-x` attribute of #frame.
+		this.#frame.dataset.alignX = alignX;
+		
+		// Set the `data-align-y` attribute of #frame.
+		if(alignY === 'center') alignY = 'middle';
+		this.#frame.dataset.alignY = alignY;
+	}
+	
+	#refreshImage(){
+		console.log('refreshImage()');
 		
 		// Set CSS variables.
-		this.#frame.style.setProperty('--intrinsic-width', this.#properties.intrinsic.width);
-		this.#frame.style.setProperty('--intrinsic-height', this.#properties.intrinsic.height);
-		this.#frame.style.setProperty('--intrinsic-aspectratio', this.#properties.intrinsic.aspectRatio);
+		this.#frame.style.setProperty('--intrinsic-width', `${this.#intrinsicWidth}px`);
+		this.#frame.style.setProperty('--intrinsic-height', `${this.#intrinsicHeight}px`);
+		this.#frame.style.setProperty('--intrinsic-aspectratio', this.#intrinsicAspectRatio);
+		
+		this.#updateWidth();
+		this.#updateHeight();
+		
+		this.#updateFit();
+		this.#updateAlignment();
 	}
 }
 
@@ -209,10 +257,6 @@ class AdaptiveImage extends HTMLElement {
  * @return {ImageProps}
  */
 function getImageProperties(imgElem){
-	
-	const SVG_MIME_TYPE = 'image/svg+xml';
-	const SVG_DEFAULT_WIDTH = 300;
-	const SVG_DEFAULT_HEIGHT = 150;
 	
 	return new Promise(async (resolve, reject)=>{
 		

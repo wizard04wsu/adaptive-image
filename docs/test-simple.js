@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 		width = $('#width').checked ? ($('#widthPercent').checked ? (width / 4) + '%' : width) : '';
 		let height = $('#height').checked ? $('#heightSlider').value : '';
 		let align = $('input[name="alignment"]:checked').value;
-		let borderWidth = $('#showBorder').checked ? BORDER_WIDTH : '';
+		let borderWidth = $('#showBorder').checked ? BORDER_WIDTH : 0;
 		
 		const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
 		for(const image of images){
@@ -31,7 +31,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
 			image.setAttribute('width', width);
 			image.setAttribute('height', height);
 			image.setAttribute('align', align);
-			image.setAttribute('border-width', borderWidth);
+			//image.setAttribute('border-width', borderWidth);
+			image.style.borderWidth = borderWidth+'px';
 		}
 	}
 });

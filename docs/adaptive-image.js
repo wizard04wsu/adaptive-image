@@ -1,38 +1,26 @@
 /* Copyright (c) 2025 Andy Harrison | github.com/wizard04wsu/adaptive-image */
-var L = Object.defineProperty;
-var A = (s) => {
-  throw TypeError(s);
+var W = Object.defineProperty;
+var S = (e) => {
+  throw TypeError(e);
 };
-var S = (s, h, e) => h in s ? L(s, h, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[h] = e;
-var R = (s, h, e) => S(s, typeof h != "symbol" ? h + "" : h, e), T = (s, h, e) => h.has(s) || A("Cannot " + e);
-var i = (s, h, e) => (T(s, h, "read from private field"), e ? e.call(s) : h.get(s)), u = (s, h, e) => h.has(s) ? A("Cannot add the same private member more than once") : h instanceof WeakSet ? h.add(s) : h.set(s, e), y = (s, h, e, a) => (T(s, h, "write to private field"), a ? a.call(s, e) : h.set(s, e), e), p = (s, h, e) => (T(s, h, "access private method"), e);
-const D = `<div id="frame" part="frame">\r
-	<div id="mount">\r
-		<img src="" alt="" part="img">\r
-	</div>\r
-</div>\r
-`, E = `/*====================/\r
+var z = (e, n, i) => n in e ? W(e, n, { enumerable: !0, configurable: !0, writable: !0, value: i }) : e[n] = i;
+var T = (e, n, i) => z(e, typeof n != "symbol" ? n + "" : n, i), A = (e, n, i) => n.has(e) || S("Cannot " + i);
+var s = (e, n, i) => (A(e, n, "read from private field"), i ? i.call(e) : n.get(e)), g = (e, n, i) => n.has(e) ? S("Cannot add the same private member more than once") : n instanceof WeakSet ? n.add(e) : n.set(e, i), o = (e, n, i, t) => (A(e, n, "write to private field"), t ? t.call(e, i) : n.set(e, i), i), c = (e, n, i) => (A(e, n, "access private method"), i);
+const G = `/*====================/\r
   Variables\r
 /====================*/\r
 \r
 #frame {\r
 	\r
 	/* These variables are set via JavaScript. */\r
-	--intrinsic-width: 0;\r
-	--intrinsic-height: 0;\r
 	--intrinsic-aspectratio: 1;\r
-	--specified-width: 0;\r
-	--specified-height: 0;\r
-	--specified-aspectratio: 1;\r
-	--border-width: 0;\r
+	--intrinsic-width: 0px;\r
+	--intrinsic-height: 0px;\r
 	\r
 	\r
-	--intrinsic-width-px: calc(var(--intrinsic-width) * 1px);\r
-	--intrinsic-height-px: calc(var(--intrinsic-height) * 1px);\r
-	--specified-width-px: calc(var(--specified-width) * 1px);\r
-	--specified-width-percent: calc(var(--specified-width) * 1%);\r
-	--specified-height-px: calc(var(--specified-height) * 1px);\r
-	--border-width-px: calc(var(--border-width) * 1px);\r
+	--specified-width: var(--width, var(--attribute-width, var(--intrinsic-width)));\r
+	\r
+	--specified-height: var(--height, var(--attribute-height, var(--intrinsic-height)));\r
 }\r
 \r
 /*====================/\r
@@ -43,38 +31,14 @@ const D = `<div id="frame" part="frame">\r
 	display: inline-block;\r
 }\r
 \r
-/*=== The Frame ===*/\r
+/*=== The Canvas ===*/\r
 \r
 #frame {\r
-	container-type: inline-size;\r
-	overflow: hidden;\r
-	box-sizing: content-box;\r
-	width: var(--intrinsic-width-px);\r
-	max-width: 100%;\r
-	max-width: calc(100% - 2 * var(--border-width-px));\r
-	border-width: var(--border-width-px) !important;\r
-}\r
-#frame.hasWidth {\r
-	width: var(--specified-width-px);\r
-}\r
-#frame.hasWidthPercentage {\r
-	width: var(--specified-width-percent);\r
-}\r
-\r
-/*=== The Mounting Board ===*/\r
-\r
-#mount {\r
 	container-type: size;\r
 	position: relative;\r
-	width: min(100cqw, var(--intrinsic-width-px));\r
-	height: var(--intrinsic-height-px);\r
-}\r
-.hasWidth #mount,\r
-.hasWidthPercentage #mount {\r
-	width: 100cqw;\r
-}\r
-.hasHeight #mount {\r
-	height: var(--specified-height-px);\r
+	overflow: hidden;\r
+	width: max(100%, var(--specified-width));\r
+	height: var(--specified-height);\r
 }\r
 \r
 /*=== The Artwork ===*/\r
@@ -113,37 +77,46 @@ img {\r
   Fit\r
 /====================*/\r
 \r
-/*=== None ===*/\r
+/*=== Using \`fit\` attribute ===*/\r
 \r
 :host([fit=none]) img {\r
-	width: var(--intrinsic-width-px);\r
+	width: var(--intrinsic-width);\r
 }\r
-\r
-/*=== Cover ===*/\r
-\r
 :host([fit=cover]) img {\r
 	width: max(100cqw, 100cqh * var(--intrinsic-aspectratio));\r
 	min-width: 100cqw;\r
 	min-height: 100cqh;\r
 }\r
-\r
-/*=== Fill ===*/\r
-\r
 :host([fit=fill]) img {\r
 	width: 100%;\r
 	height: 100%;\r
 }\r
-\r
-/*=== Contain ===*/\r
-\r
 :host([fit=contain]) img {\r
 	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio));\r
 }\r
-\r
-/*=== Scale-down ===*/\r
-\r
 :host([fit=scale-down]) img {\r
-	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio), var(--intrinsic-width-px));\r
+	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio), var(--intrinsic-width));\r
+}\r
+\r
+/*=== Using \`--fit\` property ===*/\r
+\r
+:host([fit=none]) img {\r
+	width: var(--intrinsic-width);\r
+}\r
+:host([fit=cover]) img {\r
+	width: max(100cqw, 100cqh * var(--intrinsic-aspectratio));\r
+	min-width: 100cqw;\r
+	min-height: 100cqh;\r
+}\r
+:host([fit=fill]) img {\r
+	width: 100%;\r
+	height: 100%;\r
+}\r
+:host([fit=contain]) img {\r
+	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio));\r
+}\r
+:host([fit=scale-down]) img {\r
+	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio), var(--intrinsic-width));\r
 }\r
 \r
 /*====================/\r
@@ -181,86 +154,93 @@ img,\r
 	--translateY: -100%;\r
 	top: 100cqh;\r
 }\r
-`, F = "cover", P = ["none", "cover", "fill", "contain", "scale-down"];
-var n, c, x, g, o, q, H, I, b;
+`, R = /* @__PURE__ */ new Set(["none", "cover", "fill", "contain", "scale-down"]), M = "cover", L = /* @__PURE__ */ new Set(["top", "middle", "center", "bottom"]), N = "middle", Y = /* @__PURE__ */ new Set(["left", "center", "right"]), U = "center", H = "image/svg+xml", q = 300, x = 150;
+var a, l, p, f, u, b, h, E, F, P, C, I, D, v;
 class _ extends HTMLElement {
   constructor() {
+    console.log("constructor()");
     super();
-    u(this, o);
-    u(this, n, {
-      intrinsic: {},
-      specified: {}
-    });
-    u(this, c);
-    u(this, x);
-    u(this, g);
-    const e = this.attachShadow({ mode: "open" }), a = document.createElement("template");
-    a.innerHTML = `<style>${E}</style>${D}`, e.appendChild(a.content.cloneNode(!0)), y(this, c, e.querySelector("#frame")), y(this, x, e.querySelector("#mount")), y(this, g, e.querySelector("img")), P.includes(this.getAttribute("fit")) || this.setAttribute("fit", F), i(this, g).addEventListener("load", () => {
-      i(this, c).classList.remove("error"), G(i(this, g)).then((r) => {
-        i(this, n).intrinsic.width = r.width, i(this, n).intrinsic.height = r.height, i(this, n).intrinsic.aspectRatio = r.aspectRatio, i(this, n).mimeType = r.mimeType || "", p(this, o, b).call(this);
-      });
-    }), i(this, g).addEventListener("error", () => {
-      i(this, c).classList.add("error"), i(this, n).mimeType = "", i(this, g).alt = this.getAttribute("alt") || "";
-      const r = i(this, g).getBoundingClientRect();
-      i(this, n).intrinsic.width = r.width, i(this, n).intrinsic.height = r.height, i(this, n).intrinsic.aspectRatio = r.width && r.height ? r.width / r.height : 1, p(this, o, b).call(this, !this.getAttribute("width") && r.width, !this.getAttribute("height") && r.height);
-    }), this.addEventListener("resize", p(this, o, b));
+    g(this, h);
+    g(this, a);
+    g(this, l);
+    g(this, p);
+    g(this, f);
+    g(this, u);
+    g(this, b);
+    const i = this.attachShadow({ mode: "open" }), t = document.createElement("template");
+    t.innerHTML = `<style>${G}</style><div id="frame"><div id="mount"><img src="" alt="" part="img"></div></div>`, i.appendChild(t.content.cloneNode(!0)), o(this, a, i.querySelector("#frame")), o(this, l, i.querySelector("img")), s(this, l).addEventListener("load", () => c(this, h, E).call(this)), s(this, l).addEventListener("error", () => c(this, h, F).call(this)), new ResizeObserver((d) => c(this, h, v).call(this)).observe(this);
   }
-  attributeChangedCallback(e, a, r) {
-    a !== r && (e === "src" ? i(this, g).src = r : e === "width" || e === "height" || e === "border-width" ? p(this, o, b).call(this) : e === "alt" && (i(this, g).alt = r || ""));
+  // Built-in method to handle changes to the observed custom attributes.
+  attributeChangedCallback(i, t, r) {
+    console.log("attributeChangedCallback()"), t !== r && (i === "src" ? s(this, l).src = r : i === "alt" ? s(this, l).alt = r || "" : c(this, h, v).call(this));
   }
 }
-n = new WeakMap(), c = new WeakMap(), x = new WeakMap(), g = new WeakMap(), o = new WeakSet(), q = function(e, a) {
-  const r = {}, l = (e || this.getAttribute("width") || "").trim();
-  l.endsWith("%") ? (r.width = Math.abs(Number(l.slice(0, -1)) || 0), r.widthIsPercentage = !0) : (r.width = Math.abs(Number(l) || 0), r.widthIsPercentage = !1);
-  const t = (a || this.getAttribute("height") || "").trim();
-  return r.height = Number(t) || 0, r.borderWidth = Number(this.getAttribute("border-width")) || 0, r;
-}, H = function(e, a = !1, r) {
-  i(this, n).specified.width = e, i(this, n).specified.widthIsPercentage = e && a;
-  let l = e, t = i(this, n).intrinsic.aspectRatio;
-  i(this, n).specified.height ? (e || (l = i(this, n).specified.height * i(this, n).intrinsic.aspectRatio), t = l / i(this, n).specified.height) : e || (l = i(this, n).intrinsic.width), i(this, c).style.setProperty("--specified-width", l), i(this, c).style.setProperty("--specified-aspectratio", t), i(this, n).specified.aspectRatio = t, r !== void 0 && i(this, c).style.setProperty("--border-width", r);
-}, I = function(e) {
-  i(this, n).specified.height = e;
-  let a = e, r = i(this, n).intrinsic.aspectRatio;
-  i(this, n).specified.width ? (e || (a = i(this, n).specified.width / i(this, n).intrinsic.aspectRatio), r = i(this, n).specified.width / a) : e || (a = i(this, n).intrinsic.height), i(this, c).style.setProperty("--specified-height", a), i(this, c).style.setProperty("--specified-aspectratio", r), i(this, n).specified.aspectRatio = r;
-}, b = function(e, a) {
-  const r = p(this, o, q).call(this);
-  p(this, o, H).call(this, e || r.width, r.widthIsPercentage, r.borderWidth), p(this, o, I).call(this, a || r.height), i(this, c).classList.toggle("hasWidth", !!i(this, n).specified.width), i(this, c).classList.toggle("hasWidthPercentage", !!i(this, n).specified.widthIsPercentage), i(this, c).classList.toggle("hasHeight", !!i(this, n).specified.height), i(this, c).style.setProperty("--intrinsic-width", i(this, n).intrinsic.width), i(this, c).style.setProperty("--intrinsic-height", i(this, n).intrinsic.height), i(this, c).style.setProperty("--intrinsic-aspectratio", i(this, n).intrinsic.aspectRatio);
+a = new WeakMap(), l = new WeakMap(), p = new WeakMap(), f = new WeakMap(), u = new WeakMap(), b = new WeakMap(), h = new WeakSet(), E = function() {
+  console.log("imageLoadHandler()"), console.log(s(this, a)), s(this, a).classList.remove("error"), O(s(this, l)).then((i) => {
+    o(this, p, i.width), o(this, f, i.height), o(this, u, i.aspectRatio), o(this, b, i.mimeType || ""), c(this, h, v).call(this);
+  });
+}, F = function() {
+  console.log("imageErrorHandler()"), s(this, a).classList.add("error"), o(this, b, ""), s(this, l).alt = this.getAttribute("alt") || "";
+  const i = s(this, l).getBoundingClientRect();
+  o(this, p, i.width), o(this, f, i.height), o(this, u, i.width && i.height ? i.width / i.height : 1), c(this, h, v).call(this, i.width, i.height);
+}, P = function() {
+  var t;
+  console.log("updateWidth()");
+  let i = Number((t = this.getAttribute("width")) == null ? void 0 : t.trim());
+  i && i > 0 ? s(this, a).style.setProperty("--attribute-width", `${i}px`) : s(this, a).style.removeProperty("--attribute-width");
+}, C = function() {
+  var t;
+  console.log("updateHeight()");
+  let i = Number((t = this.getAttribute("height")) == null ? void 0 : t.trim());
+  i && i > 0 ? s(this, a).style.setProperty("--attribute-height", `${i}px`) : s(this, a).style.removeProperty("--attribute-height");
+}, I = function() {
+  console.log("updateFit()");
+  let i = window.getComputedStyle(this).getPropertyValue("--fit");
+  R.has(i) ? s(this, a).dataset.fit = i : (i = this.getAttribute("fit"), s(this, a).dataset.fit = R.has(i) ? i : M);
+}, D = function() {
+  var d;
+  console.log("updateAlignment()");
+  let i = new Set(((d = this.getAttribute("align")) == null ? void 0 : d.split(" ")) || []), t = window.getComputedStyle(this).getPropertyValue("--align-x");
+  Y.has(t) || (t = i && Y.intersection(i).values(), t != null && t.size ? (t = t.next().value, i.delete(t)) : t = U);
+  let r = window.getComputedStyle(this).getPropertyValue("--align-y");
+  L.has(r) || (r = i && L.intersection(i).values(), r != null && r.size ? r = r.next().value : r = N), s(this, a).dataset.alignX = t, r === "center" && (r = "middle"), s(this, a).dataset.alignY = r;
+}, v = function() {
+  console.log("refreshImage()"), s(this, a).style.setProperty("--intrinsic-width", `${s(this, p)}px`), s(this, a).style.setProperty("--intrinsic-height", `${s(this, f)}px`), s(this, a).style.setProperty("--intrinsic-aspectratio", s(this, u)), c(this, h, P).call(this), c(this, h, C).call(this), c(this, h, I).call(this), c(this, h, D).call(this);
 }, // Observe changes to these custom attributes.
-R(_, "observedAttributes", ["src", "alt", "width", "height", "fit", "align", "border-width"]);
-function G(s) {
-  const h = "image/svg+xml";
-  return new Promise(async (r, l) => {
+T(_, "observedAttributes", ["src", "alt", "width", "height", "fit", "align"]);
+function O(e) {
+  return new Promise(async (n, i) => {
     let t = {};
     try {
-      const w = await (await fetch(s.src)).blob();
-      t.mimeType = w.type;
-    } catch (d) {
-      console.warn(`Unable to determine MIME type of ${s.src}`, d.message), t.mimeType ?? (t.mimeType = "");
+      const d = await (await fetch(e.src)).blob();
+      t.mimeType = d.type;
+    } catch (r) {
+      console.warn(`Unable to determine MIME type of ${e.src}`, r.message), t.mimeType ?? (t.mimeType = "");
     }
-    if (!t.mimeType || t.mimeType === h) {
-      let d;
+    if (!t.mimeType || t.mimeType === H) {
+      let r;
       try {
-        const f = await (await fetch(s.src)).text();
-        d = new DOMParser().parseFromString(f, h).querySelector("svg");
+        const w = await (await fetch(e.src)).text();
+        r = new DOMParser().parseFromString(w, H).querySelector("svg");
       } catch {
-        const f = s.getBoundingClientRect();
-        return t.width = f.width, t.height = f.height, t.width && t.height && (t.aspectRatio = t.width / t.height), r(t);
+        const w = e.getBoundingClientRect();
+        return t.width = w.width, t.height = w.height, t.width && t.height && (t.aspectRatio = t.width / t.height), n(t);
       }
-      let w = parseFloat(d.getAttribute("width")), v = parseFloat(d.getAttribute("height"));
-      if (w && v)
-        t.width = w, t.height = v, t.aspectRatio = t.width / t.height;
-      else if (d.hasAttribute("viewBox")) {
-        let m = d.getAttribute("viewBox").match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
-        m ? (m = m.map((f) => Math.abs(Number(f))), [, w, v] = m, t.width = w || 300, t.height = v || 150, t.aspectRatio = t.width / t.height) : (t.aspectRatio = 300 / 150, t.width ?? (t.width = t.height * t.aspectRatio || 300), t.height ?? (t.height = t.width * t.aspectRatio || 150));
+      let d = parseFloat(r.getAttribute("width")), y = parseFloat(r.getAttribute("height"));
+      if (d && y)
+        t.width = d, t.height = y, t.aspectRatio = t.width / t.height;
+      else if (r.hasAttribute("viewBox")) {
+        let m = r.getAttribute("viewBox").match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
+        m ? (m = m.map((w) => Math.abs(Number(w))), [, d, y] = m, t.width = d || q, t.height = y || x, t.aspectRatio = t.width / t.height) : (t.aspectRatio = q / x, t.width ?? (t.width = t.height * t.aspectRatio || q), t.height ?? (t.height = t.width * t.aspectRatio || x));
       } else
-        t.width ?? (t.width = 300), t.height ?? (t.height = 150), t.aspectRatio = t.width / t.height;
-    } else if (t.width = s.naturalWidth, t.height = s.naturalHeight, t.width && t.height)
+        t.width ?? (t.width = q), t.height ?? (t.height = x), t.aspectRatio = t.width / t.height;
+    } else if (t.width = e.naturalWidth, t.height = e.naturalHeight, t.width && t.height)
       t.aspectRatio = t.width / t.height;
     else {
-      const d = s.getBoundingClientRect();
-      return t.width = d.width, t.height = d.height, t.width && t.height && (t.aspectRatio = t.width / t.height), r(t);
+      const r = e.getBoundingClientRect();
+      return t.width = r.width, t.height = r.height, t.width && t.height && (t.aspectRatio = t.width / t.height), n(t);
     }
-    return r(t);
+    return n(t);
   });
 }
 window.customElements.define("adaptive-image", _);

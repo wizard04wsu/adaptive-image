@@ -5,21 +5,14 @@
 #frame {
 	
 	/* These variables are set via JavaScript. */
-	--intrinsic-width: 0;
-	--intrinsic-height: 0;
 	--intrinsic-aspectratio: 1;
-	--specified-width: 0;
-	--specified-height: 0;
-	--specified-aspectratio: 1;
-	--border-width: 0;
+	--intrinsic-width: 0px;
+	--intrinsic-height: 0px;
 	
 	
-	--intrinsic-width-px: calc(var(--intrinsic-width) * 1px);
-	--intrinsic-height-px: calc(var(--intrinsic-height) * 1px);
-	--specified-width-px: calc(var(--specified-width) * 1px);
-	--specified-width-percent: calc(var(--specified-width) * 1%);
-	--specified-height-px: calc(var(--specified-height) * 1px);
-	--border-width-px: calc(var(--border-width) * 1px);
+	--specified-width: var(--width, var(--attribute-width, var(--intrinsic-width)));
+	
+	--specified-height: var(--height, var(--attribute-height, var(--intrinsic-height)));
 }
 
 /*====================/
@@ -30,38 +23,14 @@
 	display: inline-block;
 }
 
-/*=== The Frame ===*/
+/*=== The Canvas ===*/
 
 #frame {
-	container-type: inline-size;
-	overflow: hidden;
-	box-sizing: content-box;
-	width: var(--intrinsic-width-px);
-	max-width: 100%;
-	max-width: calc(100% - 2 * var(--border-width-px));
-	border-width: var(--border-width-px) !important;
-}
-#frame.hasWidth {
-	width: var(--specified-width-px);
-}
-#frame.hasWidthPercentage {
-	width: var(--specified-width-percent);
-}
-
-/*=== The Mounting Board ===*/
-
-#mount {
 	container-type: size;
 	position: relative;
-	width: min(100cqw, var(--intrinsic-width-px));
-	height: var(--intrinsic-height-px);
-}
-.hasWidth #mount,
-.hasWidthPercentage #mount {
-	width: 100cqw;
-}
-.hasHeight #mount {
-	height: var(--specified-height-px);
+	overflow: hidden;
+	width: var(--specified-width);
+	height: var(--specified-height);
 }
 
 /*=== The Artwork ===*/
@@ -100,37 +69,46 @@ img {
   Fit
 /====================*/
 
-/*=== None ===*/
+/*=== Using `fit` attribute ===*/
 
 :host([fit=none]) img {
-	width: var(--intrinsic-width-px);
+	width: var(--intrinsic-width);
 }
-
-/*=== Cover ===*/
-
 :host([fit=cover]) img {
 	width: max(100cqw, 100cqh * var(--intrinsic-aspectratio));
 	min-width: 100cqw;
 	min-height: 100cqh;
 }
-
-/*=== Fill ===*/
-
 :host([fit=fill]) img {
 	width: 100%;
 	height: 100%;
 }
-
-/*=== Contain ===*/
-
 :host([fit=contain]) img {
 	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio));
 }
-
-/*=== Scale-down ===*/
-
 :host([fit=scale-down]) img {
-	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio), var(--intrinsic-width-px));
+	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio), var(--intrinsic-width));
+}
+
+/*=== Using `--fit` property ===*/
+
+:host([fit=none]) img {
+	width: var(--intrinsic-width);
+}
+:host([fit=cover]) img {
+	width: max(100cqw, 100cqh * var(--intrinsic-aspectratio));
+	min-width: 100cqw;
+	min-height: 100cqh;
+}
+:host([fit=fill]) img {
+	width: 100%;
+	height: 100%;
+}
+:host([fit=contain]) img {
+	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio));
+}
+:host([fit=scale-down]) img {
+	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio), var(--intrinsic-width));
 }
 
 /*====================/
