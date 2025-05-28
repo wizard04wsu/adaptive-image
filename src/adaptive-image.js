@@ -3,7 +3,7 @@ import getDimensions from './element-dimensions.js';
 
 const FIT_KEYWORDS = new Set(['none', 'cover', 'fill', 'contain', 'scale-down']);
 const DEFAULT_FIT = "cover";
-const ALIGN_Y_KEYWORDS = new Set(['top', 'middle', 'center', 'bottom']);
+const ALIGN_Y_KEYWORDS = new Set(['top', 'middle', 'bottom']);
 const DEFAULT_ALIGN_Y = "middle";
 const ALIGN_X_KEYWORDS = new Set(['left', 'center', 'right']);
 const DEFAULT_ALIGN_X = "center";
@@ -195,15 +195,16 @@ class AdaptiveImage extends HTMLElement {
 				
 				// Use the first one.
 				alignX = alignX.next().value;
-				
-				// Remove the match in case it's 'center' so it won't match with both X and Y.
-				align.delete(alignX);
 			}
 			else{
 				// Use the default.
 				alignX = DEFAULT_ALIGN_X;
 			}
 		}
+		
+		// Set the `data-align-x` attribute of #frame.
+		this.#frame.dataset.alignX = alignX;
+		
 		
 		// Value from `--align-y` property.
 		let alignY = window.getComputedStyle(this).getPropertyValue('--align-y');
@@ -225,11 +226,7 @@ class AdaptiveImage extends HTMLElement {
 			}
 		}
 		
-		// Set the `data-align-x` attribute of #frame.
-		this.#frame.dataset.alignX = alignX;
-		
 		// Set the `data-align-y` attribute of #frame.
-		if(alignY === 'center') alignY = 'middle';
 		this.#frame.dataset.alignY = alignY;
 	}
 	
