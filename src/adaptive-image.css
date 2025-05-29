@@ -15,6 +15,7 @@
 	
 	overflow: hidden;
 	height: 100%;
+	line-height: 1; /* For broken images. */
 }
 #inner {
 	/* Align */
@@ -73,6 +74,18 @@
 	--translateY: 100%;
 }
 
+/* Broken image */
+#image:has(img.error) {
+	display: table-cell;
+	text-align: center;
+}
+[data-align-x~=left] #image:has(img.error) {
+	text-align: left;
+}
+[data-align-x~=right] #image:has(img.error) {
+	text-align: right;
+}
+
 
 /*====================/
   Fit
@@ -124,4 +137,14 @@
 #outer:not([data-fit=none]) img {
 	width: 100%;
 	height: 100%;
+}
+
+/* Broken image */
+#outer:has(img.error) {
+	overflow: auto;
+	scrollbar-width: none;
+}
+#image:has(img.error) {
+	width: 100%;
+	height: auto;
 }

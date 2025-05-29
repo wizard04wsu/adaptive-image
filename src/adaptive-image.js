@@ -95,7 +95,7 @@ class AdaptiveImage extends HTMLElement {
 		debug.logFn('imageLoadHandler');
 		
 		// Remove the error class if it was added previously.
-		this.#outer.classList.remove('error');
+		this.#img.classList.remove('error');
 		
 		// Get the properties of the image file.
 		const imageProperties = await getImageProperties(this.#img);
@@ -115,7 +115,7 @@ class AdaptiveImage extends HTMLElement {
 		debug.logFn('imageErrorHandler');
 		
 		// Add the error class to the outer element.
-		this.#outer.classList.add('error');
+		this.#img.classList.add('error');
 		
 		// Clear the MIME type if it was set previously.
 		this.#mimeType = '';
