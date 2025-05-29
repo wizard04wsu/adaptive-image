@@ -41,7 +41,7 @@ class AdaptiveImage extends HTMLElement {
 		// Create the shadow DOM and clone the template.
 		const shadowRoot = this.attachShadow({mode: 'open'});
 		const template = document.createElement('template');
-		template.innerHTML = `<style>${CSS}</style><div id="frame"><div id="mount"><img src="" alt="" part="img"></div></div>`;
+		template.innerHTML = `<style>${CSS}</style><div id="outer"><div id="inner"><img src="" alt="" part="img"></div></div>`;
 		shadowRoot.appendChild(template.content.cloneNode(true));
 		
 		// Save references to the internal elements.
