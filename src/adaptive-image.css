@@ -1,138 +1,118 @@
-/*====================/
-  Variables
-/====================*/
-
-div {
-	
-	/* These variables are set via JavaScript. */
-	--intrinsic-aspectratio: 1;
-	--intrinsic-width: 0px;
-	--intrinsic-height: 0px;
-}
-
-/*====================/
-  Structure
-/====================*/
-
 :host {
+	/* These variables are set via JavaScript. */
+	--intrinsic-width: 128px;
+	--intrinsic-height: 128px;
+	
 	display: inline-block;
+	width: var(--intrinsic-width);
+	height: var(--intrinsic-height);
 }
-
-/*=== The Canvas ===*/
-
-/*#frame {
-	container-type: size;
-	position: relative;
+#outer {
+	/* These variables are set via JavaScript. */
+	--intrinsic-width: 128px;
+	--intrinsic-height: 128px;
+	--intrinsic-aspectratio: 1;
+	
 	overflow: hidden;
-	width: var(--width);
-	height: var(--height);
-}*/
-
-/*=== The Artwork ===*/
-
-/*img {
-	box-sizing: content-box;
-	display: inline-block;
-	position: relative;
-	position: absolute;
-	box-sizing: content-box;
+	height: 100%;
+}
+#inner {
+	/* Align */
+	text-align: left;
 	transform: translateX(var(--translateX)) translateY(var(--translateY));
 	
-	/* For alt text of broken images. */
-/*	white-space: nowrap;
-	line-height: 1;
-}
-#frame.error img {
-	width: auto;
-	min-width: auto;
-	max-width: none;
-	height: auto;
-	min-height: auto;
-	max-height: none;
-	left: 0;
-	top: 0;
-	transform: translateY(50cqh) translateY(-50%);
-}
-:host([align~=top]) #frame.error img {
-	transform: translateY(0cqh) translateY(0%);
-}
-:host([align~=bottom]) #frame.error img {
-	transform: translateY(100cqh) translateY(-100%);
-}*/
-
-:host #outer {
+	/* Fit */
 	height: 100%;
-	overflow: hidden;
+	container-type: size; /* Only required for fit=contain. */
 }
-
-/*====================/
-  Fit
-/====================*/
-
-/*=== Using `fit` attribute ===*/
-
-:host #inner {
-	height: 100%;
-}
-:host([fit=contain]) #inner {
-	width: auto;
-	max-width: 100%;
+#image {
+	/* Align */
+	display: inline-block;
+	transform: translateX(calc(-1 * var(--translateX))) translateY(calc(-1 * var(--translateY)));
+	
+	/* Fit */
 	aspect-ratio: var(--intrinsic-aspectratio);
 }
 
-:host([fit=cover]) img {
-	width: fit-content;
-	height: fit-content;
-	min-width: 100%;
-	min-height: 100%;
-}
-:host([fit=fill]) img {
-	width: 100%;
-	height: 100%;
-}
-:host([fit=contain]) img {
-	width: 100%;
-	aspect-ratio: inherit;
-}
-:host([fit=scale-down]) img {
-	max-width: 100%;
-	max-height: 100%;
-}
-
-/*=== Using `--fit` property ===*/
-
-/*TODO*/
 
 /*====================/
   Alignment
 /====================*/
 
-:host #inner {
-	text-align: left;
-	transform: translateX(var(--translateX)) translateY(var(--translateY));
-}
-:host img {
-	transform: translateX(calc(-1 * var(--translateX))) translateY(calc(-1 * var(--translateY)));
-}
-
 /*=== Horizontal ===*/
 
 /* Center (default) */
-:host #inner { --translateX: 50%; }
+#inner {
+	--translateX: 50%;
+}
 
 /* Left */
-:host([align~=left]) #inner { --translateX: 0%; }
+[data-align-x~=left] #inner {
+	--translateX: 0%;
+}
 
 /* Right */
-:host([align~=right]) #inner { --translateX: 100%; }
+[data-align-x~=right] #inner {
+	--translateX: 100%;
+}
 
 /*=== Vertical ===*/
 
 /* Middle (default) */
-:host #inner { --translateY: 50%; }
+#inner {
+	--translateY: 50%;
+}
 
 /* Top */
-:host([align~=top]) #inner { --translateY: 0%; }
+[data-align-y~=top] #inner {
+	--translateY: 0%;
+}
 
 /* Bottom */
-:host([align~=bottom]) #inner { --translateY: 100%; }
+[data-align-y~=bottom] #inner {
+	--translateY: 100%;
+}
+
+
+/*====================/
+  Fit
+/====================*/
+
+/* None (default) */
+
+/* Cover */
+[data-fit=cover] #image {
+	min-width: 100%;
+	min-height: 100%;
+	width: fit-content;
+	height: fit-content;
+}
+
+/* Fill */
+[data-fit=fill] #image {
+	aspect-ratio: auto;
+	width: 100%;
+	height: 100%;
+}
+
+/* Contain */
+[data-fit=contain] #image {
+	max-width: 100%;
+	max-height: 100%;
+	width: min(100cqw, calc(100cqh * var(--intrinsic-aspectratio)));
+}
+
+/* Scale-down */
+[data-fit=scale-down] #image {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+/* Fit is not 'None' */
+[data-fit=cover] img,
+[data-fit=fill] img,
+[data-fit=contain] img,
+[data-fit=scale-down] img {
+	height: 100%;
+	width: 100%;
+}
