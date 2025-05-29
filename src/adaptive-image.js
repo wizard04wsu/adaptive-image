@@ -217,6 +217,9 @@ class AdaptiveImage extends HTMLElement {
 	#refreshImage(){
 		debug.logFn('refreshImage');
 		
+		this.#outer.classList.remove('svg');
+		if(this.#mimeType === SVG_MIME_TYPE) this.#outer.classList.add('svg');
+		
 		// Set data-align-x, data-align-y, and data-fit attributes.
 		this.#updateAlignment();
 		this.#updateFit();
@@ -288,6 +291,8 @@ async function getImageProperties(imgElem){
 		}
 		
 		// The image is an SVG.
+		
+		ret.mimeType = SVG_MIME_TYPE;
 		
 		// Get the width and height attributes.
 		let svgWidth = parseFloat(svgElem.getAttribute('width'));
