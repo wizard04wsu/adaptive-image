@@ -22,7 +22,7 @@ body {
 }
 #options > div {
 	display: grid;
-	grid-template-columns: auto auto auto auto 1fr;
+	grid-template-columns: repeat(5, auto) 1fr;
 	gap: 10px;
 }
 input[type="number"] {
@@ -54,11 +54,12 @@ fieldset div > :is(label, input) {
 }
 #columns > div {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+	grid-template-columns: calc(2em + 10px) repeat(auto-fit, minmax(0, 1fr));
 	gap: 10px;
 	justify-content: stretch;
 }
-#columns > div:first-child > div {
+#columns > div:first-child > div,
+#columns > div:nth-child(n+2) > div:first-child {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -68,7 +69,10 @@ fieldset div > :is(label, input) {
 	font-size: 2em;
 	background: #0008 !important;
 }
-#columns > div:nth-child(n+2) > div {
+#columns > div:nth-child(n+2) > div:first-child > span {
+	transform: rotate(-90deg);
+}
+#columns > div:nth-child(n+2) > div:nth-child(n+2) {
 	container-type: inline-size;
 	position: relative;
 	overflow: hidden;
@@ -93,7 +97,7 @@ adaptive-image:first-child {
 #columns > div:last-child adaptive-image:first-child {
 	visibility: hidden;
 }
-#columns > div:nth-child(n+2) > div::after {
+#columns > div:nth-child(n+2) > div:nth-child(n+2)::after {
 	content: '';
 	position: absolute;
 	z-index: 1;
@@ -126,19 +130,38 @@ adaptive-image {
 	color: white;
 }
 
-body:has(#fit-none:not(:checked)) #columns > div > div:nth-child(1) {
+body:has(#image-small:not(:checked)) #columns > div:nth-child(2) {
 	display: none;
 }
-body:has(#fit-cover:not(:checked)) #columns > div > div:nth-child(2) {
+body:has(#image-large:not(:checked)) #columns > div:nth-child(3) {
 	display: none;
 }
-body:has(#fit-fill:not(:checked)) #columns > div > div:nth-child(3) {
+body:has(#image-svg:not(:checked)) #columns > div:nth-child(4) {
 	display: none;
 }
-body:has(#fit-contain:not(:checked)) #columns > div > div:nth-child(4) {
+body:has(#image-wide:not(:checked)) #columns > div:nth-child(5) {
 	display: none;
 }
-body:has(#fit-scale-down:not(:checked)) #columns > div > div:nth-child(5) {
+body:has(#image-tall:not(:checked)) #columns > div:nth-child(6) {
+	display: none;
+}
+body:has(#image-broken:not(:checked)) #columns > div:nth-child(7) {
+	display: none;
+}
+
+body:has(#fit-none:not(:checked)) #columns > div > div:nth-child(2) {
+	display: none;
+}
+body:has(#fit-cover:not(:checked)) #columns > div > div:nth-child(3) {
+	display: none;
+}
+body:has(#fit-fill:not(:checked)) #columns > div > div:nth-child(4) {
+	display: none;
+}
+body:has(#fit-contain:not(:checked)) #columns > div > div:nth-child(5) {
+	display: none;
+}
+body:has(#fit-scale-down:not(:checked)) #columns > div > div:nth-child(6) {
 	display: none;
 }
 
