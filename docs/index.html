@@ -13,12 +13,12 @@
 	<script src="test.js"></script>
 	<script>
 		const imageSrc = [
-			'dahlia with background.png',
-			'african-daisy.jpg',
-			'Blue and White Striped Dahlia Flower.svg',
-			'flowers-746083_640.jpg',
-			'lilacs-1451676_1280 cropped.jpg',
-			'dne.jpg',
+			{ title: 'Small', src: 'dahlia with background.png' },
+			{ title: 'Large', src: 'african-daisy.jpg' },
+			{ title: 'SVG', src: 'Blue and White Striped Dahlia Flower.svg' },
+			{ title: 'Wide', src: 'flowers-746083_640.jpg' },
+			{ title: 'Tall', src: 'lilacs-1451676_1280 cropped.jpg' },
+			{ title: 'Broken', src: 'dne.jpg' },
 		];
 	</script>
 	
@@ -47,6 +47,25 @@
 				</span>
 				<label><input type="checkbox" id="showClipped"> Show overflows</label>
 			</fieldset>
+			<fieldset id="fs-image"><legend>Image</legend>
+				<div>
+					<label><input type="checkbox" id="image-small" checked> Small</label>
+					<label><input type="checkbox" id="image-large" checked> Large</label>
+					<label><input type="checkbox" id="image-svg" checked> SVG</label>
+					<label><input type="checkbox" id="image-wide" checked> Wide</label>
+					<label><input type="checkbox" id="image-tall" checked> Tall</label>
+					<label><input type="checkbox" id="image-broken" checked> Broken</label>
+				</div>
+			</fieldset>
+			<fieldset id="fs-fit"><legend>Fit</legend>
+				<div>
+					<label><input type="checkbox" id="fit-none" checked> None</label>
+					<label><input type="checkbox" id="fit-cover" checked> Cover</label>
+					<label><input type="checkbox" id="fit-fill" checked> Fill</label>
+					<label><input type="checkbox" id="fit-contain" checked> Contain</label>
+					<label><input type="checkbox" id="fit-scale-down" checked> Scale-down</label>
+				</div>
+			</fieldset>
 			<fieldset id="fs-alignment"><legend>Alignment</legend>
 				<table>
 					<tr>
@@ -66,15 +85,6 @@
 					</tr>
 				</table>
 			</fieldset>
-			<fieldset id="fs-fit"><legend>Fit</legend>
-				<div>
-					<label><input type="checkbox" id="fit-none" checked> None</label>
-					<label><input type="checkbox" id="fit-cover" checked> Cover</label>
-					<label><input type="checkbox" id="fit-fill" checked> Fill</label>
-					<label><input type="checkbox" id="fit-contain" checked> Contain</label>
-					<label><input type="checkbox" id="fit-scale-down" checked> Scale-down</label>
-				</div>
-			</fieldset>
 			<p style="line-height: 1.75;">
 				<a href="https://github.com/wizard04wsu/adaptive-image"><img src="github-mark.svg" style="height:1em"> Adaptive Image repo</a><br>
 				See the <a href="test-simple.html">basic test page</a>.
@@ -85,7 +95,7 @@
 	<section>
 		<div id="columns">
 			<div>
-				<div>None</div><div>Cover</div><div>Fill</div><div>Contain</div><div>Scale-Down</div>
+				<div></div><div>None</div><div>Cover</div><div>Fill</div><div>Contain</div><div>Scale-Down</div>
 			</div>
 		</div>
 	</section>

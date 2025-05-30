@@ -12,14 +12,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
 	let table = $('#columns');
 	let resizeObserverMap = new Map;
 	
-	for(const src of imageSrc){
+	for(const item of imageSrc){
+		
 		const row = document.createElement('div');
+		
+		const cell = document.createElement('div');
+		cell.innerHTML = `<span>${item.title}</span>`;
+		row.appendChild(cell);
+		
 		for(const fit of FITS){
+			
 			const cell = document.createElement('div');
 			
 			const imgMasked = document.createElement('adaptive-image');
-			imgMasked.setAttribute('src', src);
-			imgMasked.setAttribute('alt', /dne\.jpg$/.test(src) ? 'Image not found' : '');
+			imgMasked.setAttribute('src', item.src);
+			imgMasked.setAttribute('alt', item.title === 'Broken' ? 'Image not found' : '');
 			imgMasked.setAttribute('fit', fit);
 			cell.appendChild(imgMasked);
 			
@@ -28,8 +35,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
 			
 			row.appendChild(cell);
 		}
+		
 		table.appendChild(row);
 	}
+	
 	updateImageAttributes();
 	
 	$('#options').addEventListener('change', updateImageAttributes);
