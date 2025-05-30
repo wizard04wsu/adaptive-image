@@ -33,5 +33,6 @@ Additionally, the following CSS properties may be used. These have priority over
 | &#x2011;&#x2011;fit			| The method used to scale the image to fit inside the component's content box (`none`, `cover`, `fill`, `contain`, `scale-down`). Default is `cover`.	|
 | &#x2011;&#x2011;align&#x2011;x			| Horizontal alignment inside the component's content box (`left`/`center`/`right`). Default is `center`. 	|
 | &#x2011;&#x2011;align&#x2011;y			| Vertical alignment inside the component's content box (`top`/`middle`/`bottom`). Default is `middle`. 	|
+| &#x2011;&#x2011;overflow			| How to show any [overflow](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow) of the image outside the component's content box. Default is `hidden`. 	|
 
 Styles can be applied to the image itself using the `::part(img)` pseudo-element.

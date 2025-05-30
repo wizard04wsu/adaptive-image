@@ -214,6 +214,16 @@ class AdaptiveImage extends HTMLElement {
 		}
 	}
 	
+	#updateOverflow(){
+		debug.logFn('updateOverflow');
+		
+		// Get value of the `--overflow` property.
+		const overflow = window.getComputedStyle(this).getPropertyValue('--overflow').toLowerCase();
+		
+		// Set the `overflow` property of #outer's style attribute.
+		this.#outer.style.setProperty('overflow', overflow || null);
+	}
+	
 	#refreshImage(){
 		debug.logFn('refreshImage');
 		
@@ -223,6 +233,7 @@ class AdaptiveImage extends HTMLElement {
 		// Set data-align-x, data-align-y, and data-fit attributes.
 		this.#updateAlignment();
 		this.#updateFit();
+		this.#updateOverflow();
 		
 		// Set CSS variables.
 		this.style.setProperty('--intrinsic-width', `${this.#intrinsicWidth}px`);

@@ -1,12 +1,12 @@
 /* Copyright (c) 2025 Andy Harrison | github.com/wizard04wsu/adaptive-image */
-var D = Object.defineProperty;
-var x = (i) => {
+var E = Object.defineProperty;
+var A = (i) => {
   throw TypeError(i);
 };
-var G = (i, t, e) => t in i ? D(i, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : i[t] = e;
-var L = (i, t, e) => G(i, typeof t != "symbol" ? t + "" : t, e), F = (i, t, e) => t.has(i) || x("Cannot " + e);
-var r = (i, t, e) => (F(i, t, "read from private field"), e ? e.call(i) : t.get(i)), p = (i, t, e) => t.has(i) ? x("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(i) : t.set(i, e), g = (i, t, e, n) => (F(i, t, "write to private field"), n ? n.call(i, e) : t.set(i, e), e), m = (i, t, e) => (F(i, t, "access private method"), e);
-const I = `:host {\r
+var I = (i, t, e) => t in i ? E(i, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : i[t] = e;
+var C = (i, t, e) => I(i, typeof t != "symbol" ? t + "" : t, e), T = (i, t, e) => t.has(i) || A("Cannot " + e);
+var r = (i, t, e) => (T(i, t, "read from private field"), e ? e.call(i) : t.get(i)), m = (i, t, e) => t.has(i) ? A("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(i) : t.set(i, e), c = (i, t, e, n) => (T(i, t, "write to private field"), n ? n.call(i, e) : t.set(i, e), e), g = (i, t, e) => (T(i, t, "access private method"), e);
+const _ = `:host {\r
 	/* These variables are set via JavaScript. */\r
 	--intrinsic-width: 0px;\r
 	--intrinsic-height: 0px;\r
@@ -134,19 +134,15 @@ const I = `:host {\r
 	max-width: 100%;\r
 	max-height: 100%;\r
 	width: min(100cqw, calc(100cqh * var(--intrinsic-aspectratio)));\r
-	height: auto;\r
+	height: min(100cqh, calc(100cqw / var(--intrinsic-aspectratio)));\r
 }\r
 \r
 /* Scale-down */\r
 [data-fit=scale-down] #image {\r
 	max-width: 100%;\r
 	max-height: 100%;\r
-	width: auto;\r
-	height: auto;\r
-}\r
-[data-fit=scale-down].svg #image {\r
 	width: min(100cqw, calc(100cqh * var(--intrinsic-aspectratio)), var(--intrinsic-width));\r
-	height: auto;\r
+	height: min(100cqh, calc(100cqw / var(--intrinsic-aspectratio)), var(--intrinsic-height));\r
 }\r
 \r
 /* None */\r
@@ -171,8 +167,7 @@ const I = `:host {\r
 	width: 100%;\r
 	height: auto;\r
 }\r
-`, C = "cover", R = "middle", U = "center", T = "image/svg+xml";
-const d = {
+`, M = `<style>${_}</style><div id="outer"><div id="inner"><div id="image"><img src="" alt="" part="img"></div></div></div>`, O = "cover", X = "middle", k = "center", L = "image/svg+xml", x = 300, F = 150, l = {
   enabled: !1,
   enable() {
     this.enabled = !0;
@@ -182,72 +177,77 @@ const d = {
   }
 };
 for (const i in console)
-  d[i] = function() {
+  l[i] = function() {
     this.enabled && console[i].apply(null, arguments);
   };
-d.logFn = (i) => d.log(`%cƒ%c${i}%c()`, "font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;", "border-bottom:1px dotted #888; padding-left:1em;", "");
-d.logFnGroup = (i) => d.group(`%cƒ%c${i}%c()`, "font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;", "border-bottom:1px dotted #888; padding-left:1em; font-weight:bold;", "");
-var h, l, w, f, v, y, o, _, H, S, E, b;
-class A extends HTMLElement {
+l.logFn = (i) => l.log(`%cƒ%c${i}%c()`, "font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;", "border-bottom:1px dotted #888; padding-left:1em;", "");
+l.logFnGroup = (i) => l.group(`%cƒ%c${i}%c()`, "font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;", "border-bottom:1px dotted #888; padding-left:1em; font-weight:bold;", "");
+var h, d, w, f, v, y, s, R, P, q, H, Y, b;
+class S extends HTMLElement {
   constructor() {
-    d.logFn("constructor");
+    l.logFn("constructor");
     super();
-    p(this, o);
-    p(this, h);
-    p(this, l);
-    p(this, w);
-    p(this, f);
-    p(this, v);
-    p(this, y);
+    m(this, s);
+    m(this, h);
+    m(this, d);
+    m(this, w);
+    m(this, f);
+    m(this, v);
+    m(this, y);
     const e = this.attachShadow({ mode: "open" }), n = document.createElement("template");
-    n.innerHTML = `<style>${I}</style><div id="outer"><div id="inner"><div id="image"><img src="" alt="" part="img"></div></div></div>`, e.appendChild(n.content.cloneNode(!0)), g(this, h, e.querySelector("#outer")), g(this, l, e.querySelector("img")), r(this, l).addEventListener("load", () => m(this, o, _).call(this)), r(this, l).addEventListener("error", () => m(this, o, H).call(this)), new ResizeObserver((s) => {
-      d.logFn("resizeObserver"), m(this, o, b).call(this);
+    n.innerHTML = M, e.appendChild(n.content.cloneNode(!0)), c(this, h, e.querySelector("#outer")), c(this, d, e.querySelector("img")), r(this, d).addEventListener("load", () => g(this, s, R).call(this)), r(this, d).addEventListener("error", () => g(this, s, P).call(this)), new ResizeObserver((o) => {
+      l.logFn("resizeObserver"), g(this, s, b).call(this);
     }).observe(this);
   }
   // Built-in method to handle changes to the observed custom attributes.
   attributeChangedCallback(e, n, a) {
-    n !== a && (e === "src" ? r(this, l).src = a : e === "alt" ? r(this, l).alt = a || "" : m(this, o, b).call(this));
+    n !== a && (e === "src" ? r(this, d).src = a : e === "alt" ? r(this, d).alt = a || "" : g(this, s, b).call(this));
   }
 }
-h = new WeakMap(), l = new WeakMap(), w = new WeakMap(), f = new WeakMap(), v = new WeakMap(), y = new WeakMap(), o = new WeakSet(), _ = async function() {
-  d.logFn("imageLoadHandler"), r(this, l).classList.remove("error");
-  const e = await V(r(this, l));
-  g(this, w, e.width), g(this, f, e.height), g(this, v, e.aspectRatio), g(this, y, e.mimeType || ""), m(this, o, b).call(this);
-}, H = function() {
-  d.logFn("imageErrorHandler"), r(this, l).classList.add("error"), g(this, y, ""), r(this, l).alt = this.getAttribute("alt") || "";
-  const e = r(this, l).getBoundingClientRect();
-  g(this, w, e.width), g(this, f, e.height), g(this, v, e.width && e.height ? e.width / e.height : 1), m(this, o, b).call(this, e.width, e.height);
-}, S = function() {
-  var c;
-  d.logFn("updateAlignment");
+h = new WeakMap(), d = new WeakMap(), w = new WeakMap(), f = new WeakMap(), v = new WeakMap(), y = new WeakMap(), s = new WeakSet(), R = async function() {
+  l.logFn("imageLoadHandler"), r(this, d).classList.remove("error");
+  const e = await D(r(this, d));
+  c(this, w, e.width), c(this, f, e.height), c(this, v, e.aspectRatio), c(this, y, e.mimeType || ""), g(this, s, b).call(this);
+}, P = function() {
+  l.logFn("imageErrorHandler"), r(this, d).classList.add("error"), c(this, y, ""), r(this, d).alt = this.getAttribute("alt") || "";
+  const e = r(this, d).getBoundingClientRect();
+  c(this, w, e.width), c(this, f, e.height), c(this, v, e.width && e.height ? e.width / e.height : 1), g(this, s, b).call(this, e.width, e.height);
+}, q = function() {
+  var p;
+  l.logFn("updateAlignment");
   const e = ["top", "middle", "center", "bottom"];
-  let n = ((c = this.getAttribute("align")) == null ? void 0 : c.toLowerCase().split(" ")) || [], a = window.getComputedStyle(this).getPropertyValue("--align-x").toLowerCase();
+  let n = ((p = this.getAttribute("align")) == null ? void 0 : p.toLowerCase().split(" ")) || [], a = window.getComputedStyle(this).getPropertyValue("--align-x").toLowerCase();
   if (!["left", "center", "right"].includes(a)) {
     a = "";
     for (const u of n)
       ["left", "right"].includes(u) && (a = u);
-    !a && n.includes("center") && (a = "center", n.splice(n.indexOf("center"), 1)), a || (a = U);
+    !a && n.includes("center") && (a = "center", n.splice(n.indexOf("center"), 1)), a || (a = k);
   }
   r(this, h).dataset.alignX = a;
-  let s = window.getComputedStyle(this).getPropertyValue("--align-y").toLowerCase();
-  if (!e.includes(s)) {
-    s = "";
+  let o = window.getComputedStyle(this).getPropertyValue("--align-y").toLowerCase();
+  if (!e.includes(o)) {
+    o = "";
     for (const u of n)
-      e.includes(u) && (s = u);
-    s || (s = R);
+      e.includes(u) && (o = u);
+    o || (o = X);
   }
-  s === "center" && (s = "middle"), r(this, h).dataset.alignY = s;
-}, E = function() {
-  d.logFn("updateFit");
+  o === "center" && (o = "middle"), r(this, h).dataset.alignY = o;
+}, H = function() {
+  l.logFn("updateFit");
   const e = ["none", "cover", "fill", "contain", "scale-down"];
   let n = window.getComputedStyle(this).getPropertyValue("--fit").toLowerCase();
-  e.includes(n) ? r(this, h).dataset.fit = n : (n = this.getAttribute("fit"), r(this, h).dataset.fit = e.includes(n) ? n : C);
+  e.includes(n) ? r(this, h).dataset.fit = n : (n = this.getAttribute("fit"), r(this, h).dataset.fit = e.includes(n) ? n : O);
+}, // This was just created for the demo, but the `--adaptive-image-overflow` CSS property will still work if used otherwise.
+Y = function() {
+  l.logFn("updateOverflow");
+  const e = window.getComputedStyle(this).getPropertyValue("--adaptive-image-overflow").toLowerCase();
+  r(this, h).style.setProperty("overflow", null), e && r(this, h).style.setProperty("overflow", e);
 }, b = function() {
-  d.logFn("refreshImage"), r(this, h).classList.remove("svg"), r(this, y) === T && r(this, h).classList.add("svg"), m(this, o, S).call(this), m(this, o, E).call(this), this.style.setProperty("--intrinsic-width", `${r(this, w)}px`), this.style.setProperty("--intrinsic-height", `${r(this, f)}px`), r(this, h).style.setProperty("--intrinsic-width", `${r(this, w)}px`), r(this, h).style.setProperty("--intrinsic-height", `${r(this, f)}px`), r(this, h).style.setProperty("--intrinsic-aspectratio", r(this, v));
+  l.logFn("refreshImage"), r(this, h).classList.remove("svg"), r(this, y) === L && r(this, h).classList.add("svg"), g(this, s, q).call(this), g(this, s, H).call(this), g(this, s, Y).call(this), this.style.setProperty("--intrinsic-width", `${r(this, w)}px`), this.style.setProperty("--intrinsic-height", `${r(this, f)}px`), r(this, h).style.setProperty("--intrinsic-width", `${r(this, w)}px`), r(this, h).style.setProperty("--intrinsic-height", `${r(this, f)}px`), r(this, h).style.setProperty("--intrinsic-aspectratio", r(this, v));
 }, // Observe changes to these custom attributes.
-L(A, "observedAttributes", ["src", "alt", "fit", "align", "style"]);
-async function V(i) {
-  d.debug("getImageProperties");
+C(S, "observedAttributes", ["src", "alt", "fit", "align", "style"]);
+async function D(i) {
+  l.debug("getImageProperties");
   let t = {};
   try {
     const n = await (await fetch(i.src)).blob();
@@ -255,24 +255,24 @@ async function V(i) {
   } catch (e) {
     console.warn(`Unable to determine MIME type of ${i.src}`, e.message), t.mimeType ?? (t.mimeType = "");
   }
-  if (!t.mimeType || t.mimeType === T) {
+  if (!t.mimeType || t.mimeType === L) {
     let e;
     try {
-      const c = await (await fetch(i.src)).text();
-      e = new DOMParser().parseFromString(c, T).querySelector("svg");
+      const p = await (await fetch(i.src)).text();
+      e = new DOMParser().parseFromString(p, L).querySelector("svg");
     } catch {
-      const c = i.getBoundingClientRect();
-      return t.width = c.width, t.height = c.height, t.width && t.height && (t.aspectRatio = t.width / t.height), t;
+      const p = i.getBoundingClientRect();
+      return t.width = p.width, t.height = p.height, t.width && t.height && (t.aspectRatio = t.width / t.height), t;
     }
-    t.mimeType = T;
+    t.mimeType = L;
     let n = parseFloat(e.getAttribute("width")), a = parseFloat(e.getAttribute("height"));
     if (n && a)
       t.width = n, t.height = a, t.aspectRatio = t.width / t.height;
     else if (e.hasAttribute("viewBox")) {
-      let s = e.getAttribute("viewBox").match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
-      s ? (s = s.map((c) => Math.abs(Number(c))), [, n, a] = s, t.width = n || 300, t.height = a || 150, t.aspectRatio = t.width / t.height) : (t.aspectRatio = 300 / 150, t.width ?? (t.width = t.height * t.aspectRatio || 300), t.height ?? (t.height = t.width * t.aspectRatio || 150));
+      let o = e.getAttribute("viewBox").match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
+      o ? (o = o.map((p) => Math.abs(Number(p))), [, n, a] = o, t.width = n || x, t.height = a || F, t.aspectRatio = t.width / t.height) : (t.aspectRatio = x / F, t.width ?? (t.width = t.height * t.aspectRatio || x), t.height ?? (t.height = t.width * t.aspectRatio || F));
     } else
-      t.width ?? (t.width = 300), t.height ?? (t.height = 150), t.aspectRatio = t.width / t.height;
+      t.width ?? (t.width = x), t.height ?? (t.height = F), t.aspectRatio = t.width / t.height;
   } else if (t.width = i.naturalWidth, t.height = i.naturalHeight, t.width && t.height)
     t.aspectRatio = t.width / t.height;
   else {
@@ -281,4 +281,4 @@ async function V(i) {
   }
   return t;
 }
-window.customElements.define("adaptive-image", A);
+window.customElements.define("adaptive-image", S);
