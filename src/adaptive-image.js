@@ -1,7 +1,7 @@
 import CSS from './adaptive-image.css?raw';
 
+const HTML = `<style>${CSS}</style><div id="outer"><div id="inner"><div id="image"><img src="" alt="" part="img"></div></div></div>`;
 
-const FIT_KEYWORDS = new Set(['none', 'cover', 'fill', 'contain', 'scale-down']);
 const DEFAULT_FIT = "cover";
 
 const DEFAULT_ALIGN_Y = "middle";
@@ -51,7 +51,7 @@ class AdaptiveImage extends HTMLElement {
 		// Create the shadow DOM and clone the template.
 		const shadowRoot = this.attachShadow({mode: 'open'});
 		const template = document.createElement('template');
-		template.innerHTML = `<style>${CSS}</style><div id="outer"><div id="inner"><div id="image"><img src="" alt="" part="img"></div></div></div>`;
+		template.innerHTML = HTML;
 		shadowRoot.appendChild(template.content.cloneNode(true));
 		
 		// Save references to the internal elements.
