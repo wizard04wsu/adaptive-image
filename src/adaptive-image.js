@@ -1,195 +1,246 @@
-import html from './adaptive-image.html?raw';
-import css from './adaptive-image.css?raw';
+import CSS from './adaptive-image.css?raw';
+
+const HTML = `<style>${CSS}</style><div id="outer"><div id="inner"><div id="image"><img src="" alt="" part="img"></div></div></div>`;
 
 const DEFAULT_FIT = "cover";
-const DEFAULT_ALIGN = "center";
-const FITS = ['none', 'cover', 'fill', 'contain', 'scale-down'];
+
+const DEFAULT_ALIGN_Y = "middle";
+const DEFAULT_ALIGN_X = "center";
+
+const SVG_MIME_TYPE = 'image/svg+xml';
+const SVG_DEFAULT_WIDTH = 300;
+const SVG_DEFAULT_HEIGHT = 150;
+
+
+const debug = {
+	enabled: false,
+	enable(){ this.enabled = true; },
+	disable(){ this.enabled = false; },
+};
+for(const f in console){
+	debug[f] = function (){
+		if(this.enabled) console[f].apply(null, arguments);
+	};
+}
+debug.logFn = (fnName) => debug.log(`%c\u0192%c${fnName}%c()`, 'font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;', 'border-bottom:1px dotted #888; padding-left:1em;', '');
+debug.logFnGroup = (fnName) => debug.group(`%c\u0192%c${fnName}%c()`, 'font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;', 'border-bottom:1px dotted #888; padding-left:1em; font-weight:bold;', '');
+//debug.enable();
+
 
 /**
- * Custom element to display an image within a bounding box (like a photo in a picture frame),
- * scaled and aligned according to the element's attributes.
+ * HTML component to display an image per the specified fit and alignment.
  *
  * @class AdaptiveImage
  */
 class AdaptiveImage extends HTMLElement {
 	
-	// Observe changes to these custom attributes.
-	static observedAttributes = ['src', 'alt', 'width', 'height', 'fit', 'align', 'border-width'];
-	
-	#properties = {
-		intrinsic: {},
-		specified: {},
-	};
-	
-	#frame;
-	#mount;
+	#outer;
 	#img;
+	
+	#intrinsicWidth;
+	#intrinsicHeight;
+	#intrinsicAspectRatio;
+	#mimeType;
 	
 	constructor(){
 		// Create an instance of AdaptiveImage.
+		debug.logFn('constructor');
 		
 		super();
 		
+		// Create the shadow DOM and clone the template.
 		const shadowRoot = this.attachShadow({mode: 'open'});
 		const template = document.createElement('template');
-		template.innerHTML = `<style>${css}</style>${html}`;
+		template.innerHTML = HTML;
 		shadowRoot.appendChild(template.content.cloneNode(true));
 		
-		
-		this.#frame = shadowRoot.querySelector('#frame');
-		this.#mount = shadowRoot.querySelector('#mount');
+		// Save references to the internal elements.
+		this.#outer = shadowRoot.querySelector('#outer');
 		this.#img = shadowRoot.querySelector('img');
 		
-		if(!FITS.includes(this.getAttribute('fit'))){
-			this.setAttribute('fit', DEFAULT_FIT);
-		}
+		// Handle success or failure loading a new src.
+		this.#img.addEventListener('load', ()=>this.#imageLoadHandler());
+		this.#img.addEventListener('error', ()=>this.#imageErrorHandler());
 		
-		this.#img.addEventListener('load', ()=>{
-			// The image has loaded.
-			
-			// Remove the error class if it was added previously.
-			this.#frame.classList.remove('error');
-			
-			// Get the properties of the image file.
-			getImageProperties(this.#img)
-				.then((properties)=>{
-					
-					// Set the intrinsic dimensions, aspect ratio, and MIME type.
-					this.#properties.intrinsic.width = properties.width;
-					this.#properties.intrinsic.height = properties.height;
-					this.#properties.intrinsic.aspectRatio = properties.aspectRatio;
-					this.#properties.mimeType = properties.mimeType || '';
-					
-					// Update the image component's attributes.
-					this.#refreshImage();
-				});
+		// Update the component when it is resized.
+		const resizeObserver = new ResizeObserver((entries)=>{
+			debug.logFn('resizeObserver');
+			this.#refreshImage();
 		});
-		
-		this.#img.addEventListener('error', ()=>{
-			// There was an error loading the image.
-			
-			// Add the error class to the frame element.
-			this.#frame.classList.add('error');
-			
-			// Remove the MIME type if it was set previously.
-			this.#properties.mimeType = '';
-			
-			// Update the alt attribute of the image element.
-			this.#img.alt = this.getAttribute('alt') || '';
-			
-			// Set the dimensions for the broken image (icon and alt text).
-			const rect = this.#img.getBoundingClientRect();
-			this.#properties.intrinsic.width = rect.width;
-			this.#properties.intrinsic.height = rect.height;
-			this.#properties.intrinsic.aspectRatio = (rect.width && rect.height) ? rect.width / rect.height : 1;
-			
-			// Update the image component's attributes, manually setting the width and height if necessary.
-			this.#refreshImage(!this.getAttribute('width') && rect.width, !this.getAttribute('height') && rect.height);
-		});
-		
-		// When the component is resized, update its attributes.
-		this.addEventListener('resize', this.#refreshImage);
+		resizeObserver.observe(this);
 	}
 	
+	// Observe changes to these custom attributes.
+	static observedAttributes = ['src', 'alt', 'fit', 'align', 'style'];
+	
+	// Built-in method to handle changes to the observed custom attributes.
 	attributeChangedCallback(name, oldValue, newValue){
-		// Sync attribute changes with this object's properties.
 		
 		if(oldValue !== newValue){
 			
 			if(name === 'src'){
-				
 				this.#img.src = newValue;
 			}
-			else if(name === 'width' || name === 'height' || name === 'border-width'){
-				
-				// Parse the dimensions and update the image properties.
-				this.#refreshImage();
-			}
 			else if(name === 'alt'){
-				
 				this.#img.alt = newValue || '';
 			}
+			else {
+				this.#refreshImage();
+			}
 		}
 	}
 	
-	#parseDimensions(widthStr, heightStr){
+	async #imageLoadHandler(){
+		// The image has loaded.
+		debug.logFn('imageLoadHandler');
 		
-		const ret = {};
+		// Remove the error class if it was added previously.
+		this.#img.classList.remove('error');
 		
-		const specifiedWidth = (widthStr || this.getAttribute('width') || '').trim();
-		if(specifiedWidth.endsWith('%')){
-			ret.width = Math.abs(Number(specifiedWidth.slice(0, -1)) || 0);
-			ret.widthIsPercentage = true;
+		// Get the properties of the image file.
+		const imageProperties = await getImageProperties(this.#img);
+		
+		// Set the intrinsic dimensions, aspect ratio, and MIME type.
+		this.#intrinsicWidth = imageProperties.width;
+		this.#intrinsicHeight = imageProperties.height;
+		this.#intrinsicAspectRatio = imageProperties.aspectRatio;
+		this.#mimeType = imageProperties.mimeType || '';
+		
+		// Update the image component's attributes.
+		this.#refreshImage();
+	}
+	
+	#imageErrorHandler(){
+		// There was an error loading the image.
+		debug.logFn('imageErrorHandler');
+		
+		// Add the error class to the outer element.
+		this.#img.classList.add('error');
+		
+		// Clear the MIME type if it was set previously.
+		this.#mimeType = '';
+		
+		// Clear the alt attribute of the image element.
+		this.#img.alt = this.getAttribute('alt') || '';
+		
+		// Set the dimensions for the broken image (icon and alt text).
+		const rect = this.#img.getBoundingClientRect();
+		this.#intrinsicWidth = rect.width;
+		this.#intrinsicHeight = rect.height;
+		this.#intrinsicAspectRatio = (rect.width && rect.height) ? rect.width / rect.height : 1;
+		
+		// Update the image component's attributes, manually setting the width and height if necessary.
+		this.#refreshImage(rect.width, rect.height);
+	}
+	
+	#updateAlignment(){
+		debug.logFn('updateAlignment');
+		
+		const alignYKeywords = ['top', 'middle', 'center', 'bottom'];
+		
+		// Get values from the component's `align` attribute.
+		let align = this.getAttribute('align')?.toLowerCase().split(' ') || [];
+		
+		
+		// Get value of the `--align-x` property.
+		let alignX = window.getComputedStyle(this).getPropertyValue('--align-x').toLowerCase();
+		
+		if(!['left', 'center', 'right'].includes(alignX)){
+			// Property value does not match a horizontal alignment keyword.
+			
+			alignX = '';
+			
+			// Find a matching horizontal alignment keyword in the `align` attribute value.
+			// This is done in such a way to allow 'center' to also be used as a vertical alignment keyword equivalent to 'middle'.
+			for(const keyword of align){
+				if(['left', 'right'].includes(keyword)){
+					alignX = keyword;
+				}
+			}
+			if(!alignX && align.includes('center')){
+				alignX = 'center';
+				align.splice(align.indexOf('center'), 1);
+			}
+			alignX ||= DEFAULT_ALIGN_X;
+		}
+		
+		// Set the `data-align-x` attribute of #outer.
+		this.#outer.dataset.alignX = alignX;
+		
+		
+		// Get value of the `--align-y` property.
+		let alignY = window.getComputedStyle(this).getPropertyValue('--align-y').toLowerCase();
+		
+		if(!alignYKeywords.includes(alignY)){
+			// Property value does not match a vertical alignment keyword.
+			
+			alignY = '';
+			
+			// Find a matching vertical alignment keyword in the `align` attribute value.
+			for(const keyword of align){
+				if(alignYKeywords.includes(keyword)){
+					alignY = keyword;
+				}
+			}
+			alignY ||= DEFAULT_ALIGN_Y;
+		}
+		
+		// Set the `data-align-y` attribute of #outer.
+		if(alignY === 'center') alignY = 'middle';
+		this.#outer.dataset.alignY = alignY;
+	}
+	
+	#updateFit(){
+		debug.logFn('updateFit');
+		
+		const fitKeywords = ['none', 'cover', 'fill', 'contain', 'scale-down'];
+		
+		// Get value of the `--fit` property.
+		let fit = window.getComputedStyle(this).getPropertyValue('--fit').toLowerCase();
+		
+		if(fitKeywords.includes(fit)){
+			// Property value matches a fit keyword.
+			
+			// Set the `data-fit` attribute of #outer.
+			this.#outer.dataset.fit = fit;
 		}
 		else{
-			ret.width = Math.abs(Number(specifiedWidth) || 0);
-			ret.widthIsPercentage = false;
-		}
-		
-		const specifiedHeight = (heightStr || this.getAttribute('height') || '').trim();
-		ret.height = Number(specifiedHeight) || 0;
-		
-		ret.borderWidth = Number(this.getAttribute('border-width')) || 0;
-		
-		return ret;
-	}
-	
-	#updateWidth(specifiedWidth, isPercentage = false, borderWidth){
-		
-		this.#properties.specified.width = specifiedWidth;
-		this.#properties.specified.widthIsPercentage = specifiedWidth && isPercentage;
-		
-		let calculatedWidth = specifiedWidth;
-		let calculatedAspectRatio = this.#properties.intrinsic.aspectRatio;
-		if(this.#properties.specified.height){
-			if(!specifiedWidth) calculatedWidth = this.#properties.specified.height * this.#properties.intrinsic.aspectRatio;
-			calculatedAspectRatio = calculatedWidth / this.#properties.specified.height;
-		}
-		else if(!specifiedWidth){
-			calculatedWidth = this.#properties.intrinsic.width;
-		}
-		this.#frame.style.setProperty('--specified-width', calculatedWidth);
-		this.#frame.style.setProperty('--specified-aspectratio', calculatedAspectRatio);
-		this.#properties.specified.aspectRatio = calculatedAspectRatio;
-		
-		if(borderWidth !== void 0){
-			this.#frame.style.setProperty('--border-width', borderWidth);
+			
+			// Get value of the component's `fit` attribute.
+			fit = this.getAttribute('fit');
+			
+			// Set the `data-fit` attribute of #outer.
+			this.#outer.dataset.fit = fitKeywords.includes(fit) ? fit : DEFAULT_FIT;
 		}
 	}
 	
-	#updateHeight(specifiedHeight){
+	#updateOverflow(){
+		debug.logFn('updateOverflow');
 		
-		this.#properties.specified.height = specifiedHeight;
+		// Get value of the `--overflow` property.
+		const overflow = window.getComputedStyle(this).getPropertyValue('--overflow').toLowerCase();
 		
-		let calculatedHeight = specifiedHeight;
-		let calculatedAspectRatio = this.#properties.intrinsic.aspectRatio;
-		if(this.#properties.specified.width){
-			if(!specifiedHeight) calculatedHeight = this.#properties.specified.width / this.#properties.intrinsic.aspectRatio;
-			calculatedAspectRatio = this.#properties.specified.width / calculatedHeight;
-		}
-		else if(!specifiedHeight){
-			calculatedHeight = this.#properties.intrinsic.height;
-		}
-		this.#frame.style.setProperty('--specified-height', calculatedHeight);
-		this.#frame.style.setProperty('--specified-aspectratio', calculatedAspectRatio);
-		this.#properties.specified.aspectRatio = calculatedAspectRatio;
+		// Set the `overflow` property of #outer's style attribute.
+		this.#outer.style.setProperty('overflow', overflow || null);
 	}
 	
-	#refreshImage(width, height){
+	#refreshImage(){
+		debug.logFn('refreshImage');
 		
-		const dims = this.#parseDimensions();
-		this.#updateWidth(width || dims.width, dims.widthIsPercentage, dims.borderWidth);
-		this.#updateHeight(height || dims.height);
+		this.#outer.classList.remove('svg');
+		if(this.#mimeType === SVG_MIME_TYPE) this.#outer.classList.add('svg');
 		
-		// Toggle dimension classes.
-		this.#frame.classList.toggle('hasWidth', !!this.#properties.specified.width);
-		this.#frame.classList.toggle('hasWidthPercentage', !!this.#properties.specified.widthIsPercentage);
-		this.#frame.classList.toggle('hasHeight', !!this.#properties.specified.height);
+		// Set data-align-x, data-align-y, and data-fit attributes.
+		this.#updateAlignment();
+		this.#updateFit();
+		this.#updateOverflow();
 		
 		// Set CSS variables.
-		this.#frame.style.setProperty('--intrinsic-width', this.#properties.intrinsic.width);
-		this.#frame.style.setProperty('--intrinsic-height', this.#properties.intrinsic.height);
-		this.#frame.style.setProperty('--intrinsic-aspectratio', this.#properties.intrinsic.aspectRatio);
+		this.style.setProperty('--intrinsic-width', `${this.#intrinsicWidth}px`);
+		this.style.setProperty('--intrinsic-height', `${this.#intrinsicHeight}px`);
+		this.#outer.style.setProperty('--intrinsic-width', `${this.#intrinsicWidth}px`);
+		this.#outer.style.setProperty('--intrinsic-height', `${this.#intrinsicHeight}px`);
+		this.#outer.style.setProperty('--intrinsic-aspectratio', this.#intrinsicAspectRatio);
 	}
 }
 
@@ -208,135 +259,131 @@ class AdaptiveImage extends HTMLElement {
  * @param {HTMLImageElement} imgElem
  * @return {ImageProps}
  */
-function getImageProperties(imgElem){
+async function getImageProperties(imgElem){
+	debug.debug('getImageProperties');
 	
-	const SVG_MIME_TYPE = 'image/svg+xml';
-	const SVG_DEFAULT_WIDTH = 300;
-	const SVG_DEFAULT_HEIGHT = 150;
+	let ret = {};
 	
-	return new Promise(async (resolve, reject)=>{
+	// Get the MIME type.
+	try{
+		const response = await fetch(imgElem.src);
+		const blob = await response.blob();
+		ret.mimeType = blob.type;
+	}
+	catch(err){
+		// Unable to determine the MIME type.
+		console.warn(`Unable to determine MIME type of ${imgElem.src}`, err.message);
 		
-		let ret = {};
+		ret.mimeType ??= '';
+	}
+	
+	if(!ret.mimeType || ret.mimeType === SVG_MIME_TYPE){
+		// The image is an SVG or the MIME type is unknown.
 		
-		// Get the MIME type.
+		// Get the root SVG element.
+		let svgElem;
 		try{
 			const response = await fetch(imgElem.src);
-			const blob = await response.blob();
-			ret.mimeType = blob.type;
+			const text = await response.text();
+			const parser = new DOMParser();
+			const svgDoc = parser.parseFromString(text, SVG_MIME_TYPE);
+			svgElem = svgDoc.querySelector('svg');
 		}
 		catch(err){
-			// Unable to determine the MIME type.
-			console.warn(`Unable to determine MIME type of ${imgElem.src}`, err.message);
+			// Either it's not an SVG image or there was another error with the parsing.
 			
-			ret.mimeType ??= '';
+			// Use the current dimensions of the image as displayed.
+			const rect = imgElem.getBoundingClientRect();
+			ret.width = rect.width;
+			ret.height = rect.height;
+			if(ret.width && ret.height) ret.aspectRatio = ret.width / ret.height;
+			
+			return ret;
 		}
 		
-		if(!ret.mimeType || ret.mimeType === SVG_MIME_TYPE){
-			// The image is an SVG or the MIME type is unknown.
+		// The image is an SVG.
+		
+		ret.mimeType = SVG_MIME_TYPE;
+		
+		// Get the width and height attributes.
+		let svgWidth = parseFloat(svgElem.getAttribute('width'));
+		let svgHeight = parseFloat(svgElem.getAttribute('height'));
+		
+		if(svgWidth && svgHeight){
+			// The SVG dimensions are known.
 			
-			// Get the root SVG element.
-			let svgElem;
-			try{
-				const response = await fetch(imgElem.src);
-				const text = await response.text();
-				const parser = new DOMParser();
-				const svgDoc = parser.parseFromString(text, SVG_MIME_TYPE);
-				svgElem = svgDoc.querySelector('svg');
-			}
-			catch(err){
-				// Either it's not an SVG image or there was another error with the parsing.
-				
-				// Use the current dimensions of the image as displayed.
-				const rect = imgElem.getBoundingClientRect();
-				ret.width = rect.width;
-				ret.height = rect.height;
-				if(ret.width && ret.height) ret.aspectRatio = ret.width / ret.height;
-				
-				return resolve(ret);
-			}
-			
-			// The image is an SVG.
-			
-			// Get the width and height attributes.
-			let svgWidth = parseFloat(svgElem.getAttribute('width'));
-			let svgHeight = parseFloat(svgElem.getAttribute('height'));
-			
-			if(svgWidth && svgHeight){
-				// The SVG dimensions are known.
-				
-				ret.width = svgWidth;
-				ret.height = svgHeight;
-				ret.aspectRatio = ret.width / ret.height;
-			}
-			else{
-				// The width and/or height attribute is missing or is not a valid number.
-				
-				if(svgElem.hasAttribute('viewBox')){
-					// There is a viewBox attribute.
-					
-					// Parse the viewBox attribute to get an aspect ratio.
-					let parts = svgElem.getAttribute('viewBox')
-						.match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
-					if(parts){
-						// A match was found.
-						
-						// Convert each string to a non-negative number.
-						parts = parts.map((p)=>Math.abs(Number(p)));
-						
-						// Get the last two numbers (width and height).
-						[, svgWidth, svgHeight] = parts;
-						
-						ret.width = svgWidth || SVG_DEFAULT_WIDTH;
-						ret.height = svgHeight || SVG_DEFAULT_HEIGHT;
-						ret.aspectRatio = ret.width / ret.height;
-					}
-					else{
-						// A match was not found.
-						
-						// Use the default SVG aspect ratio.
-						ret.aspectRatio = SVG_DEFAULT_WIDTH / SVG_DEFAULT_HEIGHT;
-						ret.width ??= ret.height * ret.aspectRatio || SVG_DEFAULT_WIDTH;
-						ret.height ??= ret.width * ret.aspectRatio || SVG_DEFAULT_HEIGHT;
-					}
-				}
-				else{
-					// There is not a viewBox attribute.
-					
-					// Use the default SVG dimensions.
-					ret.width ??= SVG_DEFAULT_WIDTH;
-					ret.height ??= SVG_DEFAULT_HEIGHT;
-					ret.aspectRatio = ret.width / ret.height;
-				}
-			}
+			ret.width = svgWidth;
+			ret.height = svgHeight;
+			ret.aspectRatio = ret.width / ret.height;
 		}
 		else{
-			// The image is a raster image (JPEG, PNG, et al.).
+			// The width and/or height attribute is missing or is not a valid number.
 			
-			// Get the natural dimensions.
-			ret.width = imgElem.naturalWidth;
-			ret.height = imgElem.naturalHeight;
-			
-			if(ret.width && ret.height){
-				// The natural dimensions are known.
+			if(svgElem.hasAttribute('viewBox')){
+				// There is a viewBox attribute.
 				
-				// Calculate the aspect ratio.
-				ret.aspectRatio = ret.width / ret.height;
+				// Parse the viewBox attribute to get an aspect ratio.
+				let parts = svgElem.getAttribute('viewBox')
+					.match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
+				if(parts){
+					// A match was found.
+					
+					// Convert each string to a non-negative number.
+					parts = parts.map((p)=>Math.abs(Number(p)));
+					
+					// Get the last two numbers (width and height).
+					[, svgWidth, svgHeight] = parts;
+					
+					ret.width = svgWidth || SVG_DEFAULT_WIDTH;
+					ret.height = svgHeight || SVG_DEFAULT_HEIGHT;
+					ret.aspectRatio = ret.width / ret.height;
+				}
+				else{
+					// A match was not found.
+					
+					// Use the default SVG aspect ratio.
+					ret.aspectRatio = SVG_DEFAULT_WIDTH / SVG_DEFAULT_HEIGHT;
+					ret.width ??= ret.height * ret.aspectRatio || SVG_DEFAULT_WIDTH;
+					ret.height ??= ret.width * ret.aspectRatio || SVG_DEFAULT_HEIGHT;
+				}
 			}
 			else{
-				// The natural width and/or height is unknown.
+				// There is not a viewBox attribute.
 				
-				// Use the current dimensions of the image as displayed.
-				const rect = imgElem.getBoundingClientRect();
-				ret.width = rect.width;
-				ret.height = rect.height;
-				if(ret.width && ret.height) ret.aspectRatio = ret.width / ret.height;
-				
-				return resolve(ret);
+				// Use the default SVG dimensions.
+				ret.width ??= SVG_DEFAULT_WIDTH;
+				ret.height ??= SVG_DEFAULT_HEIGHT;
+				ret.aspectRatio = ret.width / ret.height;
 			}
 		}
+	}
+	else{
+		// The image is a raster image (JPEG, PNG, et al.).
 		
-		return resolve(ret);
-	});
+		// Get the natural dimensions.
+		ret.width = imgElem.naturalWidth;
+		ret.height = imgElem.naturalHeight;
+		
+		if(ret.width && ret.height){
+			// The natural dimensions are known.
+			
+			// Calculate the aspect ratio.
+			ret.aspectRatio = ret.width / ret.height;
+		}
+		else{
+			// The natural width and/or height is unknown.
+			
+			// Use the current dimensions of the image as displayed.
+			const rect = imgElem.getBoundingClientRect();
+			ret.width = rect.width;
+			ret.height = rect.height;
+			if(ret.width && ret.height) ret.aspectRatio = ret.width / ret.height;
+			
+			return ret;
+		}
+	}
+	
+	return ret;
 }
 
 window.customElements.define('adaptive-image', AdaptiveImage);
