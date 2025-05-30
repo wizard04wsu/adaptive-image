@@ -5,7 +5,7 @@ var A = (i) => {
 };
 var I = (i, t, e) => t in i ? E(i, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : i[t] = e;
 var C = (i, t, e) => I(i, typeof t != "symbol" ? t + "" : t, e), T = (i, t, e) => t.has(i) || A("Cannot " + e);
-var r = (i, t, e) => (T(i, t, "read from private field"), e ? e.call(i) : t.get(i)), m = (i, t, e) => t.has(i) ? A("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(i) : t.set(i, e), c = (i, t, e, n) => (T(i, t, "write to private field"), n ? n.call(i, e) : t.set(i, e), e), g = (i, t, e) => (T(i, t, "access private method"), e);
+var n = (i, t, e) => (T(i, t, "read from private field"), e ? e.call(i) : t.get(i)), m = (i, t, e) => t.has(i) ? A("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(i) : t.set(i, e), c = (i, t, e, r) => (T(i, t, "write to private field"), r ? r.call(i, e) : t.set(i, e), e), g = (i, t, e) => (T(i, t, "access private method"), e);
 const _ = `:host {\r
 	/* These variables are set via JavaScript. */\r
 	--intrinsic-width: 0px;\r
@@ -194,64 +194,63 @@ class S extends HTMLElement {
     m(this, f);
     m(this, v);
     m(this, y);
-    const e = this.attachShadow({ mode: "open" }), n = document.createElement("template");
-    n.innerHTML = M, e.appendChild(n.content.cloneNode(!0)), c(this, h, e.querySelector("#outer")), c(this, d, e.querySelector("img")), r(this, d).addEventListener("load", () => g(this, s, R).call(this)), r(this, d).addEventListener("error", () => g(this, s, P).call(this)), new ResizeObserver((o) => {
+    const e = this.attachShadow({ mode: "open" }), r = document.createElement("template");
+    r.innerHTML = M, e.appendChild(r.content.cloneNode(!0)), c(this, h, e.querySelector("#outer")), c(this, d, e.querySelector("img")), n(this, d).addEventListener("load", () => g(this, s, R).call(this)), n(this, d).addEventListener("error", () => g(this, s, P).call(this)), new ResizeObserver((o) => {
       l.logFn("resizeObserver"), g(this, s, b).call(this);
     }).observe(this);
   }
   // Built-in method to handle changes to the observed custom attributes.
-  attributeChangedCallback(e, n, a) {
-    n !== a && (e === "src" ? r(this, d).src = a : e === "alt" ? r(this, d).alt = a || "" : g(this, s, b).call(this));
+  attributeChangedCallback(e, r, a) {
+    r !== a && (e === "src" ? n(this, d).src = a : e === "alt" ? n(this, d).alt = a || "" : g(this, s, b).call(this));
   }
 }
 h = new WeakMap(), d = new WeakMap(), w = new WeakMap(), f = new WeakMap(), v = new WeakMap(), y = new WeakMap(), s = new WeakSet(), R = async function() {
-  l.logFn("imageLoadHandler"), r(this, d).classList.remove("error");
-  const e = await D(r(this, d));
+  l.logFn("imageLoadHandler"), n(this, d).classList.remove("error");
+  const e = await D(n(this, d));
   c(this, w, e.width), c(this, f, e.height), c(this, v, e.aspectRatio), c(this, y, e.mimeType || ""), g(this, s, b).call(this);
 }, P = function() {
-  l.logFn("imageErrorHandler"), r(this, d).classList.add("error"), c(this, y, ""), r(this, d).alt = this.getAttribute("alt") || "";
-  const e = r(this, d).getBoundingClientRect();
+  l.logFn("imageErrorHandler"), n(this, d).classList.add("error"), c(this, y, ""), n(this, d).alt = this.getAttribute("alt") || "";
+  const e = n(this, d).getBoundingClientRect();
   c(this, w, e.width), c(this, f, e.height), c(this, v, e.width && e.height ? e.width / e.height : 1), g(this, s, b).call(this, e.width, e.height);
 }, q = function() {
   var p;
   l.logFn("updateAlignment");
   const e = ["top", "middle", "center", "bottom"];
-  let n = ((p = this.getAttribute("align")) == null ? void 0 : p.toLowerCase().split(" ")) || [], a = window.getComputedStyle(this).getPropertyValue("--align-x").toLowerCase();
+  let r = ((p = this.getAttribute("align")) == null ? void 0 : p.toLowerCase().split(" ")) || [], a = window.getComputedStyle(this).getPropertyValue("--align-x").toLowerCase();
   if (!["left", "center", "right"].includes(a)) {
     a = "";
-    for (const u of n)
+    for (const u of r)
       ["left", "right"].includes(u) && (a = u);
-    !a && n.includes("center") && (a = "center", n.splice(n.indexOf("center"), 1)), a || (a = k);
+    !a && r.includes("center") && (a = "center", r.splice(r.indexOf("center"), 1)), a || (a = k);
   }
-  r(this, h).dataset.alignX = a;
+  n(this, h).dataset.alignX = a;
   let o = window.getComputedStyle(this).getPropertyValue("--align-y").toLowerCase();
   if (!e.includes(o)) {
     o = "";
-    for (const u of n)
+    for (const u of r)
       e.includes(u) && (o = u);
     o || (o = X);
   }
-  o === "center" && (o = "middle"), r(this, h).dataset.alignY = o;
+  o === "center" && (o = "middle"), n(this, h).dataset.alignY = o;
 }, H = function() {
   l.logFn("updateFit");
   const e = ["none", "cover", "fill", "contain", "scale-down"];
-  let n = window.getComputedStyle(this).getPropertyValue("--fit").toLowerCase();
-  e.includes(n) ? r(this, h).dataset.fit = n : (n = this.getAttribute("fit"), r(this, h).dataset.fit = e.includes(n) ? n : O);
-}, // This was just created for the demo, but the `--adaptive-image-overflow` CSS property will still work if used otherwise.
-Y = function() {
+  let r = window.getComputedStyle(this).getPropertyValue("--fit").toLowerCase();
+  e.includes(r) ? n(this, h).dataset.fit = r : (r = this.getAttribute("fit"), n(this, h).dataset.fit = e.includes(r) ? r : O);
+}, Y = function() {
   l.logFn("updateOverflow");
-  const e = window.getComputedStyle(this).getPropertyValue("--adaptive-image-overflow").toLowerCase();
-  r(this, h).style.setProperty("overflow", null), e && r(this, h).style.setProperty("overflow", e);
+  const e = window.getComputedStyle(this).getPropertyValue("--overflow").toLowerCase();
+  n(this, h).style.setProperty("overflow", e || null);
 }, b = function() {
-  l.logFn("refreshImage"), r(this, h).classList.remove("svg"), r(this, y) === L && r(this, h).classList.add("svg"), g(this, s, q).call(this), g(this, s, H).call(this), g(this, s, Y).call(this), this.style.setProperty("--intrinsic-width", `${r(this, w)}px`), this.style.setProperty("--intrinsic-height", `${r(this, f)}px`), r(this, h).style.setProperty("--intrinsic-width", `${r(this, w)}px`), r(this, h).style.setProperty("--intrinsic-height", `${r(this, f)}px`), r(this, h).style.setProperty("--intrinsic-aspectratio", r(this, v));
+  l.logFn("refreshImage"), n(this, h).classList.remove("svg"), n(this, y) === L && n(this, h).classList.add("svg"), g(this, s, q).call(this), g(this, s, H).call(this), g(this, s, Y).call(this), this.style.setProperty("--intrinsic-width", `${n(this, w)}px`), this.style.setProperty("--intrinsic-height", `${n(this, f)}px`), n(this, h).style.setProperty("--intrinsic-width", `${n(this, w)}px`), n(this, h).style.setProperty("--intrinsic-height", `${n(this, f)}px`), n(this, h).style.setProperty("--intrinsic-aspectratio", n(this, v));
 }, // Observe changes to these custom attributes.
 C(S, "observedAttributes", ["src", "alt", "fit", "align", "style"]);
 async function D(i) {
   l.debug("getImageProperties");
   let t = {};
   try {
-    const n = await (await fetch(i.src)).blob();
-    t.mimeType = n.type;
+    const r = await (await fetch(i.src)).blob();
+    t.mimeType = r.type;
   } catch (e) {
     console.warn(`Unable to determine MIME type of ${i.src}`, e.message), t.mimeType ?? (t.mimeType = "");
   }
@@ -265,12 +264,12 @@ async function D(i) {
       return t.width = p.width, t.height = p.height, t.width && t.height && (t.aspectRatio = t.width / t.height), t;
     }
     t.mimeType = L;
-    let n = parseFloat(e.getAttribute("width")), a = parseFloat(e.getAttribute("height"));
-    if (n && a)
-      t.width = n, t.height = a, t.aspectRatio = t.width / t.height;
+    let r = parseFloat(e.getAttribute("width")), a = parseFloat(e.getAttribute("height"));
+    if (r && a)
+      t.width = r, t.height = a, t.aspectRatio = t.width / t.height;
     else if (e.hasAttribute("viewBox")) {
       let o = e.getAttribute("viewBox").match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
-      o ? (o = o.map((p) => Math.abs(Number(p))), [, n, a] = o, t.width = n || x, t.height = a || F, t.aspectRatio = t.width / t.height) : (t.aspectRatio = x / F, t.width ?? (t.width = t.height * t.aspectRatio || x), t.height ?? (t.height = t.width * t.aspectRatio || F));
+      o ? (o = o.map((p) => Math.abs(Number(p))), [, r, a] = o, t.width = r || x, t.height = a || F, t.aspectRatio = t.width / t.height) : (t.aspectRatio = x / F, t.width ?? (t.width = t.height * t.aspectRatio || x), t.height ?? (t.height = t.width * t.aspectRatio || F));
     } else
       t.width ?? (t.width = x), t.height ?? (t.height = F), t.aspectRatio = t.width / t.height;
   } else if (t.width = i.naturalWidth, t.height = i.naturalHeight, t.width && t.height)
