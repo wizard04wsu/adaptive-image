@@ -54,23 +54,17 @@ label:has(#imageSrc) {
 	line-height: 0;
 }
 adaptive-image {
-	display: block;
-}
-adaptive-image::part(frame) {
 	border: 0 solid greenyellow;
 	margin: auto;
 }
-body:has(#square:checked) adaptive-image::part(frame) {
+body:has(#square:checked) adaptive-image {
 	border-radius: 0;
 }
-body:has(#curved:checked) adaptive-image::part(frame) {
+body:has(#curved:checked) adaptive-image {
 	border-radius: var(--borderRadius);
 }
-body:has(#ellipse:checked) adaptive-image::part(frame) {
+body:has(#ellipse:checked) adaptive-image {
 	border-radius: 50%;
-}
-adaptive-image::part(img) {
-	line-height: 1;
 }
 
 

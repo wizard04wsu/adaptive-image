@@ -1,137 +1,40 @@
-/*====================/
-  Variables
-/====================*/
-
-#frame {
-	
-	/* These variables are set via JavaScript. */
-	--intrinsic-width: 0;
-	--intrinsic-height: 0;
-	--intrinsic-aspectratio: 1;
-	--specified-width: 0;
-	--specified-height: 0;
-	--specified-aspectratio: 1;
-	--border-width: 0;
-	
-	
-	--intrinsic-width-px: calc(var(--intrinsic-width) * 1px);
-	--intrinsic-height-px: calc(var(--intrinsic-height) * 1px);
-	--specified-width-px: calc(var(--specified-width) * 1px);
-	--specified-width-percent: calc(var(--specified-width) * 1%);
-	--specified-height-px: calc(var(--specified-height) * 1px);
-	--border-width-px: calc(var(--border-width) * 1px);
-}
-
-/*====================/
-  Structure
-/====================*/
-
 :host {
+	/* These variables are set via JavaScript. */
+	--intrinsic-width: 0px;
+	--intrinsic-height: 0px;
+	
 	display: inline-block;
+	width: var(--intrinsic-width);
+	height: var(--intrinsic-height);
 }
-
-/*=== The Frame ===*/
-
-#frame {
-	container-type: inline-size;
+#outer {
+	/* These variables are set via JavaScript. */
+	--intrinsic-width: 0px;
+	--intrinsic-height: 0px;
+	--intrinsic-aspectratio: 1;
+	
 	overflow: hidden;
-	box-sizing: content-box;
-	width: var(--intrinsic-width-px);
-	max-width: 100%;
-	max-width: calc(100% - 2 * var(--border-width-px));
-	border-width: var(--border-width-px) !important;
+	height: 100%;
+	line-height: 1; /* For broken images. */
 }
-#frame.hasWidth {
-	width: var(--specified-width-px);
-}
-#frame.hasWidthPercentage {
-	width: var(--specified-width-percent);
-}
-
-/*=== The Mounting Board ===*/
-
-#mount {
-	container-type: size;
-	position: relative;
-	width: min(100cqw, var(--intrinsic-width-px));
-	height: var(--intrinsic-height-px);
-}
-.hasWidth #mount,
-.hasWidthPercentage #mount {
-	width: 100cqw;
-}
-.hasHeight #mount {
-	height: var(--specified-height-px);
-}
-
-/*=== The Artwork ===*/
-
-img {
-	box-sizing: content-box;
-	display: inline-block;
-	position: relative;
-	position: absolute;
-	box-sizing: content-box;
+#inner {
+	/* Align */
+	text-align: left;
 	transform: translateX(var(--translateX)) translateY(var(--translateY));
 	
-	/* For alt text of broken images. */
-	white-space: nowrap;
-	line-height: 1;
-}
-#frame.error img {
-	width: auto;
-	min-width: auto;
-	max-width: none;
-	height: auto;
-	min-height: auto;
-	max-height: none;
-	left: 0;
-	top: 0;
-	transform: translateY(50cqh) translateY(-50%);
-}
-:host([align~=top]) #frame.error img {
-	transform: translateY(0cqh) translateY(0%);
-}
-:host([align~=bottom]) #frame.error img {
-	transform: translateY(100cqh) translateY(-100%);
-}
-
-/*====================/
-  Fit
-/====================*/
-
-/*=== None ===*/
-
-:host([fit=none]) img {
-	width: var(--intrinsic-width-px);
-}
-
-/*=== Cover ===*/
-
-:host([fit=cover]) img {
-	width: max(100cqw, 100cqh * var(--intrinsic-aspectratio));
-	min-width: 100cqw;
-	min-height: 100cqh;
-}
-
-/*=== Fill ===*/
-
-:host([fit=fill]) img {
-	width: 100%;
+	/* Fit */
 	height: 100%;
+	container-type: size; /* Only required for fit=contain. */
+}
+#image {
+	/* Align */
+	display: inline-block;
+	transform: translateX(calc(-1 * var(--translateX))) translateY(calc(-1 * var(--translateY)));
+	
+	/* Fit */
+	aspect-ratio: var(--intrinsic-aspectratio);
 }
 
-/*=== Contain ===*/
-
-:host([fit=contain]) img {
-	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio));
-}
-
-/*=== Scale-down ===*/
-
-:host([fit=scale-down]) img {
-	width: min(100cqw, 100cqh * var(--intrinsic-aspectratio), var(--intrinsic-width-px));
-}
 
 /*====================/
   Alignment
@@ -139,32 +42,120 @@ img {
 
 /*=== Horizontal ===*/
 
-img,
-:host([align~=center]) img {
-	--translateX: -50%;
-	left: 50cqw;
+/* Center (default) */
+#inner {
+	--translateX: 50%;
 }
-:host([align~=left]) img {
+
+/* Left */
+[data-align-x~=left] #inner {
 	--translateX: 0%;
-	left: 0cqw;
 }
-:host([align~=right]) img {
-	--translateX: -100%;
-	left: 100cqw;
+
+/* Right */
+[data-align-x~=right] #inner {
+	--translateX: 100%;
 }
 
 /*=== Vertical ===*/
 
-img,
-:host([align~=center]) img {
-	--translateY: -50%;
-	top: 50cqh;
+/* Middle (default) */
+#inner {
+	--translateY: 50%;
 }
-:host([align~=top]) img {
+
+/* Top */
+[data-align-y~=top] #inner {
 	--translateY: 0%;
-	top: 0;
 }
-:host([align~=bottom]) img {
-	--translateY: -100%;
-	top: 100cqh;
+
+/* Bottom */
+[data-align-y~=bottom] #inner {
+	--translateY: 100%;
+}
+
+/* Broken image */
+#inner:has(img.error) {
+	display: table;
+	width: max-content;
+	min-width: 100%;
+	transform: none;
+}
+#image:has(img.error) {
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	height: 100cqh;
+	transform: none;
+}
+[data-align-x~=left] #image:has(img.error) {
+	text-align: left;
+}
+[data-align-x~=right] #image:has(img.error) {
+	text-align: right;
+}
+[data-align-y~=top] #image:has(img.error) {
+	vertical-align: top;
+}
+[data-align-y~=bottom] #image:has(img.error) {
+	vertical-align: bottom;
+}
+
+
+/*====================/
+  Fit
+/====================*/
+
+/* Cover (default) */
+[data-fit=cover] #image {
+	min-width: 100%;
+	min-height: 100%;
+	width: fit-content;
+	height: fit-content;
+}
+
+/* Fill */
+[data-fit=fill] #image {
+	aspect-ratio: auto;
+	width: 100%;
+	height: 100%;
+}
+
+/* Contain */
+[data-fit=contain] #image {
+	max-width: 100%;
+	max-height: 100%;
+	width: min(100cqw, calc(100cqh * var(--intrinsic-aspectratio)));
+	height: min(100cqh, calc(100cqw / var(--intrinsic-aspectratio)));
+}
+
+/* Scale-down */
+[data-fit=scale-down] #image {
+	max-width: 100%;
+	max-height: 100%;
+	width: min(100cqw, calc(100cqh * var(--intrinsic-aspectratio)), var(--intrinsic-width));
+	height: min(100cqh, calc(100cqw / var(--intrinsic-aspectratio)), var(--intrinsic-height));
+}
+
+/* None */
+[data-fit=none] #image {
+	/* Width and height are required here for SVGs. Otherwise 'auto' works fine. */
+	width: var(--intrinsic-width);
+	height: var(--intrinsic-height);
+}
+
+/* Fit is not 'none' */
+#outer:not([data-fit=none]) img {
+	width: 100%;
+	height: 100%;
+}
+
+/* Broken image */
+#outer:has(img.error) {
+	overflow: auto;
+	scrollbar-width: none;
+}
+#image:has(img.error) {
+	width: 100%;
+	height: auto;
 }
