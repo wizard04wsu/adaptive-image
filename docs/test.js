@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 		const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
 		for(const image of images){
 			
-			image.setAttribute('alt', image.alt === 'dne.jpg' ? 'Image not found' : '');
+			image.setAttribute('alt', image.getAttribute('src') === 'dne.jpg' ? 'Image not found' : '');
 			image.style.width = width;
 			image.style.height = height;
 			image.setAttribute('align', align);
