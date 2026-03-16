@@ -2,11 +2,6 @@ import CSS from './adaptive-image.css?raw';
 
 const HTML = `<style>${CSS}</style><div id="outer"><div id="inner"><div id="image"><img src="" alt="" part="img"></div></div></div>`;
 
-const DEFAULT_FIT = "cover";
-
-const DEFAULT_ALIGN_Y = "middle";
-const DEFAULT_ALIGN_X = "center";
-
 const SVG_MIME_TYPE = 'image/svg+xml';
 const SVG_DEFAULT_WIDTH = 300;
 const SVG_DEFAULT_HEIGHT = 150;
@@ -136,82 +131,54 @@ class AdaptiveImage extends HTMLElement {
 	#updateAlignment(){
 		debug.logFn('updateAlignment');
 		
-		const alignYKeywords = ['top', 'middle', 'center', 'bottom'];
-		
-		// Get values from the component's `align` attribute.
-		let align = this.getAttribute('align')?.toLowerCase().split(' ') || [];
-		
-		
-		// Get value of the `--align-x` property.
-		let alignX = window.getComputedStyle(this).getPropertyValue('--align-x').toLowerCase();
-		
-		if(!['left', 'center', 'right'].includes(alignX)){
-			// Property value does not match a horizontal alignment keyword.
-			
-			alignX = '';
-			
-			// Find a matching horizontal alignment keyword in the `align` attribute value.
-			// This is done in such a way to allow 'center' to also be used as a vertical alignment keyword equivalent to 'middle'.
-			for(const keyword of align){
-				if(['left', 'right'].includes(keyword)){
-					alignX = keyword;
-				}
-			}
-			if(!alignX && align.includes('center')){
-				alignX = 'center';
-				align.splice(align.indexOf('center'), 1);
-			}
-			alignX ||= DEFAULT_ALIGN_X;
+		// Horizontal alignment (priority: HTML 'align' attribute, CSS 'justify-self' property, default 'center')
+		let align = 'center';
+		let accepted = new Set(['left', 'right', 'center']);
+		let alignAttr = new Set(this.getAttribute('align')?.toLowerCase().split(' ') || []);
+		alignAttr = accepted.intersection(alignAttr);
+		let alignCSS = window.getComputedStyle(this).getPropertyValue('justify-self')?.toLowerCase() || '';
+		if(alignAttr.size){
+			[align] = alignAttr;
 		}
-		
+		else if(accepted.has(alignCSS)){
+			align = alignCSS;
+		}
 		// Set the `data-align-x` attribute of #outer.
-		this.#outer.dataset.alignX = alignX;
+		this.#outer.dataset.alignX = align;
 		
-		
-		// Get value of the `--align-y` property.
-		let alignY = window.getComputedStyle(this).getPropertyValue('--align-y').toLowerCase();
-		
-		if(!alignYKeywords.includes(alignY)){
-			// Property value does not match a vertical alignment keyword.
-			
-			alignY = '';
-			
-			// Find a matching vertical alignment keyword in the `align` attribute value.
-			for(const keyword of align){
-				if(alignYKeywords.includes(keyword)){
-					alignY = keyword;
-				}
-			}
-			alignY ||= DEFAULT_ALIGN_Y;
+		// Vertical alignment (priority: HTML 'align' attribute, CSS 'vertical-align' property, default 'center')
+		align = 'center';
+		accepted = new Set(['left', 'right', 'center', 'middle']);
+		alignAttr = new Set(this.getAttribute('align')?.toLowerCase().split(' ') || []);
+		alignAttr = accepted.intersection(alignAttr);
+		alignCSS = window.getComputedStyle(this).getPropertyValue('vertical-align')?.toLowerCase() || '';
+		if(alignAttr.size){
+			[align] = alignAttr;
 		}
-		
+		else if(accepted.has(alignCSS)){
+			align = alignCSS;
+		}
 		// Set the `data-align-y` attribute of #outer.
-		if(alignY === 'center') alignY = 'middle';
-		this.#outer.dataset.alignY = alignY;
+		this.#outer.dataset.alignY = align = 'middle' ? 'center' : align;
 	}
 	
 	#updateFit(){
 		debug.logFn('updateFit');
 		
-		const fitKeywords = ['none', 'cover', 'fill', 'contain', 'scale-down'];
-		
-		// Get value of the `--fit` property.
-		let fit = window.getComputedStyle(this).getPropertyValue('--fit').toLowerCase();
-		
-		if(fitKeywords.includes(fit)){
-			// Property value matches a fit keyword.
-			
-			// Set the `data-fit` attribute of #outer.
-			this.#outer.dataset.fit = fit;
+		// Fit of the image within its box (priority: HTML 'fit' attribute, CSS 'object-fit' property, default 'cover')
+		fit = 'cover';
+		accepted = new Set(['none', 'cover', 'fill', 'contain', 'scale-down']);
+		fitAttr = new Set(this.getAttribute('fit')?.toLowerCase().split(' ') || []);
+		fitAttr = accepted.intersection(fitAttr);
+		fitCSS = window.getComputedStyle(this).getPropertyValue('object-fit')?.toLowerCase() || '';
+		if(fitAttr.size){
+			[fit] = fitAttr;
 		}
-		else{
-			
-			// Get value of the component's `fit` attribute.
-			fit = this.getAttribute('fit');
-			
-			// Set the `data-fit` attribute of #outer.
-			this.#outer.dataset.fit = fitKeywords.includes(fit) ? fit : DEFAULT_FIT;
+		else if(accepted.has(fitCSS)){
+			fit = fitCSS;
 		}
+		// Set the `data-fit` attribute of #outer.
+		this.#outer.dataset.fit = fit;
 	}
 	
 	#updateOverflow(){
