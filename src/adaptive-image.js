@@ -13,8 +13,8 @@ const debug = {
 	disable(){ this.enabled = false; },
 };
 for(const f in console){
-	debug[f] = function (){
-		if(this.enabled) console[f].apply(null, arguments);
+	debug[f] = function (...args){
+		if(this.enabled) console[f].apply(null, args);
 	};
 }
 debug.logFn = (fnName) => debug.log(`%c\u0192%c${fnName}%c()`, 'font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;', 'border-bottom:1px dotted #888; padding-left:1em;', '');
@@ -131,33 +131,17 @@ class AdaptiveImage extends HTMLElement {
 	#updateAlignment(){
 		debug.logFn('updateAlignment');
 		
+		let alignAttr = this.getAttribute('align')?.toLowerCase().split(' ') || [];
+		
 		// Horizontal alignment (priority: HTML 'align' attribute, CSS 'justify-self' property, default 'center')
-		let align = 'center';
-		let accepted = new Set(['left', 'right', 'center']);
-		let alignAttr = new Set(this.getAttribute('align')?.toLowerCase().split(' ') || []);
-		alignAttr = accepted.intersection(alignAttr);
-		let alignCSS = window.getComputedStyle(this).getPropertyValue('justify-self')?.toLowerCase() || '';
-		if(alignAttr.size){
-			[align] = alignAttr;
-		}
-		else if(accepted.has(alignCSS)){
-			align = alignCSS;
-		}
+		let alignCSS = window.getComputedStyle(this).getPropertyValue('justify-self')?.toLowerCase();
+		let align = alignAttr.concat([alignCSS]).find(keyword => ['left', 'right'].includes(keyword)) || 'center';
 		// Set the `data-align-x` attribute of #outer.
 		this.#outer.dataset.alignX = align;
 		
 		// Vertical alignment (priority: HTML 'align' attribute, CSS 'vertical-align' property, default 'center')
-		align = 'center';
-		accepted = new Set(['left', 'right', 'center', 'middle']);
-		alignAttr = new Set(this.getAttribute('align')?.toLowerCase().split(' ') || []);
-		alignAttr = accepted.intersection(alignAttr);
-		alignCSS = window.getComputedStyle(this).getPropertyValue('vertical-align')?.toLowerCase() || '';
-		if(alignAttr.size){
-			[align] = alignAttr;
-		}
-		else if(accepted.has(alignCSS)){
-			align = alignCSS;
-		}
+		alignCSS = window.getComputedStyle(this).getPropertyValue('vertical-align')?.toLowerCase();
+		align = alignAttr.concat([alignCSS]).find(keyword => ['top', 'bottom', 'middle'].includes(keyword)) || 'center';
 		// Set the `data-align-y` attribute of #outer.
 		this.#outer.dataset.alignY = align = 'middle' ? 'center' : align;
 	}
@@ -194,8 +178,12 @@ class AdaptiveImage extends HTMLElement {
 	#refreshImage(){
 		debug.logFn('refreshImage');
 		
-		this.#outer.classList.remove('svg');
-		if(this.#mimeType === SVG_MIME_TYPE) this.#outer.classList.add('svg');
+		if(this.#mimeType === SVG_MIME_TYPE){
+			this.#outer.classList.add('svg');
+		}
+		else{
+			this.#outer.classList.remove('svg');
+		}
 		
 		// Set data-align-x, data-align-y, and data-fit attributes.
 		this.#updateAlignment();
