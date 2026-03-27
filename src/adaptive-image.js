@@ -23,7 +23,7 @@ debug.logFnGroup = (fnName) => debug.group(`%c\u0192%c${fnName}%c()`, 'font-styl
 
 
 /**
- * HTML component to display an image per the specified fit and alignment.
+ * HTML component to display an image using the specified fit and alignment.
  *
  * @class AdaptiveImage
  */
@@ -68,7 +68,12 @@ class AdaptiveImage extends HTMLElement {
 	// Observe changes to these custom attributes.
 	static observedAttributes = ['src', 'alt', 'fit', 'align', 'style'];
 	
-	// Built-in method to handle changes to the observed custom attributes.
+	/**
+	 * Built-in method to handle changes to the observed attributes of the custom element.
+	 * @param {string} name - Name of the attribute that changed.
+	 * @param {string} oldValue 
+	 * @param {string} newValue 
+	 */
 	attributeChangedCallback(name, oldValue, newValue){
 		
 		if(oldValue !== newValue){
@@ -85,6 +90,9 @@ class AdaptiveImage extends HTMLElement {
 		}
 	}
 	
+	/**
+	 * Once an image loads, its MIME type and dimensions are determined, and the display is updated.
+	 */
 	async #imageLoadHandler(){
 		// The image has loaded.
 		debug.logFn('imageLoadHandler');
@@ -105,6 +113,9 @@ class AdaptiveImage extends HTMLElement {
 		this.#refreshImage();
 	}
 	
+	/**
+	 * When an image fails to load, updates the display to indicate a broken image.
+	 */
 	#imageErrorHandler(){
 		// There was an error loading the image.
 		debug.logFn('imageErrorHandler');
@@ -128,6 +139,9 @@ class AdaptiveImage extends HTMLElement {
 		this.#refreshImage(rect.width, rect.height);
 	}
 	
+	/**
+	 * Calculates the horizontal and vertical alignment of the image. Defaults are 'center'.
+	 */
 	#updateAlignment(){
 		debug.logFn('updateAlignment');
 		
@@ -146,6 +160,9 @@ class AdaptiveImage extends HTMLElement {
 		this.#outer.dataset.alignY = align = 'middle' ? 'center' : align;
 	}
 	
+	/**
+	 * Determines how to size the image within its box. Default is 'cover'.
+	 */
 	#updateFit(){
 		debug.logFn('updateFit');
 		
