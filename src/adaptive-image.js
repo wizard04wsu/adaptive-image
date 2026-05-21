@@ -66,7 +66,7 @@ class AdaptiveImage extends HTMLElement {
 	}
 	
 	// Observe changes to these custom attributes.
-	static observedAttributes = ['src', 'alt', 'fit', 'align', 'style'];
+	static observedAttributes = ['src', 'alt', 'fit', 'align-x', 'align-y', 'style'];
 	
 	/**
 	 * Built-in method to handle changes to the observed attributes of the custom element.
@@ -89,6 +89,25 @@ class AdaptiveImage extends HTMLElement {
 			}
 		}
 	}
+	
+	#resizeObserver;
+	
+    connectedCallback() {
+		
+        this.#resizeObserver = new ResizeObserver(() => {
+            this.#updateAlignment();
+        });
+
+        this.#resizeObserver.observe(this);
+        this.#resizeObserver.observe(document.documentElement);
+
+        this.#updateAlignment();
+    }
+
+    disconnectedCallback() {
+		
+        this.#resizeObserver?.disconnect();
+    }
 	
 	/**
 	 * Once an image loads, its MIME type and dimensions are determined, and the display is updated.
@@ -140,24 +159,26 @@ class AdaptiveImage extends HTMLElement {
 	}
 	
 	/**
-	 * Calculates the horizontal and vertical alignment of the image. Defaults are 'center'.
+	 * Calculates the horizontal and vertical alignment of the image. Defaults are horizontally 'center' and vertically 'middle'.
 	 */
 	#updateAlignment(){
 		debug.logFn('updateAlignment');
 		
-		let alignAttr = this.getAttribute('align')?.toLowerCase().split(' ') || [];
+		// Horizontal alignment (priority: CSS '--align-x' property, HTML 'align-x' attribute, default 'center')
 		
-		// Horizontal alignment (priority: HTML 'align' attribute, CSS 'justify-self' property, default 'center')
-		let alignCSS = window.getComputedStyle(this).getPropertyValue('justify-self')?.toLowerCase();
-		let align = alignAttr.concat([alignCSS]).find(keyword => ['left', 'right'].includes(keyword)) || 'center';
-		// Set the `data-align-x` attribute of #outer.
-		this.#outer.dataset.alignX = align;
+		let validValues = ['left', 'center', 'right'];
+		let alignValue = window.getComputedStyle(this).getPropertyValue('--align-x')?.toLowerCase();
+		if(!validValues.includes(alignValue)) alignValue = this.#outer.getAttribute('align-x')?.toLowerCase();
+		if(!validValues.includes(alignValue)) alignValue = 'center';
+		this.#outer.setAttribute('align-x', alignValue);
 		
-		// Vertical alignment (priority: HTML 'align' attribute, CSS 'vertical-align' property, default 'center')
-		alignCSS = window.getComputedStyle(this).getPropertyValue('vertical-align')?.toLowerCase();
-		align = alignAttr.concat([alignCSS]).find(keyword => ['top', 'bottom', 'middle'].includes(keyword)) || 'center';
-		// Set the `data-align-y` attribute of #outer.
-		this.#outer.dataset.alignY = align = 'middle' ? 'center' : align;
+		// Vertical alignment (priority: CSS '--align-y' property, HTML 'align-y' attribute, default 'middle')
+		
+		validValues = ['top', 'middle', 'bottom'];
+		alignValue = window.getComputedStyle(this).getPropertyValue('--align-y')?.toLowerCase();
+		if(!validValues.includes(alignValue)) alignValue = this.#outer.getAttribute('align-y')?.toLowerCase();
+		if(!validValues.includes(alignValue)) alignValue = 'middle';
+		this.#outer.setAttribute('align-y', alignValue);
 	}
 	
 	/**
@@ -166,20 +187,19 @@ class AdaptiveImage extends HTMLElement {
 	#updateFit(){
 		debug.logFn('updateFit');
 		
-		// Fit of the image within its box (priority: HTML 'fit' attribute, CSS 'object-fit' property, default 'cover')
+		// Fit of the image within its box (priority: HTML 'fit' attribute, CSS '--fit' property, default 'cover')
 		fit = 'cover';
-		accepted = new Set(['none', 'cover', 'fill', 'contain', 'scale-down']);
-		fitAttr = new Set(this.getAttribute('fit')?.toLowerCase().split(' ') || []);
-		fitAttr = accepted.intersection(fitAttr);
-		fitCSS = window.getComputedStyle(this).getPropertyValue('object-fit')?.toLowerCase() || '';
-		if(fitAttr.size){
-			[fit] = fitAttr;
-		}
-		else if(accepted.has(fitCSS)){
+		validValues = new Set(['none', 'cover', 'fill', 'contain', 'scale-down']);
+		fitCSS = window.getComputedStyle(this).getPropertyValue('--fit')?.toLowerCase() || '';
+		fitAttr = this.getAttribute('fit')?.toLowerCase();
+		if(validValues.has(fitCSS)){
 			fit = fitCSS;
 		}
-		// Set the `data-fit` attribute of #outer.
-		this.#outer.dataset.fit = fit;
+		else if(validValues.has(fitAttr)){
+			fit = fitAttr;
+		}
+		// Set the `fit` attribute of #outer.
+		this.#outer.setAttribute('fit', fit);
 	}
 	
 	#updateOverflow(){
@@ -202,7 +222,7 @@ class AdaptiveImage extends HTMLElement {
 			this.#outer.classList.remove('svg');
 		}
 		
-		// Set data-align-x, data-align-y, and data-fit attributes.
+		// Set align-x, align-y, and fit attributes.
 		this.#updateAlignment();
 		this.#updateFit();
 		this.#updateOverflow();
@@ -226,7 +246,8 @@ class AdaptiveImage extends HTMLElement {
  */
 
 /**
- * Returns the intrinsic dimensions of an image and the image type. If intrinsic dimensions cannot be obtained, the dimensions of the image as it is currently displayed are used instead.
+ * Returns the intrinsic dimensions of an image and the image type.
+ * If intrinsic dimensions cannot be obtained, the dimensions of the image as it is currently displayed are used instead.
  *
  * @param {HTMLImageElement} imgElem
  * @return {ImageProps}
