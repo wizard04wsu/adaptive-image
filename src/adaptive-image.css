@@ -77,33 +77,6 @@
 	--translateY: 100%;
 }
 
-/* Broken image */
-#inner:has(img.error) {
-	display: table;
-	width: max-content;
-	min-width: 100%;
-	transform: none;
-}
-#image:has(img.error) {
-	display: table-cell;
-	text-align: center;
-	vertical-align: middle;
-	height: 100cqh;
-	transform: none;
-}
-[data-align-x=left] #image:has(img.error) {
-	text-align: left;
-}
-[data-align-x=right] #image:has(img.error) {
-	text-align: right;
-}
-[data-align-y=top] #image:has(img.error) {
-	vertical-align: top;
-}
-[data-align-y=bottom] #image:has(img.error) {
-	vertical-align: bottom;
-}
-
 
 /*====================/
   Fit
@@ -160,11 +133,12 @@
 }
 
 /* Broken image */
-#outer:has(img.error) {
-	overflow: auto;
-	scrollbar-width: none;
-}
-#image:has(img.error) {
-	width: 100%;
+#outer #image:has(img.error) {
+	aspect-ratio: unset;
+	min-width: auto;
+	min-height: auto;
+	max-width: 100%;
+	max-height: 100%;
+	width: auto;
 	height: auto;
 }
