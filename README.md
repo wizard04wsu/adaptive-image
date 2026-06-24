@@ -24,15 +24,13 @@ The `<adaptive-image>` element supports the following attributes.
 | src			| Path to the image file.	|
 | alt			| Alternate text for the image.	|
 | fit			| The method used to scale the image to fit inside the component's content box. Accepted values are the same as for the [CSS `object-fit` property](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit#values): `none`, `cover`, `fill`, `contain`, or `scale-down`. Default is `cover`.	|
-| align			| One or two space-separated values for how the image should be aligned inside the component's content box. Include `top`/`bottom` and/or `left`/`right` to override the default `center center`. 	|
+| align-x			| How the image should be horizontallyaligned inside the component's content box. Accepted values are `left`, `center`, or `right`. Default is `center`.	|
+| align-y			| How the image should be vertically aligned inside the component's content box. Accepted values are `top`, `middle`, or `bottom`. Default is `middle`.	|
 
-Additionally, the following CSS properties may be used. These have priority over the element attributes.
+Additionally, the following CSS property may be used. This is only for demonstration purposes.
 
 | Property			| Description	|
 |---			|---		|
-| &#x2011;&#x2011;fit			| The method used to scale the image to fit inside the component's content box (`none`, `cover`, `fill`, `contain`, `scale-down`). Default is `cover`.	|
-| &#x2011;&#x2011;align&#x2011;x			| Horizontal alignment inside the component's content box (`left`/`center`/`right`). Default is `center`. 	|
-| &#x2011;&#x2011;align&#x2011;y			| Vertical alignment inside the component's content box (`top`/`center`/`bottom`). Default is `center`. 	|
-| &#x2011;&#x2011;overflow			| How to show any [overflow](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow) of the image outside the component's content box. Default is `hidden`. 	|
+| &#x2011;&#x2011;overflow			| Set to `visible` to show any overflow of the image outside the component's content box. 	|
 
 Styles can be applied to the image itself using the `::part(img)` pseudo-element.
