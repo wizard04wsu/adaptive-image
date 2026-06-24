@@ -61,7 +61,7 @@ class AdaptiveImage extends HTMLElement {
 	}
 	
 	// Observe changes to these custom attributes.
-	static observedAttributes = ['src', 'alt', 'fit', 'align-x', 'align-y', 'style'];
+	static observedAttributes = ['src', 'alt', 'image-title', 'fit', 'align-x', 'align-y'];
 	
 	/**
 	 * Built-in method to handle changes to the observed attributes of the custom element.
@@ -78,6 +78,9 @@ class AdaptiveImage extends HTMLElement {
 			}
 			else if(name === 'alt'){
 				this.#img.alt = newValue || '';
+			}
+			else if(name === 'image-title'){
+				this.#img.title = newValue;
 			}
 			else {
 				this.#refreshImage();
