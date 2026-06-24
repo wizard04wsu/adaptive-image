@@ -6,6 +6,8 @@
 	display: inline-block;
 	width: var(--intrinsic-width);
 	height: var(--intrinsic-height);
+	
+	overflow: var(--overflow, hidden);
 }
 #outer {
 	/* These variables are set via JavaScript. */
@@ -13,9 +15,10 @@
 	--intrinsic-height: 0px;
 	--intrinsic-aspectratio: 1;
 	
-	overflow: hidden;
 	height: 100%;
 	line-height: 1; /* For broken images. */
+	
+	overflow: var(--overflow, hidden);
 }
 #inner {
 	/* Align */
@@ -107,11 +110,17 @@
 /====================*/
 
 /* Cover (default) */
-[data-fit=cover] #image {
+#image {
 	min-width: 100%;
 	min-height: 100%;
 	width: fit-content;
 	height: fit-content;
+}
+
+/* Fit is not 'cover' */
+#outer:not([data-fit=cover]) #image {
+	min-width: auto;
+	min-height: auto;
 }
 
 /* Fill */

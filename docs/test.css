@@ -88,7 +88,6 @@ adaptive-image {
 	max-width: 100cqw;
 	margin: auto;
 	border-width: 0px;
-	overflow: hidden;
 }
 adaptive-image:first-child {
 	position: relative;
@@ -113,7 +112,7 @@ adaptive-image:last-child {
 	border-width: 0px;
 }
 body:has(#showClipped:checked) adaptive-image:first-child {
-	overflow: visible;
+	--overflow: visible;
 }
 body:has(#showBorder:checked) adaptive-image:last-child {
 	inset: calc(var(--overflowPadding) - 5px);
