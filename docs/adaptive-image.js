@@ -1,173 +1,182 @@
 /* Copyright (c) 2025 Andy Harrison | github.com/wizard04wsu/adaptive-image */
-var E = Object.defineProperty;
-var A = (i) => {
-  throw TypeError(i);
+var M = Object.defineProperty;
+var L = (e) => {
+  throw TypeError(e);
 };
-var I = (i, t, e) => t in i ? E(i, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : i[t] = e;
-var C = (i, t, e) => I(i, typeof t != "symbol" ? t + "" : t, e), T = (i, t, e) => t.has(i) || A("Cannot " + e);
-var n = (i, t, e) => (T(i, t, "read from private field"), e ? e.call(i) : t.get(i)), m = (i, t, e) => t.has(i) ? A("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(i) : t.set(i, e), c = (i, t, e, r) => (T(i, t, "write to private field"), r ? r.call(i, e) : t.set(i, e), e), g = (i, t, e) => (T(i, t, "access private method"), e);
-const _ = `:host {\r
-	/* These variables are set via JavaScript. */\r
-	--intrinsic-width: 0px;\r
-	--intrinsic-height: 0px;\r
-	\r
-	display: inline-block;\r
-	width: var(--intrinsic-width);\r
-	height: var(--intrinsic-height);\r
-}\r
-#outer {\r
-	/* These variables are set via JavaScript. */\r
-	--intrinsic-width: 0px;\r
-	--intrinsic-height: 0px;\r
-	--intrinsic-aspectratio: 1;\r
-	\r
-	overflow: hidden;\r
-	height: 100%;\r
-	line-height: 1; /* For broken images. */\r
-}\r
-#inner {\r
-	/* Align */\r
-	text-align: left;\r
-	transform: translateX(var(--translateX)) translateY(var(--translateY));\r
-	\r
-	/* Fit */\r
-	height: 100%;\r
-	container-type: size; /* Only required for fit=contain. */\r
-}\r
-#image {\r
-	/* Align */\r
-	display: inline-block;\r
-	transform: translateX(calc(-1 * var(--translateX))) translateY(calc(-1 * var(--translateY)));\r
-	\r
-	/* Fit */\r
-	aspect-ratio: var(--intrinsic-aspectratio);\r
-}\r
-\r
-\r
-/*====================/\r
-  Alignment\r
-/====================*/\r
-\r
-/*=== Horizontal ===*/\r
-\r
-/* Center (default) */\r
-#inner {\r
-	--translateX: 50%;\r
-}\r
-\r
-/* Left */\r
-[data-align-x~=left] #inner {\r
-	--translateX: 0%;\r
-}\r
-\r
-/* Right */\r
-[data-align-x~=right] #inner {\r
-	--translateX: 100%;\r
-}\r
-\r
-/*=== Vertical ===*/\r
-\r
-/* Middle (default) */\r
-#inner {\r
-	--translateY: 50%;\r
-}\r
-\r
-/* Top */\r
-[data-align-y~=top] #inner {\r
-	--translateY: 0%;\r
-}\r
-\r
-/* Bottom */\r
-[data-align-y~=bottom] #inner {\r
-	--translateY: 100%;\r
-}\r
-\r
-/* Broken image */\r
-#inner:has(img.error) {\r
-	display: table;\r
-	width: max-content;\r
-	min-width: 100%;\r
-	transform: none;\r
-}\r
-#image:has(img.error) {\r
-	display: table-cell;\r
-	text-align: center;\r
-	vertical-align: middle;\r
-	height: 100cqh;\r
-	transform: none;\r
-}\r
-[data-align-x~=left] #image:has(img.error) {\r
-	text-align: left;\r
-}\r
-[data-align-x~=right] #image:has(img.error) {\r
-	text-align: right;\r
-}\r
-[data-align-y~=top] #image:has(img.error) {\r
-	vertical-align: top;\r
-}\r
-[data-align-y~=bottom] #image:has(img.error) {\r
-	vertical-align: bottom;\r
-}\r
-\r
-\r
-/*====================/\r
-  Fit\r
-/====================*/\r
-\r
-/* Cover (default) */\r
-[data-fit=cover] #image {\r
-	min-width: 100%;\r
-	min-height: 100%;\r
-	width: fit-content;\r
-	height: fit-content;\r
-}\r
-\r
-/* Fill */\r
-[data-fit=fill] #image {\r
-	aspect-ratio: auto;\r
-	width: 100%;\r
-	height: 100%;\r
-}\r
-\r
-/* Contain */\r
-[data-fit=contain] #image {\r
-	max-width: 100%;\r
-	max-height: 100%;\r
-	width: min(100cqw, calc(100cqh * var(--intrinsic-aspectratio)));\r
-	height: min(100cqh, calc(100cqw / var(--intrinsic-aspectratio)));\r
-}\r
-\r
-/* Scale-down */\r
-[data-fit=scale-down] #image {\r
-	max-width: 100%;\r
-	max-height: 100%;\r
-	width: min(100cqw, calc(100cqh * var(--intrinsic-aspectratio)), var(--intrinsic-width));\r
-	height: min(100cqh, calc(100cqw / var(--intrinsic-aspectratio)), var(--intrinsic-height));\r
-}\r
-\r
-/* None */\r
-[data-fit=none] #image {\r
-	/* Width and height are required here for SVGs. Otherwise 'auto' works fine. */\r
-	width: var(--intrinsic-width);\r
-	height: var(--intrinsic-height);\r
-}\r
-\r
-/* Fit is not 'none' */\r
-#outer:not([data-fit=none]) img {\r
-	width: 100%;\r
-	height: 100%;\r
-}\r
-\r
-/* Broken image */\r
-#outer:has(img.error) {\r
-	overflow: auto;\r
-	scrollbar-width: none;\r
-}\r
-#image:has(img.error) {\r
-	width: 100%;\r
-	height: auto;\r
-}\r
-`, M = `<style>${_}</style><div id="outer"><div id="inner"><div id="image"><img src="" alt="" part="img"></div></div></div>`, O = "cover", X = "middle", k = "center", L = "image/svg+xml", x = 300, F = 150, l = {
+var P = (e, t, i) => t in e ? M(e, t, { enumerable: !0, configurable: !0, writable: !0, value: i }) : e[t] = i;
+var R = (e, t, i) => P(e, typeof t != "symbol" ? t + "" : t, i), A = (e, t, i) => t.has(e) || L("Cannot " + i);
+var n = (e, t, i) => (A(e, t, "read from private field"), i ? i.call(e) : t.get(e)), m = (e, t, i) => t.has(e) ? L("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), o = (e, t, i, a) => (A(e, t, "write to private field"), a ? a.call(e, i) : t.set(e, i), i), c = (e, t, i) => (A(e, t, "access private method"), i);
+const k = `:host {
+	/* These variables are set via JavaScript. */
+	--intrinsic-width: 0px;
+	--intrinsic-height: 0px;
+	
+	display: inline-block;
+	width: var(--intrinsic-width);
+	height: var(--intrinsic-height);
+	
+	overflow: var(--overflow, hidden);
+}
+#outer {
+	/* These variables are set via JavaScript. */
+	--intrinsic-width: 0px;
+	--intrinsic-height: 0px;
+	--intrinsic-aspectratio: 1;
+	
+	height: 100%;
+	line-height: 1; /* For broken images. */
+	
+	overflow: var(--overflow, hidden);
+}
+#inner {
+	/* Align */
+	text-align: left;
+	transform: translateX(var(--translateX)) translateY(var(--translateY));
+	
+	/* Fit */
+	height: 100%;
+	container-type: size; /* Only required for fit=contain. */
+}
+#image {
+	/* Align */
+	display: inline-block;
+	transform: translateX(calc(-1 * var(--translateX))) translateY(calc(-1 * var(--translateY)));
+	
+	/* Fit */
+	aspect-ratio: var(--intrinsic-aspectratio);
+}
+
+
+/*====================/
+  Alignment
+/====================*/
+
+/*=== Horizontal ===*/
+
+/* Center (default) */
+#inner {
+	--translateX: 50%;
+}
+
+/* Left */
+[data-align-x=left] #inner {
+	--translateX: 0%;
+}
+
+/* Right */
+[data-align-x=right] #inner {
+	--translateX: 100%;
+}
+
+/*=== Vertical ===*/
+
+/* Middle (default) */
+#inner {
+	--translateY: 50%;
+}
+
+/* Top */
+[data-align-y=top] #inner {
+	--translateY: 0%;
+}
+
+/* Bottom */
+[data-align-y=bottom] #inner {
+	--translateY: 100%;
+}
+
+/* Broken image */
+#inner:has(img.error) {
+	display: table;
+	width: max-content;
+	min-width: 100%;
+	transform: none;
+}
+#image:has(img.error) {
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	height: 100cqh;
+	transform: none;
+}
+[data-align-x=left] #image:has(img.error) {
+	text-align: left;
+}
+[data-align-x=right] #image:has(img.error) {
+	text-align: right;
+}
+[data-align-y=top] #image:has(img.error) {
+	vertical-align: top;
+}
+[data-align-y=bottom] #image:has(img.error) {
+	vertical-align: bottom;
+}
+
+
+/*====================/
+  Fit
+/====================*/
+
+/* Cover (default) */
+#image {
+	min-width: 100%;
+	min-height: 100%;
+	width: fit-content;
+	height: fit-content;
+}
+
+/* Fit is not 'cover' */
+#outer:not([data-fit=cover]) #image {
+	min-width: auto;
+	min-height: auto;
+}
+
+/* Fill */
+[data-fit=fill] #image {
+	aspect-ratio: auto;
+	width: 100%;
+	height: 100%;
+}
+
+/* Contain */
+[data-fit=contain] #image {
+	max-width: 100%;
+	max-height: 100%;
+	width: min(100cqw, calc(100cqh * var(--intrinsic-aspectratio)));
+	height: min(100cqh, calc(100cqw / var(--intrinsic-aspectratio)));
+}
+
+/* Scale-down */
+[data-fit=scale-down] #image {
+	max-width: 100%;
+	max-height: 100%;
+	width: min(100cqw, calc(100cqh * var(--intrinsic-aspectratio)), var(--intrinsic-width));
+	height: min(100cqh, calc(100cqw / var(--intrinsic-aspectratio)), var(--intrinsic-height));
+}
+
+/* None */
+[data-fit=none] #image {
+	/* Width and height are required here for SVGs. Otherwise 'auto' works fine. */
+	width: var(--intrinsic-width);
+	height: var(--intrinsic-height);
+}
+
+/* Fit is not 'none' */
+#outer:not([data-fit=none]) img {
+	width: 100%;
+	height: 100%;
+}
+
+/* Broken image */
+#outer:has(img.error) {
+	overflow: auto;
+	scrollbar-width: none;
+}
+#image:has(img.error) {
+	width: 100%;
+	height: auto;
+}
+`, Y = `<style>${k}</style><div id="outer"><div id="inner"><div id="image"><img src="" alt="" part="img"></div></div></div>`, T = "image/svg+xml", x = 300, F = 150, d = {
   enabled: !1,
   enable() {
     this.enabled = !0;
@@ -176,107 +185,111 @@ const _ = `:host {\r
     this.enabled = !1;
   }
 };
-for (const i in console)
-  l[i] = function() {
-    this.enabled && console[i].apply(null, arguments);
+for (const e in console)
+  d[e] = function(...t) {
+    this.enabled && console[e].apply(null, t);
   };
-l.logFn = (i) => l.log(`%cƒ%c${i}%c()`, "font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;", "border-bottom:1px dotted #888; padding-left:1em;", "");
-l.logFnGroup = (i) => l.group(`%cƒ%c${i}%c()`, "font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;", "border-bottom:1px dotted #888; padding-left:1em; font-weight:bold;", "");
-var h, d, w, f, v, y, s, R, P, q, H, Y, b;
+d.logFn = (e) => d.log(`%cƒ%c${e}%c()`, "font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;", "border-bottom:1px dotted #888; padding-left:1em;", "");
+d.logFnGroup = (e) => d.group(`%cƒ%c${e}%c()`, "font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;", "border-bottom:1px dotted #888; padding-left:1em; font-weight:bold;", "");
+var l, h, p, w, b, y, f, s, C, q, H, E, u;
 class S extends HTMLElement {
   constructor() {
-    l.logFn("constructor");
+    d.logFn("constructor");
     super();
     m(this, s);
+    m(this, l);
     m(this, h);
-    m(this, d);
+    m(this, p);
     m(this, w);
-    m(this, f);
-    m(this, v);
+    m(this, b);
     m(this, y);
-    const e = this.attachShadow({ mode: "open" }), r = document.createElement("template");
-    r.innerHTML = M, e.appendChild(r.content.cloneNode(!0)), c(this, h, e.querySelector("#outer")), c(this, d, e.querySelector("img")), n(this, d).addEventListener("load", () => g(this, s, R).call(this)), n(this, d).addEventListener("error", () => g(this, s, P).call(this)), new ResizeObserver((o) => {
-      l.logFn("resizeObserver"), g(this, s, b).call(this);
-    }).observe(this);
+    m(this, f);
+    this.attachShadow({ mode: "open" });
+    const i = document.createElement("template");
+    i.innerHTML = Y, this.shadowRoot.appendChild(i.content.cloneNode(!0)), o(this, l, this.shadowRoot.querySelector("#outer")), o(this, h, this.shadowRoot.querySelector("img")), n(this, h).addEventListener("load", () => c(this, s, C).call(this)), n(this, h).addEventListener("error", () => c(this, s, q).call(this));
   }
-  // Built-in method to handle changes to the observed custom attributes.
-  attributeChangedCallback(e, r, a) {
-    r !== a && (e === "src" ? n(this, d).src = a : e === "alt" ? n(this, d).alt = a || "" : g(this, s, b).call(this));
+  /**
+   * Built-in method to handle changes to the observed attributes of the custom element.
+   * @param {string} name - Name of the attribute that changed.
+   * @param {string} oldValue 
+   * @param {string} newValue 
+   */
+  attributeChangedCallback(i, a, r) {
+    a !== r && (i === "src" ? n(this, h).src = r : i === "alt" ? n(this, h).alt = r || "" : c(this, s, u).call(this));
+  }
+  connectedCallback() {
+    o(this, f, new ResizeObserver(() => {
+      c(this, s, u).call(this);
+    })), n(this, f).observe(this), n(this, f).observe(document.documentElement), c(this, s, u).call(this);
+  }
+  disconnectedCallback() {
+    var i;
+    (i = n(this, f)) == null || i.disconnect();
   }
 }
-h = new WeakMap(), d = new WeakMap(), w = new WeakMap(), f = new WeakMap(), v = new WeakMap(), y = new WeakMap(), s = new WeakSet(), R = async function() {
-  l.logFn("imageLoadHandler"), n(this, d).classList.remove("error");
-  const e = await D(n(this, d));
-  c(this, w, e.width), c(this, f, e.height), c(this, v, e.aspectRatio), c(this, y, e.mimeType || ""), g(this, s, b).call(this);
-}, P = function() {
-  l.logFn("imageErrorHandler"), n(this, d).classList.add("error"), c(this, y, ""), n(this, d).alt = this.getAttribute("alt") || "";
-  const e = n(this, d).getBoundingClientRect();
-  c(this, w, e.width), c(this, f, e.height), c(this, v, e.width && e.height ? e.width / e.height : 1), g(this, s, b).call(this, e.width, e.height);
-}, q = function() {
-  var p;
-  l.logFn("updateAlignment");
-  const e = ["top", "middle", "center", "bottom"];
-  let r = ((p = this.getAttribute("align")) == null ? void 0 : p.toLowerCase().split(" ")) || [], a = window.getComputedStyle(this).getPropertyValue("--align-x").toLowerCase();
-  if (!["left", "center", "right"].includes(a)) {
-    a = "";
-    for (const u of r)
-      ["left", "right"].includes(u) && (a = u);
-    !a && r.includes("center") && (a = "center", r.splice(r.indexOf("center"), 1)), a || (a = k);
-  }
-  n(this, h).dataset.alignX = a;
-  let o = window.getComputedStyle(this).getPropertyValue("--align-y").toLowerCase();
-  if (!e.includes(o)) {
-    o = "";
-    for (const u of r)
-      e.includes(u) && (o = u);
-    o || (o = X);
-  }
-  o === "center" && (o = "middle"), n(this, h).dataset.alignY = o;
-}, H = function() {
-  l.logFn("updateFit");
-  const e = ["none", "cover", "fill", "contain", "scale-down"];
-  let r = window.getComputedStyle(this).getPropertyValue("--fit").toLowerCase();
-  e.includes(r) ? n(this, h).dataset.fit = r : (r = this.getAttribute("fit"), n(this, h).dataset.fit = e.includes(r) ? r : O);
-}, Y = function() {
-  l.logFn("updateOverflow");
-  const e = window.getComputedStyle(this).getPropertyValue("--overflow").toLowerCase();
-  n(this, h).style.setProperty("overflow", e || null);
-}, b = function() {
-  l.logFn("refreshImage"), n(this, h).classList.remove("svg"), n(this, y) === L && n(this, h).classList.add("svg"), g(this, s, q).call(this), g(this, s, H).call(this), g(this, s, Y).call(this), this.style.setProperty("--intrinsic-width", `${n(this, w)}px`), this.style.setProperty("--intrinsic-height", `${n(this, f)}px`), n(this, h).style.setProperty("--intrinsic-width", `${n(this, w)}px`), n(this, h).style.setProperty("--intrinsic-height", `${n(this, f)}px`), n(this, h).style.setProperty("--intrinsic-aspectratio", n(this, v));
+l = new WeakMap(), h = new WeakMap(), p = new WeakMap(), w = new WeakMap(), b = new WeakMap(), y = new WeakMap(), f = new WeakMap(), s = new WeakSet(), C = async function() {
+  d.logFn("imageLoadHandler"), n(this, h).classList.remove("error");
+  const i = await $(n(this, h));
+  o(this, p, i.width), o(this, w, i.height), o(this, b, i.aspectRatio), o(this, y, i.mimeType || ""), c(this, s, u).call(this);
+}, /**
+ * When an image fails to load, updates the display to indicate a broken image.
+ */
+q = function() {
+  d.logFn("imageErrorHandler"), n(this, h).classList.add("error"), o(this, y, ""), n(this, h).alt = this.getAttribute("alt") || "";
+  const i = n(this, h).getBoundingClientRect();
+  o(this, p, i.width), o(this, w, i.height), o(this, b, i.width && i.height ? i.width / i.height : 1), c(this, s, u).call(this, i.width, i.height);
+}, /**
+ * Determines how to size the image within its box. Default is 'cover'.
+ */
+H = function() {
+  var r;
+  d.logFn("updateFit");
+  let i = /* @__PURE__ */ new Set(["none", "cover", "fill", "contain", "scale-down"]), a = ((r = this.getAttribute("fit")) == null ? void 0 : r.toLowerCase().trim()) || "";
+  i.has(a) || (a = "cover"), n(this, l).dataset.fit = a;
+}, /**
+ * Calculates the horizontal and vertical alignment of the image. Defaults are horizontally 'center' and vertically 'middle'.
+ */
+E = function() {
+  var r, g;
+  d.logFn("updateAlignment");
+  let i = /* @__PURE__ */ new Set(["left", "center", "right"]), a = ((r = this.getAttribute("align-x")) == null ? void 0 : r.toLowerCase().trim()) || "";
+  i.has(a) || (a = "center"), n(this, l).dataset.alignX = a, i = /* @__PURE__ */ new Set(["top", "middle", "bottom"]), a = ((g = this.getAttribute("align-y")) == null ? void 0 : g.toLowerCase().trim()) || "", i.has(a) || (a = "middle"), n(this, l).dataset.alignY = a;
+}, u = function() {
+  d.logFn("refreshImage"), n(this, y) === T ? n(this, l).classList.add("svg") : n(this, l).classList.remove("svg"), c(this, s, E).call(this), c(this, s, H).call(this), this.style.setProperty("--intrinsic-width", `${n(this, p)}px`), this.style.setProperty("--intrinsic-height", `${n(this, w)}px`), n(this, l).style.setProperty("--intrinsic-width", `${n(this, p)}px`), n(this, l).style.setProperty("--intrinsic-height", `${n(this, w)}px`), n(this, l).style.setProperty("--intrinsic-aspectratio", n(this, b));
 }, // Observe changes to these custom attributes.
-C(S, "observedAttributes", ["src", "alt", "fit", "align", "style"]);
-async function D(i) {
-  l.debug("getImageProperties");
+R(S, "observedAttributes", ["src", "alt", "fit", "align-x", "align-y", "style"]);
+async function $(e) {
+  d.debug("getImageProperties");
   let t = {};
   try {
-    const r = await (await fetch(i.src)).blob();
-    t.mimeType = r.type;
-  } catch (e) {
-    console.warn(`Unable to determine MIME type of ${i.src}`, e.message), t.mimeType ?? (t.mimeType = "");
+    const a = await (await fetch(e.src)).blob();
+    t.mimeType = a.type;
+  } catch (i) {
+    console.warn(`Unable to determine MIME type of ${e.src}`, i.message), t.mimeType ?? (t.mimeType = "");
   }
-  if (!t.mimeType || t.mimeType === L) {
-    let e;
+  if (!t.mimeType || t.mimeType === T) {
+    let i;
     try {
-      const p = await (await fetch(i.src)).text();
-      e = new DOMParser().parseFromString(p, L).querySelector("svg");
+      const v = await (await fetch(e.src)).text();
+      i = new DOMParser().parseFromString(v, T).querySelector("svg");
     } catch {
-      const p = i.getBoundingClientRect();
-      return t.width = p.width, t.height = p.height, t.width && t.height && (t.aspectRatio = t.width / t.height), t;
+      const v = e.getBoundingClientRect();
+      return t.width = v.width, t.height = v.height, t.width && t.height && (t.aspectRatio = t.width / t.height), t;
     }
-    t.mimeType = L;
-    let r = parseFloat(e.getAttribute("width")), a = parseFloat(e.getAttribute("height"));
-    if (r && a)
-      t.width = r, t.height = a, t.aspectRatio = t.width / t.height;
-    else if (e.hasAttribute("viewBox")) {
-      let o = e.getAttribute("viewBox").match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
-      o ? (o = o.map((p) => Math.abs(Number(p))), [, r, a] = o, t.width = r || x, t.height = a || F, t.aspectRatio = t.width / t.height) : (t.aspectRatio = x / F, t.width ?? (t.width = t.height * t.aspectRatio || x), t.height ?? (t.height = t.width * t.aspectRatio || F));
+    t.mimeType = T;
+    let a = parseFloat(i.getAttribute("width")), r = parseFloat(i.getAttribute("height"));
+    if (a && r)
+      t.width = a, t.height = r, t.aspectRatio = t.width / t.height;
+    else if (i.hasAttribute("viewBox")) {
+      let g = i.getAttribute("viewBox").match(/^\s*(?:(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s+){3}(\d+(?:e\d+)?|[+-]?\d*\.\d+(?:e\d+)?)\s*$/i);
+      g ? (g = g.map((v) => Math.abs(Number(v))), [, a, r] = g, t.width = a || x, t.height = r || F, t.aspectRatio = t.width / t.height) : (t.aspectRatio = x / F, t.width ?? (t.width = t.height * t.aspectRatio || x), t.height ?? (t.height = t.width * t.aspectRatio || F));
     } else
       t.width ?? (t.width = x), t.height ?? (t.height = F), t.aspectRatio = t.width / t.height;
-  } else if (t.width = i.naturalWidth, t.height = i.naturalHeight, t.width && t.height)
+  } else if (t.width = e.naturalWidth, t.height = e.naturalHeight, t.width && t.height)
     t.aspectRatio = t.width / t.height;
   else {
-    const e = i.getBoundingClientRect();
-    return t.width = e.width, t.height = e.height, t.width && t.height && (t.aspectRatio = t.width / t.height), t;
+    const i = e.getBoundingClientRect();
+    return t.width = i.width, t.height = i.height, t.width && t.height && (t.aspectRatio = t.width / t.height), t;
   }
   return t;
 }

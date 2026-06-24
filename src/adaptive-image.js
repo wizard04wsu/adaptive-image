@@ -1,11 +1,6 @@
-import CSS from './adaptive-image.css?raw';
+import TEMPLATE_CSS from './adaptive-image.css?raw';
 
-const HTML = `<style>${CSS}</style><div id="outer"><div id="inner"><div id="image"><img src="" alt="" part="img"></div></div></div>`;
-
-const DEFAULT_FIT = "cover";
-
-const DEFAULT_ALIGN_Y = "middle";
-const DEFAULT_ALIGN_X = "center";
+const TEMPLATE_HTML = `<style>${TEMPLATE_CSS}</style><div id="outer"><div id="inner"><div id="image"><img src="" alt="" part="img"></div></div></div>`;
 
 const SVG_MIME_TYPE = 'image/svg+xml';
 const SVG_DEFAULT_WIDTH = 300;
@@ -18,8 +13,8 @@ const debug = {
 	disable(){ this.enabled = false; },
 };
 for(const f in console){
-	debug[f] = function (){
-		if(this.enabled) console[f].apply(null, arguments);
+	debug[f] = function (...args){
+		if(this.enabled) console[f].apply(null, args);
 	};
 }
 debug.logFn = (fnName) => debug.log(`%c\u0192%c${fnName}%c()`, 'font-style:italic; font-weight:bold; font-size:150%; margin-right:-0.2em;', 'border-bottom:1px dotted #888; padding-left:1em;', '');
@@ -28,7 +23,7 @@ debug.logFnGroup = (fnName) => debug.group(`%c\u0192%c${fnName}%c()`, 'font-styl
 
 
 /**
- * HTML component to display an image per the specified fit and alignment.
+ * HTML component to display an image using the specified fit and alignment.
  *
  * @class AdaptiveImage
  */
@@ -42,6 +37,8 @@ class AdaptiveImage extends HTMLElement {
 	#intrinsicAspectRatio;
 	#mimeType;
 	
+	#resizeObserver;
+	
 	constructor(){
 		// Create an instance of AdaptiveImage.
 		debug.logFn('constructor');
@@ -49,31 +46,29 @@ class AdaptiveImage extends HTMLElement {
 		super();
 		
 		// Create the shadow DOM and clone the template.
-		const shadowRoot = this.attachShadow({mode: 'open'});
+		this.attachShadow({mode: 'open'});
 		const template = document.createElement('template');
-		template.innerHTML = HTML;
-		shadowRoot.appendChild(template.content.cloneNode(true));
+		template.innerHTML = TEMPLATE_HTML;
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		
 		// Save references to the internal elements.
-		this.#outer = shadowRoot.querySelector('#outer');
-		this.#img = shadowRoot.querySelector('img');
+		this.#outer = this.shadowRoot.querySelector('#outer');
+		this.#img = this.shadowRoot.querySelector('img');
 		
 		// Handle success or failure loading a new src.
 		this.#img.addEventListener('load', ()=>this.#imageLoadHandler());
 		this.#img.addEventListener('error', ()=>this.#imageErrorHandler());
-		
-		// Update the component when it is resized.
-		const resizeObserver = new ResizeObserver((entries)=>{
-			debug.logFn('resizeObserver');
-			this.#refreshImage();
-		});
-		resizeObserver.observe(this);
 	}
 	
 	// Observe changes to these custom attributes.
-	static observedAttributes = ['src', 'alt', 'fit', 'align', 'style'];
+	static observedAttributes = ['src', 'alt', 'fit', 'align-x', 'align-y', 'style'];
 	
-	// Built-in method to handle changes to the observed custom attributes.
+	/**
+	 * Built-in method to handle changes to the observed attributes of the custom element.
+	 * @param {string} name - Name of the attribute that changed.
+	 * @param {string} oldValue 
+	 * @param {string} newValue 
+	 */
 	attributeChangedCallback(name, oldValue, newValue){
 		
 		if(oldValue !== newValue){
@@ -90,6 +85,26 @@ class AdaptiveImage extends HTMLElement {
 		}
 	}
 	
+	connectedCallback() {
+		
+		this.#resizeObserver = new ResizeObserver(() => {
+			this.#refreshImage();
+		});
+		
+		this.#resizeObserver.observe(this);
+		this.#resizeObserver.observe(document.documentElement);
+		
+		this.#refreshImage();
+	}
+	
+	disconnectedCallback() {
+		
+		this.#resizeObserver?.disconnect();
+	}
+	
+	/**
+	 * Once an image loads, its MIME type and dimensions are determined, and the display is updated.
+	 */
 	async #imageLoadHandler(){
 		// The image has loaded.
 		debug.logFn('imageLoadHandler');
@@ -110,6 +125,9 @@ class AdaptiveImage extends HTMLElement {
 		this.#refreshImage();
 	}
 	
+	/**
+	 * When an image fails to load, updates the display to indicate a broken image.
+	 */
 	#imageErrorHandler(){
 		// There was an error loading the image.
 		debug.logFn('imageErrorHandler');
@@ -133,107 +151,66 @@ class AdaptiveImage extends HTMLElement {
 		this.#refreshImage(rect.width, rect.height);
 	}
 	
-	#updateAlignment(){
-		debug.logFn('updateAlignment');
-		
-		const alignYKeywords = ['top', 'middle', 'center', 'bottom'];
-		
-		// Get values from the component's `align` attribute.
-		let align = this.getAttribute('align')?.toLowerCase().split(' ') || [];
-		
-		
-		// Get value of the `--align-x` property.
-		let alignX = window.getComputedStyle(this).getPropertyValue('--align-x').toLowerCase();
-		
-		if(!['left', 'center', 'right'].includes(alignX)){
-			// Property value does not match a horizontal alignment keyword.
-			
-			alignX = '';
-			
-			// Find a matching horizontal alignment keyword in the `align` attribute value.
-			// This is done in such a way to allow 'center' to also be used as a vertical alignment keyword equivalent to 'middle'.
-			for(const keyword of align){
-				if(['left', 'right'].includes(keyword)){
-					alignX = keyword;
-				}
-			}
-			if(!alignX && align.includes('center')){
-				alignX = 'center';
-				align.splice(align.indexOf('center'), 1);
-			}
-			alignX ||= DEFAULT_ALIGN_X;
-		}
-		
-		// Set the `data-align-x` attribute of #outer.
-		this.#outer.dataset.alignX = alignX;
-		
-		
-		// Get value of the `--align-y` property.
-		let alignY = window.getComputedStyle(this).getPropertyValue('--align-y').toLowerCase();
-		
-		if(!alignYKeywords.includes(alignY)){
-			// Property value does not match a vertical alignment keyword.
-			
-			alignY = '';
-			
-			// Find a matching vertical alignment keyword in the `align` attribute value.
-			for(const keyword of align){
-				if(alignYKeywords.includes(keyword)){
-					alignY = keyword;
-				}
-			}
-			alignY ||= DEFAULT_ALIGN_Y;
-		}
-		
-		// Set the `data-align-y` attribute of #outer.
-		if(alignY === 'center') alignY = 'middle';
-		this.#outer.dataset.alignY = alignY;
-	}
-	
+	/**
+	 * Determines how to size the image within its box. Default is 'cover'.
+	 */
 	#updateFit(){
 		debug.logFn('updateFit');
 		
-		const fitKeywords = ['none', 'cover', 'fill', 'contain', 'scale-down'];
+		// Fit of the image within its box (priority: /*CSS '--fit' property,*/ HTML 'fit' attribute, default 'cover')
 		
-		// Get value of the `--fit` property.
-		let fit = window.getComputedStyle(this).getPropertyValue('--fit').toLowerCase();
+		let validValues = new Set(['none', 'cover', 'fill', 'contain', 'scale-down']);
 		
-		if(fitKeywords.includes(fit)){
-			// Property value matches a fit keyword.
-			
-			// Set the `data-fit` attribute of #outer.
-			this.#outer.dataset.fit = fit;
-		}
-		else{
-			
-			// Get value of the component's `fit` attribute.
-			fit = this.getAttribute('fit');
-			
-			// Set the `data-fit` attribute of #outer.
-			this.#outer.dataset.fit = fitKeywords.includes(fit) ? fit : DEFAULT_FIT;
-		}
+		let /*fitValue = window.getComputedStyle(this).getPropertyValue('--fit')?.toLowerCase().trim() || '';
+		if(!validValues.has(fitValue))*/ fitValue = this.getAttribute('fit')?.toLowerCase().trim() || '';
+		if(!validValues.has(fitValue)) fitValue = 'cover';
+		
+		// Set the `data-fit` attribute of #outer.
+		this.#outer.dataset.fit = fitValue;
 	}
 	
-	#updateOverflow(){
-		debug.logFn('updateOverflow');
+	/**
+	 * Calculates the horizontal and vertical alignment of the image. Defaults are horizontally 'center' and vertically 'middle'.
+	 */
+	#updateAlignment(){
+		debug.logFn('updateAlignment');
 		
-		// Get value of the `--overflow` property.
-		const overflow = window.getComputedStyle(this).getPropertyValue('--overflow').toLowerCase();
+		// Horizontal alignment (priority: /*CSS '--align-x' property,*/ HTML 'align-x' attribute, default 'center')
 		
-		// Set the `overflow` property of #outer's style attribute.
-		this.#outer.style.setProperty('overflow', overflow || null);
+		let validValues = new Set(['left', 'center', 'right']);
+		
+		let /*alignValue = window.getComputedStyle(this).getPropertyValue('--align-x')?.toLowerCase().trim() || '';
+		if(!validValues.has(alignValue))*/ alignValue = this.getAttribute('align-x')?.toLowerCase().trim() || '';
+		if(!validValues.has(alignValue)) alignValue = 'center';
+		
+		// Set the `data-align-x` attribute of #outer.
+		this.#outer.dataset.alignX = alignValue;
+		
+		// Vertical alignment (priority: /*CSS '--align-y' property,*/ HTML 'align-y' attribute, default 'middle')
+		
+		validValues = new Set(['top', 'middle', 'bottom']);
+		
+		/*alignValue = window.getComputedStyle(this).getPropertyValue('--align-y')?.toLowerCase().trim() || '';
+		if(!validValues.has(alignValue))*/ alignValue = this.getAttribute('align-y')?.toLowerCase().trim() || '';
+		if(!validValues.has(alignValue)) alignValue = 'middle';
+		
+		// Set the `data-align-y` attribute of #outer.
+		this.#outer.dataset.alignY = alignValue;
 	}
 	
 	#refreshImage(){
 		debug.logFn('refreshImage');
 		
-		this.#outer.classList.remove('svg');
-		if(this.#mimeType === SVG_MIME_TYPE) this.#outer.classList.add('svg');
+		if(this.#mimeType === SVG_MIME_TYPE){
+			this.#outer.classList.add('svg');
+		}
+		else{
+			this.#outer.classList.remove('svg');
+		}
 		
-		// Set data-align-x, data-align-y, and data-fit attributes.
+		// Set align-x, align-y, and fit.
 		this.#updateAlignment();
 		this.#updateFit();
-		this.#updateOverflow();
 		
 		// Set CSS variables.
 		this.style.setProperty('--intrinsic-width', `${this.#intrinsicWidth}px`);
@@ -254,7 +231,8 @@ class AdaptiveImage extends HTMLElement {
  */
 
 /**
- * Returns the intrinsic dimensions of an image and the image type. If intrinsic dimensions cannot be obtained, the dimensions of the image as it is currently displayed are used instead.
+ * Returns the intrinsic dimensions of an image and the image type.
+ * If intrinsic dimensions cannot be obtained, the dimensions of the image as it is currently displayed are used instead.
  *
  * @param {HTMLImageElement} imgElem
  * @return {ImageProps}

@@ -49,17 +49,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
 		let width = $('#widthSlider').value;
 		width = $('#width').checked ? ($('#widthPercent').checked ? (width / 4) + '%' : width+'px') : '';
 		let height = $('#height').checked ? $('#heightSlider').value+'px' : '';
-		let align = $('input[name="alignment"]:checked').value;
-		let overflow = $('#showClipped').checked ? 'visible' : null;
+		let alignX = $('input[name="alignment"]:checked').dataset.alignX;
+		let alignY = $('input[name="alignment"]:checked').dataset.alignY;
 		
-		const images = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
-		for(const image of images){
+		const adaptiveImages = Array.prototype.slice.call(document.querySelectorAll('adaptive-image'), 0);
+		for(const adaptiveImage of adaptiveImages){
 			
-			image.setAttribute('alt', image.getAttribute('src') === 'dne.jpg' ? 'Image not found' : '');
-			image.style.width = width;
-			image.style.height = height;
-			image.setAttribute('align', align);
-			image.style.setProperty('--overflow', image.nextSibling ? overflow : null);
+			adaptiveImage.setAttribute('alt', adaptiveImage.getAttribute('src') === 'dne.jpg' ? 'Image not found' : '');
+			adaptiveImage.style.width = width;
+			adaptiveImage.style.height = height;
+			adaptiveImage.setAttribute('align-x', alignX);
+			adaptiveImage.setAttribute('align-y', alignY);
 		}
 	}
 });
