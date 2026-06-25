@@ -98,10 +98,6 @@ adaptive-image {
 	border: var(--borderWidth) solid transparent;
 	box-sizing: border-box;
 }
-#columns > div:last-child adaptive-image:first-child {
-	/* Never show overflows in the last row (broken images). */
-	visibility: hidden;
-}
 #columns > div:nth-child(n+2) > div:nth-child(n+2)::after {
 	content: '';
 	position: absolute;
