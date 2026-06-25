@@ -123,6 +123,7 @@ adaptive-image {
 	background-size: 28.28px 28.28px;
 	background-attachment: fixed;
 	color: black;
+	background-clip: padding-box;
 }
 #columns > div:last-child adaptive-image:last-child {
 	color: white;
