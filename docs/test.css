@@ -1,5 +1,6 @@
 body {
 	--borderRadius: 45px;
+	--borderWidth: 5px;
 	--overflowPadding: 30px;
 	
 	margin: 0;
@@ -74,26 +75,31 @@ fieldset div > :is(label, input) {
 }
 #columns > div:nth-child(n+2) > div:nth-child(n+2) {
 	container-type: inline-size;
-	position: relative;
 	overflow: hidden;
 	padding: var(--overflowPadding);
+	position: relative;
 	
 	background-image: 
 		linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
 	background-size: 28.28px 28.28px;
 	background-attachment: fixed;
 }
+#columns > div:nth-child(n+2) > div:nth-child(n+2) > div {
+	position: relative;
+}
 
 adaptive-image {
 	max-width: 100cqw;
 	margin: auto;
-	border-width: 0px;
-}
-adaptive-image:first-child {
-	position: relative;
+	border: none;
 	display: block;
+	position: relative;
+	inset: 0px;
+	border: var(--borderWidth) solid transparent;
+	box-sizing: border-box;
 }
 #columns > div:last-child adaptive-image:first-child {
+	/* Never show overflows in the last row (broken images). */
 	visibility: hidden;
 }
 #columns > div:nth-child(n+2) > div:nth-child(n+2)::after {
@@ -108,15 +114,12 @@ adaptive-image:last-child {
 	position: absolute;
 	z-index: 2;
 	container-type: size;
-	inset: var(--overflowPadding);
-	border-width: 0px;
 }
 body:has(#showClipped:checked) adaptive-image:first-child {
 	--overflow: visible;
 }
 body:has(#showBorder:checked) adaptive-image:last-child {
-	inset: calc(var(--overflowPadding) - 5px);
-	border: 5px solid greenyellow;
+	border-color: greenyellow;
 }
 
 adaptive-image {
