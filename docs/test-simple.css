@@ -56,6 +56,7 @@ label:has(#imageSrc) {
 adaptive-image {
 	border: 0 solid greenyellow;
 	margin: auto;
+	box-sizing: border-box;
 }
 body:has(#square:checked) adaptive-image {
 	border-radius: 0;

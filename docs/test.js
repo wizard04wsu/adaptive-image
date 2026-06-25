@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 		
 		for(const fit of FITS){
 			
+			const padding = document.createElement('div');
 			const cell = document.createElement('div');
 			
 			const imgMasked = document.createElement('adaptive-image');
@@ -33,7 +34,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
 			const imgVisible = imgMasked.cloneNode(true);
 			cell.appendChild(imgVisible);
 			
-			row.appendChild(cell);
+			padding.appendChild(cell);
+			row.appendChild(padding);
 		}
 		
 		table.appendChild(row);
@@ -47,7 +49,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 	function updateImageAttributes(event){
 		
 		let width = $('#widthSlider').value;
-		width = $('#width').checked ? ($('#widthPercent').checked ? (width / 4) + '%' : width+'px') : '';
+		width = $('#width').checked ? ($('#widthPercent').checked ? (width / $('#widthSlider').getAttribute('max') * 100) + '%' : width+'px') : '';
 		let height = $('#height').checked ? $('#heightSlider').value+'px' : '';
 		let alignX = $('input[name="alignment"]:checked').dataset.alignX;
 		let alignY = $('input[name="alignment"]:checked').dataset.alignY;
