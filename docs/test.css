@@ -97,6 +97,11 @@ adaptive-image {
 	inset: 0px;
 	border: var(--borderWidth) solid transparent;
 	box-sizing: border-box;
+	background-clip: padding-box;
+	background-image: linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
+	background-size: 28.28px 28.28px;
+	background-attachment: fixed;
+	color: white;
 }
 #columns > div:nth-child(n+2) > div:nth-child(n+2)::after {
 	content: '';
@@ -116,17 +121,7 @@ body:has(#showClipped:checked) adaptive-image:first-child {
 }
 body:has(#showBorder:checked) adaptive-image:last-child {
 	border-color: greenyellow;
-}
 
-adaptive-image {
-	background-image: linear-gradient(135deg, #B2A2CD 25%, #5F5370 25%, #5F5370 50%, #B2A2CD 50%, #B2A2CD 75%, #5F5370 75%, #5F5370 100%);
-	background-size: 28.28px 28.28px;
-	background-attachment: fixed;
-	color: black;
-	background-clip: padding-box;
-}
-#columns > div:last-child adaptive-image:last-child {
-	color: white;
 }
 
 body:has(#image-small:not(:checked)) #columns > div:nth-child(2) {
