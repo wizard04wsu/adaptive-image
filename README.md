@@ -1,5 +1,5 @@
-# Adaptive Image HTML Component
-A custom HTML component that simplifies the fit and alignment of an image in its container. This supports SVG images as well.
+# Adaptive Image Web Component
+A custom HTML element that simplifies the fit and alignment of an image in its container. This supports SVG images as well.
 
 [Demo page](https://wizard04wsu.github.io/adaptive-image/index.html)
 
